@@ -1,0 +1,44 @@
+.board {
+  background-color: gray;
+  width: 320px;
+}
+
+.square {
+  width: 30px;
+  height: 30px;
+  background-color: #29393d;
+  text-align: center;
+  border: 1px solid #242e30;
+}
+
+.line {
+  display: flex;
+}
+
+.color_1 {
+  background-color: orange;
+}
+
+.color_2 {
+  background-color: green;
+}
+
+.color_3 {
+  background-color: red;
+}
+
+.color_4 {
+  background-color: deepskyblue;
+}
+
+.color_5 {
+  background-color: mediumpurple;
+}
+
+.color_6 {
+  background-color: yellow;
+}
+
+.color_7 {
+  background-color: aliceblue;
+}

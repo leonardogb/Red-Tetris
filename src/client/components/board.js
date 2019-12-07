@@ -12,14 +12,14 @@ const Board = ({board, addPiece}) => {
         </div>
         )
       }
-      <button onClick={() => addPiece(
-        [
-          [0, 1, 0, 0],
-          [0, 1, 0, 0],
-          [0, 1, 0, 0],
-          [0, 1, 0, 0]
-        ]
-      )}>Click me</button>
+      {/*<button onClick={() => addPiece(*/}
+        {/*[*/}
+          {/*[0, 1, 0, 0],*/}
+          {/*[0, 1, 0, 0],*/}
+          {/*[0, 1, 0, 0],*/}
+          {/*[0, 1, 0, 0]*/}
+        {/*]*/}
+      {/*)}>Click me</button>*/}
     </div>
   )
 };

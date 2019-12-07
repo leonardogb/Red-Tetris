@@ -10,13 +10,6 @@ const reducer = (state = {}, action) => {
   switch(action.type) {
     case ALERT_POP:
       return { ...state, message: action.message };
-    case ADD_PIECE:
-      action.payload.map((line, indexLine) => {
-        line.map((col, indexCol) => {
-          tmpBoard[state.piecePosition + indexLine][indexCol] = col;
-        });
-      });
-      return { ...state, board: tmpBoard, piecePosition: state.piecePosition + 1 };
     case SET_PLAYER:
       return {...state, player: action.payload};
     case UPDATE_PLAYER_POSITION:

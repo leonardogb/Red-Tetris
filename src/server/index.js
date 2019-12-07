@@ -1,6 +1,7 @@
 import fs from 'fs';
 import debug from 'debug';
 
+
 const logerror = debug('tetris:error'),
   logInfo = debug('tetris:info');
 
@@ -30,6 +31,16 @@ const initApp = (app, params, cb) => {
 const initEngine = io => {
   io.on('connection', (socket) => {
     logInfo("Socket connected: " + socket.id);
+    socket.join('room 123', () => {
+      const clients = io.in('room 123').clients((err, clients) => {
+        console.log(clients);
+      });
+    });
+    console.log(io.sockets.adapter.rooms);
+
+    socket.on('getRoom', (room) => {
+      console.log(room.room);
+    });
     socket.on('action', (action) => {
       if (action.type === 'server/ping') {
         socket.emit('action', { type: 'pong' })

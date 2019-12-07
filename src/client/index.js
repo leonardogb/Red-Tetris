@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import {createLogger} from 'redux-logger';
 import thunk from 'redux-thunk';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import {storeStateMiddleWare} from './middleware/storeStateMiddleWare'
 import reducer from './reducers';
@@ -29,10 +29,10 @@ socket.emit('action', {type: 'server/ping'});
 const initialState = {
   message: '',
   board: initialBoard(),
-  piecePosition: 0,
-  player: false
+  player: null,
+  room: null,
 };
-const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || COMPOSE;
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
@@ -42,14 +42,6 @@ const store = createStore(
 );
 sagaMiddleware.run(watchUpdatePlayerPosition);
 
-const getPiece = () => {
-  socket.emit('getPiece', {action: 'test'});
-  socket.on('getPiece2', (piece) => {
-    store.dispatch(setPlayer(piece));
-    store.dispatch(updateBoard());
-  });
-};
-
 // const keyDown = (keyCode) => {
 //
 //   store.dispatch(updatePlayerPosition(1));
@@ -58,8 +50,7 @@ const getPiece = () => {
 
 ReactDom.render((
   <Provider store={store}>
-    <App />
-    <button onClick={() => getPiece()}>Botón</button>
+    <App socket={socket} />
   </Provider>
 ), document.getElementById('tetris'));
 

@@ -3,6 +3,9 @@ import { ADD_PIECE } from '../actions/addPiece'
 import { SET_PLAYER } from '../actions/setPlayer'
 import { UPDATE_PLAYER_POSITION } from '../actions/updatePlayerPosition'
 import { UPDATE_BOARD } from '../actions/updateBoard';
+import {ADD_ROOM} from '../actions/addRoom';
+import {SET_USERNAME} from '../actions/setUsername';
+import {SET_GAMES} from "../actions/setGames";
 
 const reducer = (state = {}, action) => {
   let tmpBoard = [...state.board];
@@ -54,6 +57,12 @@ const reducer = (state = {}, action) => {
         });
       });
       return {...state, board: tmpBoard};
+    case ADD_ROOM:
+      return {...state, games: [...state.games, action.payload.room], curGame: action.payload.room.room};
+    case SET_USERNAME:
+      return {...state, curUser: {name: action.payload.username}};
+    case SET_GAMES:
+      return {...state, games: action.payload};
     default:
       return state
   }

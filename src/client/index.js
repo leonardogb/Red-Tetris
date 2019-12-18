@@ -18,7 +18,7 @@ import createSagaMiddleware from 'redux-saga';
 import watchUpdatePlayerPosition from './sagas/index';
 
 import openSocket from 'socket.io-client';
-const  socket = openSocket('http://localhost:3004');
+const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
 
 socket.on('action', type => {
   console.log(type)
@@ -31,6 +31,9 @@ const initialState = {
   board: initialBoard(),
   player: null,
   room: null,
+  curUser: null,
+  curGame: null,
+  games: []
 };
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();

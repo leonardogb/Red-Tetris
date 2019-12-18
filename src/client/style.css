@@ -1,3 +1,6 @@
+body {
+  color: #34495f;
+}
 .board {
   background-color: gray;
   width: 320px;
@@ -42,3 +45,31 @@
 .color_7 {
   background-color: aliceblue;
 }
+
+.gameListContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.game {
+  padding: 0 10px;
+  margin: 10px;
+  background-color: #ecf0f1;
+  overflow: hidden;
+}
+
+.game a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.game a div {
+  max-height: 70px;
+}
+
+.game a p {
+  text-align: center;
+}
+
+

@@ -28,19 +28,101 @@ const initApp = (app, params, cb) => {
   })
 };
 
+let users = [];
+let games = [
+  {
+    status: 'PENDING',
+    room: 'room1',
+    players: [
+      {
+        user: {
+          name: 'user1'
+        }
+      },
+      {
+        user: {
+          name: 'user2'
+        }
+      }
+    ]
+  },
+  {
+    status: 'PENDING',
+    room: 'room2',
+    players: [
+      {
+        user: {
+          name: 'user3'
+        }
+      },
+      {
+        user: {
+          name: 'user4'
+        }
+      }
+    ]
+  }
+];
+
 const initEngine = io => {
   io.on('connection', (socket) => {
     logInfo("Socket connected: " + socket.id);
-    socket.join('room 123', () => {
-      const clients = io.in('room 123').clients((err, clients) => {
-        console.log(clients);
-      });
-    });
-    console.log(io.sockets.adapter.rooms);
+    // socket.join('room 123', () => {
+    //   io.in('room 123').clients((err, clients) => {
+    //     console.log(clients);
+    //   });
+    // });
 
     socket.on('getRoom', (room) => {
-      console.log(room.room);
+      // console.log(room.room);
+      // socket.join(room.room);
+      // console.log(io.sockets.adapter.rooms);
+      // io.in(room.room).clients((err, clients) => {
+      //   console.log(clients);
+      // });
+
+      // socket.join(room.room, () => {
+      //   let rooms = Object.keys(socket.rooms);
+      //   console.log(rooms);
+      // });
+      // let allRooms = Object.keys(io.sockets.adapter.rooms);
+
+
+      const joinable_room = io.sockets.adapter.rooms[room.room];
+      if (!joinable_room || joinable_room.length < 2) {
+        socket.join(room.room);
+        socket.room = room.room;
+        socket.emit('setRoom', {
+          room: {
+            status: 'PENDING',
+            room: room.room,
+            players: [
+              {
+                user: {
+                  name: socket.username
+                }
+              }
+            ]
+          },
+          username: socket.username
+        });
+      }
+      console.log(io.sockets.adapter.rooms);
     });
+
+    socket.on('sendUsername', (data) => {
+      if (!users.includes(data.username) && !socket.username) {
+        socket.username = data.username;
+        users.push(data.username);
+        socket.emit('setUsername', {status: true, username: socket.username});
+      }
+      console.log(users, socket.username);
+    });
+
+    socket.on('getGames', () => {
+      socket.emit('setGames', {status: true, games: games});
+    });
+
     socket.on('action', (action) => {
       if (action.type === 'server/ping') {
         socket.emit('action', { type: 'pong' })
@@ -48,7 +130,7 @@ const initEngine = io => {
     });
     socket.on('getPiece', (action) => {
       console.log(action);
-      io.emit('getPiece2', {
+      socket.emit('setPiece', {
         pos: { x: 0, y: 0},
         prevPos: false,
         tetromino: [
@@ -66,7 +148,7 @@ export function create(params) {
   const promise = new Promise( (resolve, reject) => {
     const app = require('http').createServer();
     initApp(app, params, () => {
-      const io = require('socket.io')(app);
+      const io = require('socket.io')(app, {'pingTimeout': 30000});
       const stop = (cb) => {
         io.close();
         app.close(() => {

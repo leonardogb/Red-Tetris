@@ -1,39 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addPiece } from '../actions/addPiece';
 import Square from '../components/square';
+import { useParams } from 'react-router-dom';
 
-const Board = ({board, addPiece}) => {
-  return (
-    <div className={'board'}>
-      {board.map((value, index) =>
-        <div key={index} className={'line line_' + index}>
-          {value.map((sValue, sIndex) => <Square color={sValue} key={sIndex}/>)}
-        </div>
+const Board = ({board}) => {
+    return board ? (
+      <div className={'board'}>
+        {board.map((value, index) =>
+          <div key={index} className={'line line_' + index}>
+            {value.map((sValue, sIndex) => <Square color={sValue[0]} key={sIndex}/>)}
+          </div>
         )
-      }
-      {/*<button onClick={() => addPiece(*/}
-        {/*[*/}
-          {/*[0, 1, 0, 0],*/}
-          {/*[0, 1, 0, 0],*/}
-          {/*[0, 1, 0, 0],*/}
-          {/*[0, 1, 0, 0]*/}
-        {/*]*/}
-      {/*)}>Click me</button>*/}
-    </div>
-  )
+        }
+      </div>
+    ) : null;
 };
 
 const mapStateToProps = (state) => {
   return {
-    board: state.board,
+    board: state.player && state.player.game ? state.player.game.grid : null
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addPiece: (texto) => dispatch(addPiece(texto))
-  }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Board)
+export default connect(mapStateToProps, null)(Board)

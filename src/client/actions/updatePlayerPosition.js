@@ -5,7 +5,7 @@ export const updatePlayerPosition = (posY, posX) => {
     type: UPDATE_PLAYER_POSITION,
     payload: {
       y: posY,
-      x: posX
+      x: posX,
     }
   }
 };

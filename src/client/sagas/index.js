@@ -1,12 +1,17 @@
 import { takeEvery, put, select } from 'redux-saga/effects';
 
-function* updateBoard() {
+function* updateBoard(action) {
   try {
     const getPlayer = (state) => state.player;
     const player = yield select(getPlayer);
-    console.log(player);
     if (player) {
-      yield put({type: 'UPDATE_BOARD'});
+      yield put({
+        type: 'UPDATE_BOARD',
+        payload: {
+          room: 'Test',
+          player: 'Leo'
+        }
+      });
     }
   } catch (e) {
     //

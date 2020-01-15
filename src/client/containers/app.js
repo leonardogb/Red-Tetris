@@ -7,16 +7,25 @@ import { updatePlayerPosition } from '../actions/updatePlayerPosition';
 import {setPlayer} from "../actions/setPlayer";
 import {updateBoard} from "../actions/updateBoard";
 import { addRoom } from "../actions/addRoom";
+import { joinRoom } from '../actions/joinRoom';
 import { setUsername } from "../actions/setUsername";
 import {setGames} from "../actions/setGames";
+import {checkCollision} from "../gameHelpers";
+import {pieceCollided} from "../actions/pieceCollided";
+import {setPiece} from "../actions/setPiece";
 
-const App = ({dispatch, message, socket, curGame, curUser, games}) => {
+const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
   useEffect(() => {
-    window.addEventListener('keydown', keyDown);
+    // window.addEventListener('keydown', keyDown);
 
     socket.on('setRoom', (data) => {
-      dispatch(addRoom(data.room));
-      location.hash = data.room.room + '/' + data.username;
+      if (data.status === 'NEW_ROOM') {
+        dispatch(addRoom(data.room));
+      } else if (data.status === 'JOIN_ROOM') {
+        dispatch(joinRoom(data.room));
+      }
+
+      location.hash = data.room.room + '/' + data.room.player;
     });
 
     socket.on('setUsername', (data) => {
@@ -36,20 +45,74 @@ const App = ({dispatch, message, socket, curGame, curUser, games}) => {
 
   const keyDown = (event) => {
     if (event.keyCode === 39) {
-      dispatch(updatePlayerPosition(null, 1));
+      if (!checkCollision(player.game.piece, player.game.grid, {x: 1, y: 0})) {
+        dispatch(updatePlayerPosition(null, 1));
+      }
     } else if (event.keyCode === 37) {
-      dispatch(updatePlayerPosition(null, -1));
+      if (!checkCollision(player.game.piece, player.game.grid, {x: -1, y: 0})) {
+        dispatch(updatePlayerPosition(null, -1));
+      }
     } else if (event.keyCode === 40) {
-      dispatch(updatePlayerPosition(1, null));
+      if (!checkCollision(player.game.piece, player.game.grid, {x: 0, y: 1})) {
+        dispatch(updatePlayerPosition(1, null));
+      } else {
+        console.log('collided');
+        dispatch(pieceCollided(true));
+        dispatch(updateBoard());
+        socket.emit('getPiece');
+        socket.on('setPiece', (data) => {
+          dispatch(setPlayer(data.piece));
+          dispatch(updateBoard());
+        });
+      }
+    } else if (event.keyCode === 38) {
+      pieceRotate(player.game.piece, player.game.grid, 1);
     }
   };
 
+  const rotate = (tetromino, dir) => {
+    console.log(tetromino);
+    const rotatedTetro = tetromino.map((_, index) => {
+
+      return tetromino.map((col) => {
+        return col[index];
+      });
+    });
+    if (dir > 0) {
+      return rotatedTetro.map((row) => {
+        return row.reverse()
+      });
+    }
+    return rotatedTetro.reverse();
+  };
+
+  const pieceRotate = ((piece, board, dir) => {
+    const clonedPiece = JSON.parse(JSON.stringify(piece));
+    clonedPiece.tetromino = rotate(clonedPiece.tetromino, dir);
+    clonedPiece.collided = false;
+
+    const pos = clonedPiece.pos.x;
+    let offset = 1;
+    while (checkCollision(clonedPiece, board, { x: 0, y: 0 })) {
+      clonedPiece.pos.x += offset;
+      offset = -(offset + (offset > 0 ? 1 : -1));
+      if (offset > clonedPiece.tetromino[0].length) {
+        rotate(clonedPiece.tetromino, -dir);
+        clonedPiece.pos.x = pos;
+        return;
+      }
+    }
+    dispatch(setPiece(clonedPiece));
+    dispatch(updateBoard());
+  });
+
   const start = () => {
 
-    socket.emit('getPiece', {action: 'test'});
-    socket.on('setPiece', (piece) => {
-      dispatch(setPlayer(piece));
+    socket.emit('getPiece');
+    socket.on('setPiece', (data) => {
+      dispatch(setPlayer(data.piece));
       dispatch(updateBoard());
+      // window.addEventListener('keydown', keyDown);
     });
   };
 
@@ -64,6 +127,7 @@ const App = ({dispatch, message, socket, curGame, curUser, games}) => {
     socket.emit('sendUsername', {username: inputUsername});
   };
   return (
+    <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
       <HashRouter hashType={'noslash'}>
         <div>
           <span>{message}</span>
@@ -76,7 +140,7 @@ const App = ({dispatch, message, socket, curGame, curUser, games}) => {
                   <div>
                     {curUser.name}
                   </div>
-                  <GamesList games={games}/>
+                  <GamesList games={games} curUser={curUser.name}/>
                   Créer ou joindre une partie :
                   <input type="text" name="room" onChange={() => setInputRoom(event.target.value)} onKeyPress={(e) => {
                     if (e.charCode === 13) {
@@ -104,11 +168,13 @@ const App = ({dispatch, message, socket, curGame, curUser, games}) => {
         <Route path="/:room/:player">
           <div>
             Player {curUser && curUser.name} in {curGame} room.
-            <Board></Board>
+            <Board />
             <button onClick={() => start()} >Start</button>
           </div>
         </Route>
       </HashRouter>
+    </div>
+
   )
 };
 
@@ -117,7 +183,8 @@ const mapStateToProps = (state) => {
     message: state.message,
     curGame: state.curGame,
     curUser: state.curUser,
-    games: state.games
+    games: state.games,
+    player: state.player
   }
 };
 

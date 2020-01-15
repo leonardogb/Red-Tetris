@@ -1,8 +1,10 @@
 export const SET_PLAYER = 'SET_PLAYER';
 
-export const setPlayer = (player) => {
+export const setPlayer = (piece) => {
   return {
     type: SET_PLAYER,
-    payload: player
+    payload: {
+      piece: piece,
+    }
   }
 };

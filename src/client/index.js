@@ -41,7 +41,8 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   reducer,
   initialState,
-  composeEnhancer(applyMiddleware(sagaMiddleware, createLogger())),
+  // composeEnhancer(applyMiddleware(sagaMiddleware, createLogger())),
+  composeEnhancer(applyMiddleware(sagaMiddleware)),
 );
 sagaMiddleware.run(watchUpdatePlayerPosition);
 

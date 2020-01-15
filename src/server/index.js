@@ -1,5 +1,7 @@
 import fs from 'fs';
 import debug from 'debug';
+import {initialBoard} from "../client/gameHelpers";
+import {randomTetromino} from "../client/tetrominos";
 
 
 const logerror = debug('tetris:error'),
@@ -29,40 +31,71 @@ const initApp = (app, params, cb) => {
 };
 
 let users = [];
-let games = [
-  {
+let games = {
+  room1: {
     status: 'PENDING',
     room: 'room1',
-    players: [
-      {
+    players: {
+      user1: {
         user: {
           name: 'user1'
-        }
+        },
+        grid: initialBoard()
       },
-      {
+      user2: {
         user: {
           name: 'user2'
-        }
+        },
+        grid: initialBoard()
       }
-    ]
+    }
   },
-  {
+  room2: {
     status: 'PENDING',
     room: 'room2',
-    players: [
-      {
+    players: {
+      user3: {
         user: {
           name: 'user3'
-        }
+        },
+        grid: initialBoard()
       },
-      {
+      user4: {
         user: {
           name: 'user4'
-        }
+        },
+        grid: [
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [2, true], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [2, true], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [2, true], [2, true], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
+          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]]
+        ],
+        pos: {
+          x: 0,
+          y: 0
+        },
+        // prevPos: false,
+        tetromino: false
       }
-    ]
+    }
   }
-];
+};
 
 const initEngine = io => {
   io.on('connection', (socket) => {
@@ -89,25 +122,20 @@ const initEngine = io => {
 
 
       const joinable_room = io.sockets.adapter.rooms[room.room];
-      if (!joinable_room || joinable_room.length < 2) {
+      // if (!joinable_room || joinable_room.length < 2) {
         socket.join(room.room);
         socket.room = room.room;
         socket.emit('setRoom', {
+          status: joinable_room ? 'JOIN_ROOM' : 'NEW_ROOM',
           room: {
             status: 'PENDING',
             room: room.room,
-            players: [
-              {
-                user: {
-                  name: socket.username
-                }
-              }
-            ]
-          },
-          username: socket.username
+            player: socket.username,
+            grid: initialBoard()
+          }
         });
-      }
-      console.log(io.sockets.adapter.rooms);
+      // }
+      // console.log(io.sockets.adapter.rooms);
     });
 
     socket.on('sendUsername', (data) => {
@@ -128,17 +156,14 @@ const initEngine = io => {
         socket.emit('action', { type: 'pong' })
       }
     });
-    socket.on('getPiece', (action) => {
-      console.log(action);
+    socket.on('getPiece', () => {
       socket.emit('setPiece', {
-        pos: { x: 0, y: 0},
-        prevPos: false,
-        tetromino: [
-          [0, 1, 0, 0],
-          [0, 1, 0, 0],
-          [0, 1, 0, 0],
-          [0, 1, 0, 0],
-        ]
+        piece: {
+          pos: { x: 0, y: 0},
+          // prevPos: false,
+          tetromino: randomTetromino(),
+          collided: false
+        },
       })
     });
   });

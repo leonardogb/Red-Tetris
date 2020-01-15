@@ -5,7 +5,8 @@
       "@babel/plugin-transform-runtime",
       {
         "regenerator": true
-      }
+      },
+      "lodash"
     ]
   ]
 }

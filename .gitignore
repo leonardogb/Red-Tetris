@@ -22,7 +22,7 @@ npm-debug.log*
 .nyc_output
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
+build/
 
 # Optional npm cache directory
 .npm

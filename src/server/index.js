@@ -31,71 +31,7 @@ const initApp = (app, params, cb) => {
 };
 
 let users = [];
-let games = {
-  room1: {
-    status: 'PENDING',
-    room: 'room1',
-    players: {
-      user1: {
-        user: {
-          name: 'user1'
-        },
-        grid: initialBoard()
-      },
-      user2: {
-        user: {
-          name: 'user2'
-        },
-        grid: initialBoard()
-      }
-    }
-  },
-  room2: {
-    status: 'PENDING',
-    room: 'room2',
-    players: {
-      user3: {
-        user: {
-          name: 'user3'
-        },
-        grid: initialBoard()
-      },
-      user4: {
-        user: {
-          name: 'user4'
-        },
-        grid: [
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [2, true], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [2, true], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [2, true], [2, true], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]],
-          [[0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false], [0, false]]
-        ],
-        pos: {
-          x: 0,
-          y: 0
-        },
-        // prevPos: false,
-        tetromino: false
-      }
-    }
-  }
-};
+let games = {};
 
 const initEngine = io => {
   io.on('connection', (socket) => {
@@ -120,21 +56,48 @@ const initEngine = io => {
       // });
       // let allRooms = Object.keys(io.sockets.adapter.rooms);
 
-
       const joinable_room = io.sockets.adapter.rooms[room.room];
-      // if (!joinable_room || joinable_room.length < 2) {
-        socket.join(room.room);
-        socket.room = room.room;
-        socket.emit('setRoom', {
-          status: joinable_room ? 'JOIN_ROOM' : 'NEW_ROOM',
-          room: {
-            status: 'PENDING',
-            room: room.room,
-            player: socket.username,
-            grid: initialBoard()
+      socket.join(room.room);
+      socket.room = room.room;
+      if (joinable_room) {
+        games[room.room] = {
+          ...games[room.room],
+          players: {
+            ...games[room.room].players,
+            [socket.username]: {
+              user: {
+                name: socket.username
+              },
+              grid: initialBoard()
+            }
           }
-        });
-      // }
+        };
+      } else {
+        games[socket.room] = {
+          status: 'PENDING',
+          room: room.room,
+          master: socket.username,
+          players: {
+            [socket.username]: {
+              user: {
+                name: socket.username
+              },
+              grid: initialBoard()
+            }
+          }
+        };
+      }
+      socket.emit('setRoom', {
+        status: joinable_room ? 'JOIN_ROOM' : 'NEW_ROOM',
+        room: {
+          status: 'PENDING',
+          room: socket.room,
+          player: socket.username,
+          master: games[socket.room].master,
+          grid: initialBoard()
+        }
+      });
+      console.log(games);
       // console.log(io.sockets.adapter.rooms);
     });
 
@@ -160,12 +123,20 @@ const initEngine = io => {
       socket.emit('setPiece', {
         piece: {
           pos: { x: 0, y: 0},
-          // prevPos: false,
           tetromino: randomTetromino(),
           collided: false
         },
       })
     });
+
+    socket.on('validateRoom', ((data) => {
+      const room = games[data.room];
+      if (room && room.master === data.master) {
+        socket.emit('validateRoom', true);
+      } else {
+        socket.emit('validateRoom', false);
+      }
+    }));
   });
 };
 

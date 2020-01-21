@@ -4,7 +4,6 @@ import { BrowserRouter, Route,  HashRouter, withRouter } from 'react-router-dom'
 import Board from '../components/Board';
 import GamesList from '../components/GamesList';
 import { updatePlayerPosition } from '../actions/updatePlayerPosition';
-import {setPlayer} from "../actions/setPlayer";
 import {updateBoard} from "../actions/updateBoard";
 import { addRoom } from "../actions/addRoom";
 import { joinRoom } from '../actions/joinRoom';
@@ -13,6 +12,8 @@ import {setGames} from "../actions/setGames";
 import {checkCollision} from "../gameHelpers";
 import {pieceCollided} from "../actions/pieceCollided";
 import {setPiece} from "../actions/setPiece";
+import {setGameOver} from "../actions/setGameOver";
+import RoomValidation from "../components/RoomValidation";
 
 const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
   useEffect(() => {
@@ -25,7 +26,7 @@ const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
         dispatch(joinRoom(data.room));
       }
 
-      location.hash = data.room.room + '/' + data.room.player;
+      location.hash = data.room.room + '/' + data.room.master;
     });
 
     socket.on('setUsername', (data) => {
@@ -44,36 +45,54 @@ const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
   }, []);
 
   const keyDown = (event) => {
-    if (event.keyCode === 39) {
-      if (!checkCollision(player.game.piece, player.game.grid, {x: 1, y: 0})) {
-        dispatch(updatePlayerPosition(null, 1));
-      }
-    } else if (event.keyCode === 37) {
-      if (!checkCollision(player.game.piece, player.game.grid, {x: -1, y: 0})) {
-        dispatch(updatePlayerPosition(null, -1));
-      }
-    } else if (event.keyCode === 40) {
-      if (!checkCollision(player.game.piece, player.game.grid, {x: 0, y: 1})) {
-        dispatch(updatePlayerPosition(1, null));
-      } else {
-        console.log('collided');
+    if (player && !player.game.gameOver) {
+      if (event.keyCode === 32) {
+        let tmpPiece = JSON.parse(JSON.stringify(player.game.piece));
+        // let tmpPiece = Object.assign({}, player.game.piece);
+        // let tmpPiece = {...player.game.piece};
+        while (!checkCollision(tmpPiece, player.game.grid, {x : 0, y: 1})) {
+          tmpPiece.pos.y++;
+        }
+        dispatch(updatePlayerPosition(tmpPiece.pos.y - player.game.piece.pos.y, null));
         dispatch(pieceCollided(true));
         dispatch(updateBoard());
-        socket.emit('getPiece');
-        socket.on('setPiece', (data) => {
-          dispatch(setPlayer(data.piece));
+        if (!player.game.gameOver) {
+          socket.emit('getPiece');
+        }
+        // Mejorar porque actualizo tablero cuando se actualiza la posición, pego la pieza y lo vuelvo a actualizar.
+      } else if (event.keyCode === 39) {
+        if (!checkCollision(player.game.piece, player.game.grid, {x: 1, y: 0})) {
+          dispatch(updatePlayerPosition(null, 1));
+        }
+      } else if (event.keyCode === 37) {
+        if (!checkCollision(player.game.piece, player.game.grid, {x: -1, y: 0})) {
+          dispatch(updatePlayerPosition(null, -1));
+        }
+      } else if (event.keyCode === 40) {
+        if (!checkCollision(player.game.piece, player.game.grid, {x: 0, y: 1})) {
+          dispatch(updatePlayerPosition(1, null));
+        } else {
+          console.log(player.game.piece.pos.y);
+          if (player.game.piece.pos.y < 1) {
+            console.log('GAME OVER!!!');
+            dispatch(setGameOver());
+            // setDropTime(null);
+          } else {
+            socket.emit('getPiece');
+          }
+          console.log('collided');
+          dispatch(pieceCollided(true));
           dispatch(updateBoard());
-        });
+        }
+      } else if (event.keyCode === 38) {
+        pieceRotate(player.game.piece, player.game.grid, 1);
       }
-    } else if (event.keyCode === 38) {
-      pieceRotate(player.game.piece, player.game.grid, 1);
     }
+
   };
 
   const rotate = (tetromino, dir) => {
-    console.log(tetromino);
     const rotatedTetro = tetromino.map((_, index) => {
-
       return tetromino.map((col) => {
         return col[index];
       });
@@ -110,9 +129,11 @@ const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
 
     socket.emit('getPiece');
     socket.on('setPiece', (data) => {
-      dispatch(setPlayer(data.piece));
-      dispatch(updateBoard());
-      // window.addEventListener('keydown', keyDown);
+      // if (!player.game.gameOver && !checkCollision(data.piece, player.game.grid, {x: 0, y: 0})) {
+        dispatch(setPiece(data.piece));
+        dispatch(updateBoard());
+        // window.addEventListener('keydown', keyDown);
+      // }
     });
   };
 
@@ -140,7 +161,7 @@ const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
                   <div>
                     {curUser.name}
                   </div>
-                  <GamesList games={games} curUser={curUser.name}/>
+                  <GamesList games={games} socket={socket} curUser={curUser.name}/>
                   Créer ou joindre une partie :
                   <input type="text" name="room" onChange={() => setInputRoom(event.target.value)} onKeyPress={(e) => {
                     if (e.charCode === 13) {
@@ -165,12 +186,12 @@ const App = ({dispatch, message, socket, curGame, curUser, games, player}) => {
             )}
           </div>
         </Route>
-        <Route path="/:room/:player">
-          <div>
-            Player {curUser && curUser.name} in {curGame} room.
-            <Board />
-            <button onClick={() => start()} >Start</button>
-          </div>
+        <Route path="/:room/:player" >
+            <div>
+              Player {curUser && curUser.name} in {player && player.game.room} room.
+              <Board />
+              {player && player.game.status === 'PENDING' ? (<button onClick={() => start()} >Start</button>) : ''}
+            </div>
         </Route>
       </HashRouter>
     </div>

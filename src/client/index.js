@@ -11,7 +11,6 @@ import App from './containers/app';
 import { alert } from './actions/alert';
 import './style.css';
 import {initialBoard} from './gameHelpers';
-import { setPlayer } from './actions/setPlayer';
 import { updatePlayerPosition } from './actions/updatePlayerPosition';
 import { updateBoard } from './actions/updateBoard';
 import createSagaMiddleware from 'redux-saga';

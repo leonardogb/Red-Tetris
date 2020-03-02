@@ -1,28 +1,18 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-import _ from 'lodash';
 
-const GamesList = ({socket, games, curUser}) => {
-  const joinGame = ((room, master) => {
-    console.log('Room: ' + room, 'Master: ' + master);
+const GamesList = ({socket, playersGames}) => {
+  const joinGame = ((room) => {
     socket.emit('getRoom', {room: room});
   });
   return (
     <div className={'gameListContainer'}>
-      {Object.keys(games).map((game, index) => {
-        const userInGame = _.findKey(games[game].players, (elem) => {
-          return elem.user.name === curUser;
-        });
-        const room = games[game].room;
-        const master = games[game].master;
+      {Object.keys(playersGames).map((game, index) => {
         return (
-          <div key={index} className={'game'} onClick={() => joinGame(room, master)}>
-            <h1 key={index}>{games[game].room}</h1>
+          <div key={index} className={'game'} onClick={() => joinGame(game)}>
+            <h1 key={index}>{game}</h1>
             <div>
-              {Object.keys(games[game].players).map((player, indexPlayer) => {
-                return (
-                  <p key={indexPlayer}>{player}</p>
-                );
+              {playersGames[game].map((player, index) => {
+                return (<p key={index}>{player}</p> );
               })}
             </div>
           </div>

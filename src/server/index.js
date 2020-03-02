@@ -2,6 +2,9 @@ import fs from 'fs';
 import debug from 'debug';
 import {initialBoard} from "../client/gameHelpers";
 import {randomTetromino} from "../client/tetrominos";
+import {Player} from "./Player";
+import {Game} from "./Game";
+import {Piece} from "./Piece";
 
 
 const logerror = debug('tetris:error'),
@@ -32,6 +35,17 @@ const initApp = (app, params, cb) => {
 
 let users = [];
 let games = {};
+let games1 = [];
+let players = [];
+
+const playersGames = (games) => {
+  return games.reduce((gamesList, game) => {
+    return {[game.room]: game.players.reduce((playersList, player) => {
+        playersList.push(player.name);
+        return playersList;
+      }, [])};
+  }, {});
+};
 
 const initEngine = io => {
   io.on('connection', (socket) => {
@@ -41,6 +55,39 @@ const initEngine = io => {
     //     console.log(clients);
     //   });
     // });
+
+
+    socket.on('getRoom', (room) => {
+      const player = players.find(elem =>  elem.name === socket.username);
+      const game = games1.find(elem => elem.room === room.room);
+      if (player && !game) {
+        games1.push(new Game(room.room, player));
+      }
+      socket.room = room.room;
+      socket.emit('setRoom', {player: player, room: room.room, games: games1});
+      socket.emit('setPlayersGames', playersGames(games1));
+    });
+
+    socket.on('setUsername', (data) => {
+      socket.username = data.username;
+      players.push(new Player(data.username));
+      socket.emit('setUsername', {username: socket.username});
+    });
+
+    socket.on('getGames', () => {
+      socket.emit('setGames', {games: games1});
+    });
+
+    socket.on('getPiece', () => {
+      socket.emit('setPieces', Piece.getTetrominos(5));
+      // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
+    });
+
+    socket.on('start', () => {
+      socket.emit('startGame', Piece.getTetrominos(5));
+    });
+
+/*
 
     socket.on('getRoom', (room) => {
       // console.log(room.room);
@@ -97,17 +144,17 @@ const initEngine = io => {
           grid: initialBoard()
         }
       });
-      console.log(games);
+      socket.to(socket.room).emit('updateGames', games[socket.room]);
       // console.log(io.sockets.adapter.rooms);
     });
 
-    socket.on('sendUsername', (data) => {
+    socket.on('setUsername', (data) => {
       if (!users.includes(data.username) && !socket.username) {
         socket.username = data.username;
         users.push(data.username);
         socket.emit('setUsername', {status: true, username: socket.username});
       }
-      console.log(users, socket.username);
+      players.push(new Player(data.username));
     });
 
     socket.on('getGames', () => {
@@ -128,15 +175,7 @@ const initEngine = io => {
         },
       })
     });
-
-    socket.on('validateRoom', ((data) => {
-      const room = games[data.room];
-      if (room && room.master === data.master) {
-        socket.emit('validateRoom', true);
-      } else {
-        socket.emit('validateRoom', false);
-      }
-    }));
+    */
   });
 };
 

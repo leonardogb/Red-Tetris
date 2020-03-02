@@ -59,16 +59,11 @@ body {
   overflow: hidden;
 }
 
-.game a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.game a div {
+.game div {
   max-height: 70px;
 }
 
-.game a p {
+.game p {
   text-align: center;
 }
 

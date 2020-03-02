@@ -14,7 +14,7 @@ import {initialBoard} from './gameHelpers';
 import { updatePlayerPosition } from './actions/updatePlayerPosition';
 import { updateBoard } from './actions/updateBoard';
 import createSagaMiddleware from 'redux-saga';
-import watchUpdatePlayerPosition from './sagas/index';
+// import watchUpdatePlayerPosition from './sagas/index';
 
 import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
@@ -26,13 +26,25 @@ socket.on('action', type => {
 socket.emit('action', {type: 'server/ping'});
 
 const initialState = {
+  socket: socket,
   message: '',
-  board: initialBoard(),
-  player: null,
-  room: null,
+  player: {
+    grid: initialBoard(),
+    pieces: [],
+    piece: {
+      tetromino: [],
+      pos: {
+        x: 0,
+        y: 0
+      },
+      collided: false
+    }
+  },
   curUser: null,
   curGame: null,
-  games: []
+  curRoom: null,
+  games: [],
+  playersGames: {}
 };
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
@@ -43,7 +55,7 @@ const store = createStore(
   // composeEnhancer(applyMiddleware(sagaMiddleware, createLogger())),
   composeEnhancer(applyMiddleware(sagaMiddleware)),
 );
-sagaMiddleware.run(watchUpdatePlayerPosition);
+// sagaMiddleware.run(watchUpdatePlayerPosition);
 
 // const keyDown = (keyCode) => {
 //
@@ -53,7 +65,7 @@ sagaMiddleware.run(watchUpdatePlayerPosition);
 
 ReactDom.render((
   <Provider store={store}>
-    <App socket={socket} />
+    <App />
   </Provider>
 ), document.getElementById('tetris'));
 

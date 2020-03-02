@@ -18,7 +18,7 @@ const Board = ({board}) => {
 
 const mapStateToProps = (state) => {
   return {
-    board: state.player && state.player.game ? state.player.game.grid : null
+    board: state.player ? state.player.grid : null
   }
 };
 

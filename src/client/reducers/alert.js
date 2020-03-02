@@ -7,10 +7,19 @@ import {SET_GAMES} from "../actions/setGames";
 import {JOIN_ROOM} from "../actions/joinRoom";
 import {ADD_GAME} from "../actions/addGame";
 import {PIECE_COLLIDED} from '../actions/pieceCollided';
-import {SET_PIECE} from "../actions/setPiece";
+import {SET_PIECES} from "../actions/setPieces";
 import {SET_GAME_OVER} from "../actions/setGameOver";
+import {UPDATE_GAME} from "../actions/updateGame";
+import {SET_ROOM} from "../actions/setRoom";
+import {SET_PLAYERS_GAMES} from "../actions/setPlayersGames";
+import {SET_PIECE} from "../actions/setPiece";
+import {UPDATE_TETROMINO} from "../actions/updateTetromino";
+
+
 
 const reducer = (state = {}, action) => {
+  let curTetromino = null;
+  let piecesList = null;
 
   switch(action.type) {
     case ALERT_POP:
@@ -22,16 +31,13 @@ const reducer = (state = {}, action) => {
           ...state,
           player: {
             ...state.player,
-            game: {
-              ...state.player.game,
-              piece: {
-                ...state.player.game.piece,
-                // prevPos: state.player.game.piece.pos,
-                pos: {
-                  x: state.player.game.piece.pos.x + posX,
-                  y: state.player.game.piece.pos.y + posY
-                }
-              }
+            piece: {
+              ...state.player.piece,
+              pos: {
+                x: state.player.piece.pos.x + posX,
+                y: state.player.piece.pos.y + posY
+              },
+              collided: action.payload.collided
             }
           }
         };
@@ -41,48 +47,31 @@ const reducer = (state = {}, action) => {
         ...state,
         player: {
           ...state.player,
-          game: {
-            ...state.player.game,
-            piece: {
-              ...state.player.game.piece,
-              collided: action.payload.collided
-            }
+          piece: {
+            ...state.player.piece,
+            collided: action.payload.collided
           }
         }
       };
     case UPDATE_BOARD:
       const player = state.player;
-      let maxY = player.game.grid.length;
-      let maxX = player.game.grid[0].length;
-      // if (player.game.piece.prevPos) {
-      //   player.game.piece.tetromino.forEach((row, y) => {
-      //     row.forEach((value, x) => {
-      //       if (value !== 0) {
-      //         if (y + player.game.piece.prevPos.y < maxY && x + player.game.piece.prevPos.x < maxX) {
-      //           tmpBoard[y + player.game.piece.prevPos.y][x + player.game.piece.prevPos.x] = 0;
-      //         }
-      //       }
-      //     });
-      //   });
-      // }
 
-      let newBoard = player.game.grid.map(row =>
+      let newBoard = player.grid.map(row =>
         row.map(cell => (cell[1] ? cell : [0, false]))
       );
 
-      // Then draw the tetromino
-      player.game.piece.tetromino.forEach((row, y) => {
+      player.piece.tetromino.forEach((row, y) => {
         row.forEach((value, x) => {
           if (value !== 0) {
-            newBoard[y + player.game.piece.pos.y][x + player.game.piece.pos.x] = [
+            newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
               value,
-              player.game.piece.collided,
+              player.piece.collided,
             ];
           }
         });
       });
 
-      if (player.game.piece.collided) {
+      if (player.piece.collided) {
         newBoard = newBoard.reduce((ack, row) => {
           if (row.findIndex(cell => cell[0] === 0) === -1) {
             // Gestión de puntos
@@ -98,10 +87,7 @@ const reducer = (state = {}, action) => {
         ...state,
         player: {
           ...state.player,
-          game: {
-            ...state.player.game,
-            grid: newBoard
-          }
+          grid: newBoard
         }
       };
     case ADD_ROOM:
@@ -139,24 +125,41 @@ const reducer = (state = {}, action) => {
             status: action.payload.room.status,
             grid: action.payload.room.grid,
             gameOver: false
-          },
-          games: {
-            ...state.games,
-            [action.payload.room.room]: {
-              ...state.games[action.payload.room.room],
-              players: {
-                ...state.games[action.payload.room.room].players,
-                [action.payload.room.player]: {
-                  user: action.payload.room.player,
-                  grid: action.payload.room.grid
-                }
+          }
+        },
+        games: {
+          ...state.games,
+          [action.payload.room.room]: {
+            ...state.games[action.payload.room.room],
+            players: {
+              ...state.games[action.payload.room.room].players,
+              [action.payload.room.player]: {
+                user: action.payload.room.player,
+                grid: action.payload.room.grid
               }
             }
           }
         }
       };
     case SET_USERNAME:
-      return {...state, curUser: {name: action.payload.username}};
+      return {...state, curUser: action.payload.username};
+    case SET_ROOM:
+      return {
+        ...state,
+        player: action.payload.player,
+        curRoom: action.payload.room,
+        games: action.payload.games
+      };
+    case SET_PIECE:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          piece: action.payload.piece
+        }
+      };
+    case SET_PLAYERS_GAMES:
+      return {...state, playersGames: action.payload.games};
     case SET_GAMES:
       return {...state, games: action.payload};
     case ADD_GAME:
@@ -201,15 +204,39 @@ const reducer = (state = {}, action) => {
       //   }
       // }
       return {...state};
-    case SET_PIECE:
+    case UPDATE_GAME:
+      return {
+        ...state,
+        games: {
+          ...state.games,
+          [action.payload.game.room]: action.payload.game
+        }
+      };
+    case SET_PIECES:
+      piecesList = [...state.player.pieces].concat(action.payload.pieces);
       return {
         ...state,
         player: {
           ...state.player,
-          game: {
-            ...state.player.game,
-            piece: action.payload.piece,
-            status: 'STARTED'
+          pieces: piecesList
+        }
+      };
+    case UPDATE_TETROMINO:
+      piecesList = [...state.player.pieces];
+      curTetromino = piecesList.shift();
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          pieces: piecesList,
+          piece: {
+            ...state.player.piece,
+            tetromino: curTetromino,
+            pos: {
+              x: state.player.grid[0].length / 2 - 2,
+              y: 0
+            },
+            collided: false
           }
         }
       };
@@ -218,12 +245,9 @@ const reducer = (state = {}, action) => {
         ...state,
         player: {
           ...state.player,
-          game: {
-            ...state.player.game,
-            gameOver: true
-          }
+          gameOver: true
         }
-      }
+      };
     default:
       return state
   }

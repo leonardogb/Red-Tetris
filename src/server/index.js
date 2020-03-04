@@ -87,6 +87,10 @@ const initEngine = io => {
       socket.emit('startGame', Piece.getTetrominos(5));
     });
 
+
+    socket.on('ping', () => {
+      console.log('pong')
+    });
 /*
 
     socket.on('getRoom', (room) => {

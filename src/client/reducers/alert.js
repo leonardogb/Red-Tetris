@@ -14,6 +14,8 @@ import {SET_ROOM} from "../actions/setRoom";
 import {SET_PLAYERS_GAMES} from "../actions/setPlayersGames";
 import {SET_PIECE} from "../actions/setPiece";
 import {UPDATE_TETROMINO} from "../actions/updateTetromino";
+import {START_GAME} from "../actions/startGame";
+import {checkCollision} from "../gameHelpers";
 
 
 
@@ -27,6 +29,7 @@ const reducer = (state = {}, action) => {
     case UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;
+      if (!checkCollision(state.player.piece, state.player.grid, {x: posX, y: posY})) {
         return {
           ...state,
           player: {
@@ -41,6 +44,10 @@ const reducer = (state = {}, action) => {
             }
           }
         };
+      } else {
+        return state;
+      }
+
 
     case PIECE_COLLIDED:
       return {
@@ -246,6 +253,14 @@ const reducer = (state = {}, action) => {
         player: {
           ...state.player,
           gameOver: true
+        }
+      };
+    case START_GAME:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          status: 'PLAYING'
         }
       };
     default:

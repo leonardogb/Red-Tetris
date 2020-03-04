@@ -20,6 +20,7 @@ import {setPiece} from "../actions/setPiece";
 import {updateTetromino} from "../actions/updateTetromino";
 import {usePlayer} from "../Hooks/usePlayer";
 import {useBoard} from '../Hooks/useBoard';
+import {END} from "redux-saga";
 
 const App = () => {
   const [socket, player, curUser, curGame, games, playersGames] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.games, store.playersGames]);
@@ -100,7 +101,6 @@ const App = () => {
             updatePlayerPos(null, null, true);
           }
           console.log('collided');
-
         }
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
@@ -109,7 +109,6 @@ const App = () => {
         socket.emit('getPiece');
       }
     }
-
   };
 
   const start = () => {
@@ -117,6 +116,13 @@ const App = () => {
     socket.on('startGame', (data) => {
       dispatch(setPieces(data));
       dispatch(updateTetromino());
+
+
+      const iv = setInterval(() => {
+          updatePlayerPos(1, null, false);
+      }, 1000);
+
+
     });
 
   };

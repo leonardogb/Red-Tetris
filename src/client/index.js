@@ -14,7 +14,8 @@ import {initialBoard} from './gameHelpers';
 import { updatePlayerPosition } from './actions/updatePlayerPosition';
 import { updateBoard } from './actions/updateBoard';
 import createSagaMiddleware from 'redux-saga';
-// import watchUpdatePlayerPosition from './sagas/index';
+import watchUpdatePlayerPosition from './sagas/index';
+import countdown from './sagas/countdown';
 
 import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
@@ -38,7 +39,8 @@ const initialState = {
         y: 0
       },
       collided: false
-    }
+    },
+    status: null
   },
   curUser: null,
   curGame: null,
@@ -55,7 +57,7 @@ const store = createStore(
   // composeEnhancer(applyMiddleware(sagaMiddleware, createLogger())),
   composeEnhancer(applyMiddleware(sagaMiddleware)),
 );
-// sagaMiddleware.run(watchUpdatePlayerPosition);
+sagaMiddleware.run(countdown, socket, store.dispatch);
 
 // const keyDown = (keyCode) => {
 //

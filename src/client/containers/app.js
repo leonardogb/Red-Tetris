@@ -23,9 +23,11 @@ import {useBoard} from '../Hooks/useBoard';
 import {useInterval} from "../Hooks/useInterval";
 import {dropPlayer} from "../actions/dropPlayer";
 import {setDelay} from "../actions/setDelay";
+import { Ring } from 'react-awesome-spinners';
+import {setCurRoom} from "../actions/setCurRoom";
 
 const App = () => {
-  const [socket, player, curUser, curGame, games, playersGames, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.games, store.playersGames, store.player.delay]);
+  const [socket, player, curUser, curGame, curRoom, games, playersGames, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.curRoom, store.games, store.playersGames, store.player.delay]);
   const dispatch = useDispatch();
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();

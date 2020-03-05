@@ -258,13 +258,11 @@ const reducer = (state = {}, action) => {
           gameOver: true
         }
       };
-<<<<<<< HEAD
     case SET_CUR_ROOM:
       return {
         ...state,
         curRoom: true
-      }
-=======
+      };
     case START_GAME:
       return {
         ...state,
@@ -300,7 +298,6 @@ const reducer = (state = {}, action) => {
           delay: action.payload.delay
         }
       };
->>>>>>> 2712e1d5a030b61f84c3bf28cc77e894b89a9bf0
     default:
       return state
   }

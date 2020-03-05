@@ -18,6 +18,10 @@ export  const usePlayer = () => {
     }
   };
 
+  const drop = () => {
+    //
+  };
+
   const rotate = (tetromino, dir) => {
     const rotatedTetro = tetromino.map((_, index) => {
       return tetromino.map((col) => {

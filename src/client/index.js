@@ -40,7 +40,8 @@ const initialState = {
       },
       collided: false
     },
-    status: null
+    status: null,
+    delay: null
   },
   curUser: null,
   curGame: null,

@@ -20,10 +20,12 @@ import {setPiece} from "../actions/setPiece";
 import {updateTetromino} from "../actions/updateTetromino";
 import {usePlayer} from "../Hooks/usePlayer";
 import {useBoard} from '../Hooks/useBoard';
-import {END} from "redux-saga";
+import {useInterval} from "../Hooks/useInterval";
+import {dropPlayer} from "../actions/dropPlayer";
+import {setDelay} from "../actions/setDelay";
 
 const App = () => {
-  const [socket, player, curUser, curGame, games, playersGames] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.games, store.playersGames]);
+  const [socket, player, curUser, curGame, games, playersGames, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.games, store.playersGames, store.player.delay]);
   const dispatch = useDispatch();
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
@@ -111,16 +113,20 @@ const App = () => {
     }
   };
 
+  useInterval(() => {
+    dispatch(dropPlayer());
+  }, delay);
+
   const start = () => {
     socket.emit('start');
     socket.on('startGame', (data) => {
       dispatch(setPieces(data));
       dispatch(updateTetromino());
+      dispatch(setDelay(1000));
 
-
-      const iv = setInterval(() => {
-          updatePlayerPos(1, null, false);
-      }, 1000);
+      // const iv = setInterval(() => {
+      //     updatePlayerPos(1, null, false);
+      // }, 1000);
 
 
     });

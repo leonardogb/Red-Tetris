@@ -16,6 +16,8 @@ import {SET_PIECE} from "../actions/setPiece";
 import {UPDATE_TETROMINO} from "../actions/updateTetromino";
 import {START_GAME} from "../actions/startGame";
 import {checkCollision} from "../gameHelpers";
+import {DROP_PLAYER} from "../actions/dropPlayer";
+import {SET_DELAY} from "../actions/setDelay";
 
 
 
@@ -261,6 +263,33 @@ const reducer = (state = {}, action) => {
         player: {
           ...state.player,
           status: 'PLAYING'
+        }
+      };
+    case DROP_PLAYER:
+      if (!checkCollision(state.player.piece, state.player.grid, {x: 0, y: 1})) {
+        return {
+          ...state,
+          player: {
+            ...state.player,
+            piece: {
+              ...state.player.piece,
+              pos: {
+                x: state.player.piece.pos.x + 0,
+                y: state.player.piece.pos.y + 1
+              },
+              collided: false
+            }
+          }
+        };
+      } else {
+        return state;
+      }
+    case SET_DELAY:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          delay: action.payload.delay
         }
       };
     default:

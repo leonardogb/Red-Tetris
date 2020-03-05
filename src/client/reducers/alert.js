@@ -14,6 +14,7 @@ import {SET_ROOM} from "../actions/setRoom";
 import {SET_PLAYERS_GAMES} from "../actions/setPlayersGames";
 import {SET_PIECE} from "../actions/setPiece";
 import {UPDATE_TETROMINO} from "../actions/updateTetromino";
+import { SET_CUR_ROOM } from '../actions/setCurRoom';
 
 
 
@@ -248,6 +249,11 @@ const reducer = (state = {}, action) => {
           gameOver: true
         }
       };
+    case SET_CUR_ROOM:
+      return {
+        ...state,
+        curRoom: true
+      }
     default:
       return state
   }

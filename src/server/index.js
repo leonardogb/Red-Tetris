@@ -56,7 +56,10 @@ const initEngine = io => {
     //   });
     // });
 
-
+    socket.on('setTest', (data) => {
+      socket.emit('setServer', {test: 'World !'});
+      console.log(data);
+    });
     socket.on('getRoom', (room) => {
       const player = players.find(elem =>  elem.name === socket.username);
       const game = games1.find(elem => elem.room === room.room);
@@ -86,6 +89,18 @@ const initEngine = io => {
     socket.on('start', () => {
       socket.emit('startGame', Piece.getTetrominos(5));
     });
+
+    socket.on('checkUrl', (data, ackCallback) => {
+      console.log("server received message", data);
+      var result = 'test value';
+      console.log(games1);
+      console.log("players: " + players);
+      // console.log("socket username: " + data.player);
+      console.log("socket username: " + socket.username);
+      console.log("server sending back result", result);
+      
+      ackCallback(result);
+  });
 
 /*
 

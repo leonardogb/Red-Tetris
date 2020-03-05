@@ -4,8 +4,9 @@ import Square from '../components/square';
 import { useParams } from 'react-router-dom';
 
 const Board = ({board}) => {
+
     return board ? (
-      <div className={'board'}>
+      <div className='board'>
         {board.map((value, index) =>
           <div key={index} className={'line line_' + index}>
             {value.map((sValue, sIndex) => <Square color={sValue[0]} key={sIndex}/>)}

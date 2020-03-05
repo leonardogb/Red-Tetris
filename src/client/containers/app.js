@@ -8,23 +8,24 @@ import { updatePlayerPosition } from '../actions/updatePlayerPosition';
 import { addRoom } from "../actions/addRoom";
 import { joinRoom } from '../actions/joinRoom';
 import { setUsername } from "../actions/setUsername";
-import { setGames } from "../actions/setGames";
-import { checkCollision } from "../gameHelpers";
-import { pieceCollided } from "../actions/pieceCollided";
-import { setPieces } from "../actions/setPieces";
-import { setGameOver } from "../actions/setGameOver";
-import { updateGame } from "../actions/updateGame";
-import { setRoom } from "../actions/setRoom";
-import { setPlayersGames } from "../actions/setPlayersGames";
-import { setPiece } from "../actions/setPiece";
-import { updateTetromino } from "../actions/updateTetromino";
-import { usePlayer } from "../Hooks/usePlayer";
-import { useBoard } from '../Hooks/useBoard';
-import { Ring } from 'react-awesome-spinners'
-import { setCurRoom } from '../actions/setCurRoom';
+import {setGames} from "../actions/setGames";
+import {checkCollision} from "../gameHelpers";
+import {pieceCollided} from "../actions/pieceCollided";
+import {setPieces} from "../actions/setPieces";
+import {setGameOver} from "../actions/setGameOver";
+import {updateGame} from "../actions/updateGame";
+import {setRoom} from "../actions/setRoom";
+import {setPlayersGames} from "../actions/setPlayersGames";
+import {setPiece} from "../actions/setPiece";
+import {updateTetromino} from "../actions/updateTetromino";
+import {usePlayer} from "../Hooks/usePlayer";
+import {useBoard} from '../Hooks/useBoard';
+import {useInterval} from "../Hooks/useInterval";
+import {dropPlayer} from "../actions/dropPlayer";
+import {setDelay} from "../actions/setDelay";
 
 const App = () => {
-  const [socket, player, curUser, curGame, games, playersGames, curRoom] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.games, store.playersGames, store.curRoom]);
+  const [socket, player, curUser, curGame, games, playersGames, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curGame, store.games, store.playersGames, store.player.delay]);
   const dispatch = useDispatch();
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
@@ -102,7 +103,6 @@ const App = () => {
             updatePlayerPos(null, null, true);
           }
           console.log('collided');
-
         }
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
@@ -111,14 +111,24 @@ const App = () => {
         socket.emit('getPiece');
       }
     }
-
   };
+
+  useInterval(() => {
+    dispatch(dropPlayer());
+  }, delay);
 
   const start = () => {
     socket.emit('start');
     socket.on('startGame', (data) => {
       dispatch(setPieces(data));
       dispatch(updateTetromino());
+      dispatch(setDelay(1000));
+
+      // const iv = setInterval(() => {
+      //     updatePlayerPos(1, null, false);
+      // }, 1000);
+
+
     });
 
   };

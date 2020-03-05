@@ -102,6 +102,10 @@ const initEngine = io => {
       ackCallback(result);
   });
 
+
+    socket.on('ping', () => {
+      console.log('pong')
+    });
 /*
 
     socket.on('getRoom', (room) => {

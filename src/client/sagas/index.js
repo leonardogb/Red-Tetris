@@ -1,4 +1,6 @@
 import { takeEvery, put, select } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
+import {setUsername} from "../actions/setUsername";
 
 function* updateBoard(action) {
   try {
@@ -20,8 +22,18 @@ function* updateBoard(action) {
 
 }
 
-function* watchUpdatePlayerPosition() {
-  console.log('test')
+function* watchUpdatePlayerPosition(socket, dispatch) {
+  console.log('watchUpdatePlayerPosition');
+
+  return eventChannel(emit => {
+    socket.on('setUsername', () => { console.log('prueba')})
+    
+    const unsubscribe = () => {
+      socket.off('ping')
+    }
+
+    return unsubscribe
+  });
   yield takeEvery('UPDATE_PLAYER_POSITION', updateBoard);
 }
 

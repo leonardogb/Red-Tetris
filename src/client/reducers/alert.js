@@ -15,6 +15,10 @@ import {SET_PLAYERS_GAMES} from "../actions/setPlayersGames";
 import {SET_PIECE} from "../actions/setPiece";
 import {UPDATE_TETROMINO} from "../actions/updateTetromino";
 import { SET_CUR_ROOM } from '../actions/setCurRoom';
+import {START_GAME} from "../actions/startGame";
+import {checkCollision} from "../gameHelpers";
+import {DROP_PLAYER} from "../actions/dropPlayer";
+import {SET_DELAY} from "../actions/setDelay";
 
 
 
@@ -28,6 +32,7 @@ const reducer = (state = {}, action) => {
     case UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;
+      if (!checkCollision(state.player.piece, state.player.grid, {x: posX, y: posY})) {
         return {
           ...state,
           player: {
@@ -42,6 +47,10 @@ const reducer = (state = {}, action) => {
             }
           }
         };
+      } else {
+        return state;
+      }
+
 
     case PIECE_COLLIDED:
       return {
@@ -249,11 +258,49 @@ const reducer = (state = {}, action) => {
           gameOver: true
         }
       };
+<<<<<<< HEAD
     case SET_CUR_ROOM:
       return {
         ...state,
         curRoom: true
       }
+=======
+    case START_GAME:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          status: 'PLAYING'
+        }
+      };
+    case DROP_PLAYER:
+      if (!checkCollision(state.player.piece, state.player.grid, {x: 0, y: 1})) {
+        return {
+          ...state,
+          player: {
+            ...state.player,
+            piece: {
+              ...state.player.piece,
+              pos: {
+                x: state.player.piece.pos.x + 0,
+                y: state.player.piece.pos.y + 1
+              },
+              collided: false
+            }
+          }
+        };
+      } else {
+        return state;
+      }
+    case SET_DELAY:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          delay: action.payload.delay
+        }
+      };
+>>>>>>> 2712e1d5a030b61f84c3bf28cc77e894b89a9bf0
     default:
       return state
   }

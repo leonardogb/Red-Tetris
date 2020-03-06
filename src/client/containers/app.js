@@ -14,6 +14,7 @@ import Login from "../components/Login";
 import Board from "../components/Board";
 import {setCurRoom} from "../actions/setCurRoom";
 import { Ring } from 'react-awesome-spinners';
+import {HashRouter, Route, BrowserRouter as Router, Switch} from "react-router-dom";
 
 const App = () => {
   const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curRoom, store.games, store.player.delay]);
@@ -90,40 +91,32 @@ const App = () => {
     });
   };
 
-  const found = window.location.href.split('/')[3].match(/^#([a-z1-9]+)\[([a-z1-9]+)\]$/);
-
-  console.log("Found: " + found);
-  if (!player || !player.grid) {
-    console.log("HOME");
-    return (
-      <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
-        <Login />
-      </div>
-    )
-  }
-  else {
-    if (curRoom === null) {
-      checkUrl({ room: found[1], player: found[2] }).then(message => {
-        console.log("response from checkUrl(): ", message);
-        dispatch(setCurRoom());
-      });
-    }
-
-    return (
-      <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
-        <div>
-          {curRoom ? (
+  return (
+    <HashRouter hashType="noslash">
+      <Switch>
+        <Route exact path="/" >
+          <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+            <Login />
+          </div>
+        </Route>
+        <Route exact path="/:room[:player]" >
+          <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+            <p>Test</p>
             <div>
-              Player {curUser} in {curGame} room.
-              <Board />
-              <button onClick={() => start()} >Start</button>
+              {curRoom ? (
+                <div>
+                  Player {curUser} in {curGame} room.
+                  <Board />
+                  <button onClick={() => start()} >Start</button>
+                </div>
+              ) : <Ring />
+              }
             </div>
-          ) : <Ring />
-          }
-        </div>
-      </div>
-    );
-  }
+          </div>
+        </Route>
+      </Switch>
+</HashRouter>
+  );
 };
 
 export default App;

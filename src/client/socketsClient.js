@@ -52,6 +52,7 @@ const socketsClient = (socket, dispatch) => {
   socket.on('setGame', (data) => {
     location.hash = data.game.room + '[' + data.player.name + ']';
     dispatch(setPlayer(data.player, data.game.room));
+    socket.emit('getGames');
     console.log(data);
   });
 };

@@ -28,7 +28,8 @@ socket.emit('action', {type: 'server/ping'});
 const initialState = {
   socket: socket,
   player: {
-    grid: initialBoard(),
+    // grid: initialBoard(),
+    grid: null,
     pieces: [],
     piece: {
       tetromino: [],

@@ -4,6 +4,7 @@ import {setGames} from "./actions/setGames";
 import {updateGame} from "./actions/updateGame";
 import {setPlayersGames} from "./actions/setPlayersGames";
 import {setPieces} from "./actions/setPieces";
+import {setPlayer} from "./actions/setPlayer";
 
 
 const socketsClient = (socket, dispatch) => {
@@ -19,15 +20,15 @@ const socketsClient = (socket, dispatch) => {
   //   location.hash = data.room.room + '/' + data.room.master;
   // });
 
-  socket.on('setRoom', (data) => {
-    dispatch(setRoom(data.player, data.room, data.games));
-    location.hash = data.room + '[' + data.player.name + ']';
-  });
-
-  socket.on('setUsername', (data) => {
-    dispatch(setUsername(data.username));
-    socket.emit('getGames');
-  });
+  // socket.on('setRoom', (data) => {
+  //   dispatch(setRoom(data.player, data.room, data.games));
+  //   location.hash = data.room + '[' + data.player.name + ']';
+  // });
+  //
+  // socket.on('setUsername', (data) => {
+  //   dispatch(setUsername(data.username));
+  //   socket.emit('getGames');
+  // });
 
   socket.on('setGames', (data) => {
     if (data.status) {
@@ -49,6 +50,8 @@ const socketsClient = (socket, dispatch) => {
   });
 
   socket.on('setGame', (data) => {
+    location.hash = data.game.room + '[' + data.player.name + ']';
+    dispatch(setPlayer(data.player, data.game.room));
     console.log(data);
   });
 };

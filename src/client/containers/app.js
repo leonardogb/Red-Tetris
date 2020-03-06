@@ -93,7 +93,7 @@ const App = () => {
   const found = window.location.href.split('/')[3].match(/^#([a-z1-9]+)\[([a-z1-9]+)\]$/);
 
   console.log("Found: " + found);
-  if (found === null) {
+  if (!player || !player.grid) {
     console.log("HOME");
     return (
       <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>

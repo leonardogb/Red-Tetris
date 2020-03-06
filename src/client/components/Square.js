@@ -20,7 +20,7 @@ const square = ({color}) => {
     border: '1px solid #242e30'
   };
   return (
-    <div style={style}></div>
+    <div style={style} />
   )
 }
 

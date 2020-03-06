@@ -1,9 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import Square from '../components/square';
+import {useSelector} from 'react-redux';
+import Square from './Square';
 import { useParams } from 'react-router-dom';
 
-const Board = ({board}) => {
+
+const Board = () => {
+    const board = useSelector(store => store.player ? store.player.grid : null);
 
     return board ? (
       <div className='board'>
@@ -17,10 +19,4 @@ const Board = ({board}) => {
     ) : null;
 };
 
-const mapStateToProps = (state) => {
-  return {
-    board: state.player ? state.player.grid : null
-  }
-};
-
-export default connect(mapStateToProps, null)(Board)
+export default Board;

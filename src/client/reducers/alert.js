@@ -1,4 +1,3 @@
-import { ALERT_POP } from '../actions/alert'
 import { UPDATE_PLAYER_POSITION } from '../actions/updatePlayerPosition'
 import { UPDATE_BOARD } from '../actions/updateBoard';
 import {ADD_ROOM} from '../actions/addRoom';
@@ -20,15 +19,11 @@ import {checkCollision} from "../gameHelpers";
 import {DROP_PLAYER} from "../actions/dropPlayer";
 import {SET_DELAY} from "../actions/setDelay";
 
-
-
 const reducer = (state = {}, action) => {
   let curTetromino = null;
   let piecesList = null;
 
   switch(action.type) {
-    case ALERT_POP:
-      return { ...state, message: action.message };
     case UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;

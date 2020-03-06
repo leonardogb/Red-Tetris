@@ -1,4 +1,3 @@
-import { ALERT_POP } from '../actions/alert'
 import { UPDATE_PLAYER_POSITION } from '../actions/updatePlayerPosition'
 import { UPDATE_BOARD } from '../actions/updateBoard';
 import {ADD_ROOM} from '../actions/addRoom';
@@ -19,16 +18,13 @@ import {START_GAME} from "../actions/startGame";
 import {checkCollision} from "../gameHelpers";
 import {DROP_PLAYER} from "../actions/dropPlayer";
 import {SET_DELAY} from "../actions/setDelay";
-
-
+import {SET_PLAYER} from "../actions/setPlayer";
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
   let piecesList = null;
 
   switch(action.type) {
-    case ALERT_POP:
-      return { ...state, message: action.message };
     case UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;
@@ -66,91 +62,94 @@ const reducer = (state = {}, action) => {
     case UPDATE_BOARD:
       const player = state.player;
 
-      let newBoard = player.grid.map(row =>
-        row.map(cell => (cell[1] ? cell : [0, false]))
-      );
+      if (player.grid) {
+        let newBoard = player.grid.map(row =>
+          row.map(cell => (cell[1] ? cell : [0, false]))
+        );
 
-      player.piece.tetromino.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (value !== 0) {
-            newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
-              value,
-              player.piece.collided,
-            ];
-          }
+        player.piece.tetromino.forEach((row, y) => {
+          row.forEach((value, x) => {
+            if (value !== 0) {
+              newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
+                value,
+                player.piece.collided,
+              ];
+            }
+          });
         });
-      });
 
-      if (player.piece.collided) {
-        newBoard = newBoard.reduce((ack, row) => {
-          if (row.findIndex(cell => cell[0] === 0) === -1) {
-            // Gestión de puntos
-            ack.unshift(new Array(newBoard[0].length).fill([0, false]));
+        if (player.piece.collided) {
+          newBoard = newBoard.reduce((ack, row) => {
+            if (row.findIndex(cell => cell[0] === 0) === -1) {
+              // Gestión de puntos
+              ack.unshift(new Array(newBoard[0].length).fill([0, false]));
+              return ack;
+            }
+            ack.push(row);
             return ack;
+          }, []);
+        }
+
+        return {
+          ...state,
+          player: {
+            ...state.player,
+            grid: newBoard
           }
-          ack.push(row);
-          return ack;
-        }, []);
+        };
       }
 
-      return {
-        ...state,
-        player: {
-          ...state.player,
-          grid: newBoard
-        }
-      };
-    case ADD_ROOM:
-      return {
-        ...state,
-        player: {
-          game: {
-            room: action.payload.room.room,
-            status: action.payload.room.status,
-            grid: action.payload.room.grid,
-            gameOver: false
-          }
-        },
-        games: {
-          ...state.games,
-          [action.payload.room.room]: {
-            status: action.payload.room.status,
-            room: action.payload.room.room,
-            master: action.payload.room.master,
-            players: {
-              [action.payload.room.player]: {
-                user: action.payload.room.player,
-                grid: action.payload.room.grid
-              }
-            }
-          }
-        }
-      };
-    case JOIN_ROOM:
-      return {
-        ...state,
-        player: {
-          game: {
-            room: action.payload.room.room,
-            status: action.payload.room.status,
-            grid: action.payload.room.grid,
-            gameOver: false
-          }
-        },
-        games: {
-          ...state.games,
-          [action.payload.room.room]: {
-            ...state.games[action.payload.room.room],
-            players: {
-              ...state.games[action.payload.room.room].players,
-              [action.payload.room.player]: {
-                user: action.payload.room.player,
-                grid: action.payload.room.grid
-              }
-            }
-          }
-        }
-      };
+    // case ADD_ROOM:
+    //   return {
+    //     ...state,
+    //     player: {
+    //       game: {
+    //         room: action.payload.room.room,
+    //         status: action.payload.room.status,
+    //         grid: action.payload.room.grid,
+    //         gameOver: false
+    //       }
+    //     },
+    //     games: {
+    //       ...state.games,
+    //       [action.payload.room.room]: {
+    //         status: action.payload.room.status,
+    //         room: action.payload.room.room,
+    //         master: action.payload.room.master,
+    //         players: {
+    //           [action.payload.room.player]: {
+    //             user: action.payload.room.player,
+    //             grid: action.payload.room.grid
+    //           }
+    //         }
+    //       }
+    //     }
+    //   };
+    // case JOIN_ROOM:
+    //   return {
+    //     ...state,
+    //     player: {
+    //       game: {
+    //         room: action.payload.room.room,
+    //         status: action.payload.room.status,
+    //         grid: action.payload.room.grid,
+    //         gameOver: false
+    //       }
+    //     },
+    //     games: {
+    //       ...state.games,
+    //       [action.payload.room.room]: {
+    //         ...state.games[action.payload.room.room],
+    //         players: {
+    //           ...state.games[action.payload.room.room].players,
+    //           [action.payload.room.player]: {
+    //             user: action.payload.room.player,
+    //             grid: action.payload.room.grid
+    //           }
+    //         }
+    //       }
+    //     }
+    //   };
     case SET_USERNAME:
       return {...state, curUser: action.payload.username};
     case SET_ROOM:
@@ -297,6 +296,12 @@ const reducer = (state = {}, action) => {
           ...state.player,
           delay: action.payload.delay
         }
+      };
+    case SET_PLAYER:
+      return {
+        ...state,
+        player: action.payload.player,
+        curRoom: action.payload.room
       };
     default:
       return state

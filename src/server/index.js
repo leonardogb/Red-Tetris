@@ -1,6 +1,6 @@
 import fs from 'fs';
 import debug from 'debug';
-import {initialBoard} from "../client/gameHelpers";
+import {initialBoard, isEmpty} from "../client/gameHelpers";
 import {randomTetromino} from "../client/tetrominos";
 import {Player} from "./Player";
 import {Game} from "./Game";
@@ -33,9 +33,7 @@ const initApp = (app, params, cb) => {
   })
 };
 
-let users = [];
-let games = {};
-let games1 = [];
+let games = [];
 let players = [];
 
 const playersGames = (games) => {
@@ -62,13 +60,13 @@ const initEngine = io => {
     });
     socket.on('getRoom', (room) => {
       const player = players.find(elem =>  elem.name === socket.username);
-      const game = games1.find(elem => elem.room === room.room);
+      const game = games.find(elem => elem.room === room.room);
       if (player && !game) {
-        games1.push(new Game(room.room, player));
+        games.push(new Game(room.room, player));
       }
       socket.room = room.room;
-      socket.emit('setRoom', {player: player, room: room.room, games: games1});
-      socket.emit('setPlayersGames', playersGames(games1));
+      socket.emit('setRoom', {player: player, room: room.room, games: games});
+      socket.emit('setPlayersGames', playersGames(games));
     });
 
     socket.on('setUsername', (data) => {
@@ -78,7 +76,7 @@ const initEngine = io => {
     });
 
     socket.on('getGames', () => {
-      socket.emit('setGames', {games: games1});
+      socket.emit('setGames', {games: games});
     });
 
     socket.on('getPiece', () => {
@@ -93,108 +91,47 @@ const initEngine = io => {
     socket.on('checkUrl', (data, ackCallback) => {
       console.log("server received message", data);
       var result = 'test value';
-      console.log(games1);
+      console.log(games);
       console.log("players: " + players);
       // console.log("socket username: " + data.player);
       console.log("socket username: " + socket.username);
       console.log("server sending back result", result);
       
       ackCallback(result);
-  });
+    });
 
+    socket.on('getGame', (data) => {
+      // players.push(new Player(data.username));
+      if (!isEmpty(data.username) && !isEmpty(data.room)) {
+        let player = players.find(elem =>  elem.name === data.username);
+        let game = games.find(elem => elem.room === data.room);
+        if (!player) {
+          socket.username = data.username;
+          const newPlayer = new Player(data.username);
+          players.push(newPlayer);
+          player = newPlayer;
+        }
+        if (!game) {
+          player.isMaster = true;
+          const newGame = new Game(data.room, player);
+          games.push(newGame);
+          socket.room = data.room;
+          game = newGame;
+        } else {
+          const playerExist = game.players.find(element => element.name === player.name);
+          if (!playerExist) {
+            game.players.push(player);
+          }
+        }
+        console.log(games);
+        socket.join(data.room);
+        socket.emit('setGame', {player: player, game: game});
+      }
+    });
 
     socket.on('ping', () => {
       console.log('pong')
     });
-/*
-
-    socket.on('getRoom', (room) => {
-      // console.log(room.room);
-      // socket.join(room.room);
-      // console.log(io.sockets.adapter.rooms);
-      // io.in(room.room).clients((err, clients) => {
-      //   console.log(clients);
-      // });
-
-      // socket.join(room.room, () => {
-      //   let rooms = Object.keys(socket.rooms);
-      //   console.log(rooms);
-      // });
-      // let allRooms = Object.keys(io.sockets.adapter.rooms);
-
-      const joinable_room = io.sockets.adapter.rooms[room.room];
-      socket.join(room.room);
-      socket.room = room.room;
-      if (joinable_room) {
-        games[room.room] = {
-          ...games[room.room],
-          players: {
-            ...games[room.room].players,
-            [socket.username]: {
-              user: {
-                name: socket.username
-              },
-              grid: initialBoard()
-            }
-          }
-        };
-      } else {
-        games[socket.room] = {
-          status: 'PENDING',
-          room: room.room,
-          master: socket.username,
-          players: {
-            [socket.username]: {
-              user: {
-                name: socket.username
-              },
-              grid: initialBoard()
-            }
-          }
-        };
-      }
-      socket.emit('setRoom', {
-        status: joinable_room ? 'JOIN_ROOM' : 'NEW_ROOM',
-        room: {
-          status: 'PENDING',
-          room: socket.room,
-          player: socket.username,
-          master: games[socket.room].master,
-          grid: initialBoard()
-        }
-      });
-      socket.to(socket.room).emit('updateGames', games[socket.room]);
-      // console.log(io.sockets.adapter.rooms);
-    });
-
-    socket.on('setUsername', (data) => {
-      if (!users.includes(data.username) && !socket.username) {
-        socket.username = data.username;
-        users.push(data.username);
-        socket.emit('setUsername', {status: true, username: socket.username});
-      }
-      players.push(new Player(data.username));
-    });
-
-    socket.on('getGames', () => {
-      socket.emit('setGames', {status: true, games: games});
-    });
-
-    socket.on('action', (action) => {
-      if (action.type === 'server/ping') {
-        socket.emit('action', { type: 'pong' })
-      }
-    });
-    socket.on('getPiece', () => {
-      socket.emit('setPiece', {
-        piece: {
-          pos: { x: 0, y: 0},
-          tetromino: randomTetromino(),
-          collided: false
-        },
-      })
-    });
-    */
   });
 };
 

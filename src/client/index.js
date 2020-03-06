@@ -8,7 +8,6 @@ import { Provider } from 'react-redux';
 import {storeStateMiddleWare} from './middleware/storeStateMiddleWare'
 import reducer from './reducers';
 import App from './containers/app';
-import { alert } from './actions/alert';
 import './style.css';
 import {initialBoard} from './gameHelpers';
 import { updatePlayerPosition } from './actions/updatePlayerPosition';
@@ -28,9 +27,9 @@ socket.emit('action', {type: 'server/ping'});
 
 const initialState = {
   socket: socket,
-  message: '',
   player: {
-    grid: initialBoard(),
+    // grid: initialBoard(),
+    grid: null,
     pieces: [],
     piece: {
       tetromino: [],
@@ -71,8 +70,5 @@ ReactDom.render((
     <App />
   </Provider>
 ), document.getElementById('tetris'));
-
-store.dispatch(alert('Soon, will be here a fantastic Tetris ...'));
-
 
 

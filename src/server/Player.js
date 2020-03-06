@@ -15,8 +15,9 @@ class Player {
         y: 0,
       },
       collided: false
-    },
-    this.gameOver = false
+    };
+    this.gameOver = false;
+    this.delay = null;
   }
 }
 

@@ -55,12 +55,22 @@ const initEngine = io => {
     // });
 
     socket.on('getPiece', () => {
-      socket.emit('setPieces', Piece.getTetrominos(5));
+      // socket.emit('setPieces', Piece.getTetrominos(5));
+      io.in(socket.room).emit('setPieces', Piece.getTetrominos(5));
       // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
     });
 
     socket.on('start', () => {
-      socket.emit('startGame', Piece.getTetrominos(5));
+      io.in(socket.room).emit('startGame', Piece.getTetrominos(5));
+      games = games.map((game) => {
+        if (game.room === socket.room)
+        {
+          game.playing = true;
+          // game.players.splice(game.players.findIndex(e => e.name === socket.username),1);
+        }
+        io.in(socket.room).emit('setPlayersGames', playersGames(games));
+        return (game);
+      });
     });
 
     socket.on('checkUrl', (data, ackCallback) => {
@@ -71,7 +81,6 @@ const initEngine = io => {
       // console.log("socket username: " + data.player);
       console.log("socket username: " + socket.username);
       console.log("server sending back result", result);
-      
       ackCallback(result);
     });
 
@@ -85,12 +94,12 @@ const initEngine = io => {
           const newPlayer = new Player(data.username);
           players.push(newPlayer);
           player = newPlayer;
+          socket.room = data.room;
         }
         if (!game) {
           player.isMaster = true;
           const newGame = new Game(data.room, player);
           games.push(newGame);
-          socket.room = data.room;
           game = newGame;
         } else {
           const playerExist = game.players.find(element => element.name === player.name);
@@ -98,23 +107,28 @@ const initEngine = io => {
             game.players.push(player);
           }
         }
-        console.log(games);
-        console.log(players);
         socket.join(data.room);
         socket.emit('setGame', {player: player, game: game});
-        // socket.emit('setPlayersGames', playersGames(games));
+        io.in(data.room).emit('setPlayersGames', playersGames(games));
       }
     });
 
-    socket.on('getPlayerList', () => {
-      // let game = games.find(elem => elem.room);
-      // socket.emit('setPlayerList', game);
+    socket.on('disconnect', (reason) => {
+      games = games.map((game) => {
+        if (game.room === socket.room)
+        {
+          game.players.splice(game.players.findIndex(e => e.name === socket.username),1);
+        }
+        console.log("game: ", game);
+        return (game);
+      });
+      players.splice(players.findIndex(e => e.name === socket.username),1);
+      io.in(socket.room).emit('setPlayersGames', playersGames(games));
     });
 
     socket.on('getRooms', () => {
       console.log('getRooms');
       // socket.emit('setRooms', games);
-      console.log("player: ", players);
       socket.emit('setRooms', []);
     })
   });

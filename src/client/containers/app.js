@@ -74,11 +74,6 @@ const App = () => {
 
   const start = () => {
     socket.emit('start');
-    socket.on('startGame', (data) => {
-      dispatch(setPieces(data));
-      dispatch(updateTetromino());
-      dispatch(setDelay(1000));
-    });
 
   };
 
@@ -92,6 +87,7 @@ const App = () => {
     });
   };
 
+  console.log("curGame: ", curGame);
   return (
     <HashRouter hashType="noslash">
       <Switch>
@@ -108,6 +104,7 @@ const App = () => {
                 <div>
                   Player {curUser} in {curGame} room.
                   <Board />
+                  <PlayersList curRoom={curRoom}/>
                   <button onClick={() => start()} >Start</button>
                 </div>
               ) : <Ring />

@@ -6,6 +6,8 @@ import {setPlayersGames} from "./actions/setPlayersGames";
 import {setPieces} from "./actions/setPieces";
 import {setPlayer} from "./actions/setPlayer";
 import {addRooms} from "./actions/addRooms";
+import { updateTetromino } from "./actions/updateTetromino";
+import { setDelay } from "./actions/setDelay";
 
 const socketsClient = (socket, dispatch) => {
   // window.addEventListener('keydown', keyDown);
@@ -29,6 +31,11 @@ const socketsClient = (socket, dispatch) => {
   //   dispatch(setUsername(data.username));
   //   socket.emit('getGames');
   // });
+  socket.on('startGame', (data) => {
+    dispatch(setPieces(data));
+    dispatch(updateTetromino());
+    dispatch(setDelay(1000));
+  });
 
   socket.on('setGames', (data) => {
     if (data.status) {
@@ -42,6 +49,7 @@ const socketsClient = (socket, dispatch) => {
   });
 
   socket.on('setPlayersGames', (data) => {
+    console.log("New player");
     dispatch(setPlayersGames(data));
   });
 

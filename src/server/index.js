@@ -124,14 +124,23 @@ const initEngine = io => {
           }
         }
         console.log(games);
+        console.log(players);
         socket.join(data.room);
         socket.emit('setGame', {player: player, game: game});
       }
     });
 
-    socket.on('ping', () => {
-      console.log('pong')
+    socket.on('getPlayerList', () => {
+      // let game = games.find(elem => elem.room);
+      // socket.emit('setPlayerList', game);
     });
+
+    socket.on('getRooms', () => {
+      console.log('getRooms');
+      // socket.emit('setRooms', games);
+      console.log("player: ", players);
+      socket.emit('setRooms', []);
+    })
   });
 };
 

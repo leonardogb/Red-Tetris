@@ -45,7 +45,7 @@ const initialState = {
   curUser: null,
   curGame: null,
   curRoom: null,
-  games: [],
+  rooms: [],
   playersGames: {}
 };
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

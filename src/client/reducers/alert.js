@@ -19,6 +19,7 @@ import {checkCollision} from "../gameHelpers";
 import {DROP_PLAYER} from "../actions/dropPlayer";
 import {SET_DELAY} from "../actions/setDelay";
 import {SET_PLAYER} from "../actions/setPlayer";
+import { ADD_ROOMS } from '../actions/addRooms';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -302,6 +303,11 @@ const reducer = (state = {}, action) => {
         ...state,
         player: action.payload.player,
         curRoom: action.payload.room
+      };
+      case ADD_ROOMS:
+      return {
+        ...state,
+        rooms: action.payload.rooms
       };
     default:
       return state

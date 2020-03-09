@@ -14,9 +14,10 @@ import Login from "../components/Login";
 import Board from "../components/Board";
 import {setCurRoom} from "../actions/setCurRoom";
 import { Ring } from 'react-awesome-spinners';
+import PlayersList from "../components/PlayersList";
 
 const App = () => {
-  const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curRoom, store.games, store.player.delay]);
+  const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
@@ -108,14 +109,17 @@ const App = () => {
         dispatch(setCurRoom());
       });
     }
-
+    console.log('curRoom: ', curRoom);
     return (
       <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
         <div>
           {curRoom ? (
             <div>
               Player {curUser} in {curGame} room.
+              <div>
               <Board />
+              <PlayersList />
+              </div>
               <button onClick={() => start()} >Start</button>
             </div>
           ) : <Ring />

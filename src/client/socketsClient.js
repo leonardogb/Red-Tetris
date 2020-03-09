@@ -5,7 +5,7 @@ import {updateGame} from "./actions/updateGame";
 import {setPlayersGames} from "./actions/setPlayersGames";
 import {setPieces} from "./actions/setPieces";
 import {setPlayer} from "./actions/setPlayer";
-
+import {addRooms} from "./actions/addRooms";
 
 const socketsClient = (socket, dispatch) => {
   // window.addEventListener('keydown', keyDown);
@@ -53,6 +53,12 @@ const socketsClient = (socket, dispatch) => {
     location.hash = data.game.room + '[' + data.player.name + ']';
     dispatch(setPlayer(data.player, data.game.room));
     console.log(data);
+  });
+
+  socket.emit('getRooms');
+  socket.on('setRooms', (data) => {
+    console.log("data: ", data);
+    // dispatch(addRooms(data));
   });
 };
 

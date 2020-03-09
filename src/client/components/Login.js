@@ -7,16 +7,10 @@ const Login = () => {
   const [inputUsername, setInputUsername] = useState('');
   const [inputRoom, setInputRoom] = useState('');
 
-  const sendUsername = () => {
-    socket.emit('setUsername', { username: inputUsername });
-  };
-
-  const getRoom = () => {
-    socket.emit('getRoom', { room: inputRoom });
-  };
-
   const getGame = () => {
-    socket.emit('getGame', {username: inputUsername, room: inputRoom})
+    if (inputUsername.length > 0 && inputRoom.length > 0) {
+      socket.emit('getGame', {username: inputUsername, room: inputRoom});
+    }
   };
 
   return (

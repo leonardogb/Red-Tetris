@@ -54,31 +54,6 @@ const initEngine = io => {
     //   });
     // });
 
-    socket.on('setTest', (data) => {
-      socket.emit('setServer', {test: 'World !'});
-      console.log(data);
-    });
-    socket.on('getRoom', (room) => {
-      const player = players.find(elem =>  elem.name === socket.username);
-      const game = games.find(elem => elem.room === room.room);
-      if (player && !game) {
-        games.push(new Game(room.room, player));
-      }
-      socket.room = room.room;
-      socket.emit('setRoom', {player: player, room: room.room, games: games});
-      socket.emit('setPlayersGames', playersGames(games));
-    });
-
-    socket.on('setUsername', (data) => {
-      socket.username = data.username;
-      players.push(new Player(data.username));
-      socket.emit('setUsername', {username: socket.username});
-    });
-
-    socket.on('getGames', () => {
-      socket.emit('setGames', {games: games});
-    });
-
     socket.on('getPiece', () => {
       socket.emit('setPieces', Piece.getTetrominos(5));
       // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
@@ -127,6 +102,7 @@ const initEngine = io => {
         console.log(players);
         socket.join(data.room);
         socket.emit('setGame', {player: player, game: game});
+        // socket.emit('setPlayersGames', playersGames(games));
       }
     });
 

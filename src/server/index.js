@@ -113,6 +113,12 @@ const initEngine = io => {
       }
     });
 
+    socket.on('reloadPlayer', (player) => {
+      console.log("user: ", socket.username);
+      // console.log("Player: ", JSON.parse(player));
+      // console.log("players: ", players);
+    });
+
     socket.on('disconnect', (reason) => {
       games = games.map((game) => {
         if (game.room === socket.room)

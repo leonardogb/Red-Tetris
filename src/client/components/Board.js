@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 
 const Board = () => {
     const board = useSelector(store => store.player ? store.player.grid : null);
-
     return board ? (
       <div className='board'>
         {board.map((value, index) =>

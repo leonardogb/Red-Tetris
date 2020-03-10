@@ -20,7 +20,7 @@ import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
 
 socket.on('action', type => {
-  console.log(type)
+  // console.log(type)
 });
 
 socket.emit('action', {type: 'server/ping'});

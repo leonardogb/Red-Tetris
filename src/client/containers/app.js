@@ -64,17 +64,18 @@ const App = () => {
       if (player.pieces.length < 3) {
         socket.emit('getPiece');
       }
+      localStorage.setItem('player', JSON.stringify(player));
     }
   };
 
   useInterval(() => {
     console.log('test');
     dispatch(dropPlayer());
+    localStorage.setItem('player', JSON.stringify(player));
   }, delay);
 
   const start = () => {
     socket.emit('start');
-
   };
 
   const checkUrl = (data) => {
@@ -87,7 +88,6 @@ const App = () => {
     });
   };
 
-  console.log("curGame: ", curGame);
   return (
     <HashRouter hashType="noslash">
       <Switch>

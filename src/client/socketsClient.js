@@ -31,6 +31,16 @@ const socketsClient = (socket, dispatch) => {
   //   dispatch(setUsername(data.username));
   //   socket.emit('getGames');
   // });
+
+  socket.on('connect', (socket) => {
+    // console.log("Connection: ", socket);
+    let player = localStorage.getItem('player');
+    let room = localStorage.getItem('room');
+    let login = localStorage.getItem('login');
+    console.log("localStorage: ", localStorage.getItem('player'));
+    socket.emit('reloadPlayer', player);
+  });
+
   socket.on('startGame', (data) => {
     dispatch(setPieces(data));
     dispatch(updateTetromino());

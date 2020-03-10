@@ -44,7 +44,6 @@ const initialState = {
     delay: null
   },
   curUser: null,
-  curGame: null,
   curRoom: null,
   rooms: [],
   playersGames: {}

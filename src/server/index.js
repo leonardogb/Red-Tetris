@@ -95,22 +95,23 @@ const initEngine = io => {
           // players.push(newPlayer);
           player = newPlayer;
           socket.room = data.room;
-        }
-        if (!game) {
-          player.isMaster = true;
-          const newGame = new Game(data.room, player);
-          games.push(newGame);
-          game = newGame;
-        } else {
-          const playerExist = game.players.find(element => element.name === player.name);
-          if (!playerExist) {
-            game.players.push(player);
+          if (!game) {
+            player.isMaster = true;
+            const newGame = new Game(data.room, player);
+            games.push(newGame);
+            game = newGame;
+          } else {
+            const playerExist = game.players.find(element => element.name === player.name);
+            if (!playerExist) {
+              game.players.push(player);
+            }
           }
+          console.log(player);
+          socket.join(data.room);
+          socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
+          socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
+          io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
         }
-        socket.join(data.room);
-        socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
-        socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
-        io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
       }
     });
 

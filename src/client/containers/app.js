@@ -18,6 +18,16 @@ const App = () => {
   const [updateStage] = useBoard();
   const [updatePlayerPos, pieceRotate] = usePlayer();
 
+  useEffect(() => {
+    socket.on('connect', () => {
+      let storedPlayer = localStorage.getItem('player');
+      let room = localStorage.getItem('room');
+      let login = localStorage.getItem('login');
+      socket.emit('reloadPlayer', storedPlayer, room, 'root');
+      console.log("connected");
+    });
+  });
+
   const keyDown = (event) => {
     if (player && !player.gameOver) {
       if (event.keyCode === 32) {
@@ -54,10 +64,12 @@ const App = () => {
       if (player.pieces.length < 3) {
         socket.emit('getPiece');
       }
+      localStorage.setItem('player', JSON.stringify(player));
     }
   };
 
   useInterval(() => {
+    localStorage.setItem('player', JSON.stringify(player));
 
     if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
       dispatch(dropPlayer());
@@ -93,7 +105,7 @@ const App = () => {
               {curRoom ? (
                 <div>
                   Player {curUser} in {curRoom} room.
-                  <Board />
+                  <Board curUser={curUser} curRoom={curRoom}/>
                   <PlayersList curRoom={curRoom}/>
                   <button onClick={() => start()} >Start</button>
                 </div>

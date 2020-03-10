@@ -69,7 +69,7 @@ const initEngine = io => {
       const piecesStart = Piece.getTetrominos(5);
       io.in(socket.room).emit('serverAction', {action: {type: SET_PIECES, payload: {pieces: piecesStart}}});
       io.in(socket.room).emit('serverAction', {action: {type: UPDATE_TETROMINO}});
-      // io.in(socket.room).emit('serverAction', {action: {type: SET_DELAY, payload: {delay: 1000}}});
+      io.in(socket.room).emit('serverAction', {action: {type: SET_DELAY, payload: {delay: 1000}}});
       socket.emit('serverAction', {action: {type: 'test', payload: 'Esto es una prueba'}});
       games = games.map((game) => {
         if (game.room === socket.room)
@@ -85,30 +85,31 @@ const initEngine = io => {
     socket.on('getGame', (data) => {
       if (!isEmpty(data.username) && !isEmpty(data.room)) {
 
-        let player = players.find(elem =>  elem.name === data.username);
         let game = games.find(elem => elem.room === data.room);
+        let player = players.find(elem =>  elem.name === data.username);
         if (!player) {
           socket.username = data.username;
           const newPlayer = new Player(data.username);
           players.push(newPlayer);
           player = newPlayer;
           socket.room = data.room;
-        }
-        if (!game) {
-          player.isMaster = true;
-          const newGame = new Game(data.room, player);
-          games.push(newGame);
-          game = newGame;
-        } else {
-          const playerExist = game.players.find(element => element.name === player.name);
-          if (!playerExist) {
-            game.players.push(player);
+          if (!game) {
+            player.isMaster = true;
+            const newGame = new Game(data.room, player);
+            games.push(newGame);
+            game = newGame;
+          } else {
+            const playerExist = game.players.find(element => element.name === player.name);
+            if (!playerExist) {
+              game.players.push(player);
+            }
           }
+          console.log(player);
+          socket.join(data.room);
+          socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
+          socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
+          io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
         }
-        socket.join(data.room);
-        socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
-        socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
-        io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
       }
     });
 

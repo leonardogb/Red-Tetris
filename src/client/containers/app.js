@@ -10,7 +10,7 @@ import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
 import PlayersList from "../components/PlayersList";
-import {HashRouter, Route, Switch} from "react-router-dom";
+import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
 
 const App = () => {
   const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
@@ -58,8 +58,20 @@ const App = () => {
   };
 
   useInterval(() => {
-    console.log('test');
-    dispatch(dropPlayer());
+
+    if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
+      dispatch(dropPlayer());
+    } else {
+      if (player.piece.pos.y < 1) {
+        console.log('GAME OVER!!!');
+        dispatch(setGameOver());
+        // setDropTime(null);
+      } else {
+        updatePlayerPos(null, null, true);
+      }
+      console.log('collided');
+    }
+
   }, delay);
 
   const start = () => {
@@ -77,7 +89,6 @@ const App = () => {
         </Route>
         <Route exact path="/:room[:player]" >
           <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
-            <p>Test</p>
             <div>
               {curRoom ? (
                 <div>
@@ -86,7 +97,7 @@ const App = () => {
                   <PlayersList curRoom={curRoom}/>
                   <button onClick={() => start()} >Start</button>
                 </div>
-              ) : <Ring />
+              ) : <Redirect to="/" />
               }
             </div>
           </div>

@@ -6,8 +6,8 @@ import {setPiece} from "../actions/setPiece";
 import {updateBoard} from "../actions/updateBoard";
 
 export  const usePlayer = () => {
-
   const dispatch = useDispatch();
+
   const updatePlayerPos = (y, x, collided ) => {
     dispatch(updatePlayerPosition(y, x, collided));
     if (collided) {

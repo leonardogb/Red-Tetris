@@ -84,6 +84,7 @@ const initEngine = io => {
 
     socket.on('getGame', (data) => {
       if (!isEmpty(data.username) && !isEmpty(data.room)) {
+
         let player = players.find(elem =>  elem.name === data.username);
         let game = games.find(elem => elem.room === data.room);
         if (!player) {
@@ -103,12 +104,11 @@ const initEngine = io => {
           if (!playerExist) {
             game.players.push(player);
           }
-          console.log(games);
-          socket.join(data.room);
-          socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
-          socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
-          io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
         }
+        socket.join(data.room);
+        socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
+        socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
+        io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
       }
     });
 

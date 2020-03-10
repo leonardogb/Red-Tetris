@@ -15,8 +15,8 @@ import {HashRouter, Route, Switch} from "react-router-dom";
 const App = () => {
   const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
-  const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
+  const [updatePlayerPos, pieceRotate] = usePlayer();
 
   const keyDown = (event) => {
     if (player && !player.gameOver) {
@@ -81,7 +81,7 @@ const App = () => {
             <div>
               {curRoom ? (
                 <div>
-                  Player {curUser} in {curGame} room.
+                  Player {curUser} in {curRoom} room.
                   <Board />
                   <PlayersList curRoom={curRoom}/>
                   <button onClick={() => start()} >Start</button>

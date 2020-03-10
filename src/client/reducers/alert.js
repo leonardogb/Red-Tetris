@@ -302,7 +302,7 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         player: action.payload.player,
-        curRoom: action.payload.room
+        curRoom: action.payload.game.room
       };
       case ADD_ROOMS:
       return {

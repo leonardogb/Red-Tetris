@@ -18,6 +18,16 @@ const App = () => {
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
 
+  useEffect(() => {
+    socket.on('connect', () => {
+      let storedPlayer = localStorage.getItem('player');
+      let room = localStorage.getItem('room');
+      let login = localStorage.getItem('login');
+      socket.emit('reloadPlayer', storedPlayer, room, 'root');
+      console.log("connected");
+    });
+  });
+
   const keyDown = (event) => {
     if (player && !player.gameOver) {
       if (event.keyCode === 32) {
@@ -83,8 +93,8 @@ const App = () => {
             <div>
               {curRoom ? (
                 <div>
-                  Player {curUser} in {curGame} room.
-                  <Board />
+                  Player {curUser} in {curRoom} room.
+                  <Board curUser={curUser} curRoom={curRoom}/>
                   <PlayersList curRoom={curRoom}/>
                   <button onClick={() => start()} >Start</button>
                 </div>

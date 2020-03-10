@@ -20,6 +20,7 @@ import {DROP_PLAYER} from "../actions/dropPlayer";
 import {SET_DELAY} from "../actions/setDelay";
 import {SET_PLAYER} from "../actions/setPlayer";
 import { ADD_ROOMS } from '../actions/addRooms';
+import { RELOAD_PLAYER } from '../actions/reloadPlayer';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -216,6 +217,14 @@ const reducer = (state = {}, action) => {
         ...state,
         rooms: action.payload.rooms
       };
+      case RELOAD_PLAYER:
+        // console.log("action: ", action);
+        return {
+          ...state,
+          player: action.payload.player,
+          curRoom: action.payload.room,
+          curUser: action.payload.name
+        }
     case "test":
       console.log(action.payload);
       return {

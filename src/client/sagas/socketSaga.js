@@ -1,26 +1,5 @@
-import { takeEvery, put, select, call, take } from 'redux-saga/effects';
+import { put, call, take } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import {setUsername} from "../actions/setUsername";
-
-function* updateBoard(action) {
-  try {
-    console.log('Saga');
-    // const getPlayer = (state) => state.player;
-    // const player = yield select(getPlayer);
-    // if (player) {
-    //   yield put({
-    //     type: 'UPDATE_BOARD',
-    //     payload: {
-    //       room: 'Test',
-    //       player: 'Leo'
-    //     }
-    //   });
-    // }
-  } catch (e) {
-    //
-  }
-
-}
 
 // this function creates an event channel from a given socket
 // Setup subscription to incoming `ping` events
@@ -54,7 +33,7 @@ function createSocketChannel(socket) {
   })
 }
 
-function* watchSockets(socket, dispatch) {
+function* watchSockets(socket) {
   console.log('socketSaga');
 
   const socketChannel = yield call(createSocketChannel, socket);
@@ -63,14 +42,6 @@ function* watchSockets(socket, dispatch) {
     try {
       const action = yield take(socketChannel);
       yield put(action);
-      // yield put({
-      //   type: 'UPDATE_PLAYER_POSITION',
-      //   payload: {
-      //     y: 1,
-      //     x: null,
-      //     collided: false
-      //   }
-      // })
     } catch (err) {
       console.error('socket error:', err);
       // socketChannel is still open in catch block
@@ -78,16 +49,6 @@ function* watchSockets(socket, dispatch) {
       // socketChannel.close();
     }
   }
-  // return eventChannel(emit => {
-  //   socket.on('setUsername', () => { console.log('prueba')})
-  //
-  //   const unsubscribe = () => {
-  //     socket.off('ping')
-  //   }
-  //
-  //   return unsubscribe
-  // });
-  // yield takeEvery('UPDATE_PLAYER_POSITION', updateBoard);
 }
 
 export default watchSockets;

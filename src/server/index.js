@@ -61,16 +61,25 @@ const initEngine = io => {
 
     socket.on('getPiece', () => {
       const pieces = Piece.getTetrominos(5);
-      socket.emit('serverAction', {action: {type: SET_PIECES, payload: {pieces}}});
+      io.in(socket.room).emit('serverAction', {action: {type: SET_PIECES, payload: {pieces}}});
       // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
     });
 
     socket.on('start', () => {
       const piecesStart = Piece.getTetrominos(5);
-      socket.emit('serverAction', {action: {type: SET_PIECES, payload: {pieces: piecesStart}}});
-      socket.emit('serverAction', {action: {type: UPDATE_TETROMINO}});
-      // socket.emit('serverAction', {action: {type: SET_DELAY, payload: {delay: 1000}}});
+      io.in(socket.room).emit('serverAction', {action: {type: SET_PIECES, payload: {pieces: piecesStart}}});
+      io.in(socket.room).emit('serverAction', {action: {type: UPDATE_TETROMINO}});
+      // io.in(socket.room).emit('serverAction', {action: {type: SET_DELAY, payload: {delay: 1000}}});
       socket.emit('serverAction', {action: {type: 'test', payload: 'Esto es una prueba'}});
+      games = games.map((game) => {
+        if (game.room === socket.room)
+        {
+          game.playing = true;
+          // game.players.splice(game.players.findIndex(e => e.name === socket.username),1);
+        }
+        io.in(socket.room).emit('setPlayersGames', playersGames(games));
+        return (game);
+      });
     });
 
     socket.on('getGame', (data) => {
@@ -82,26 +91,38 @@ const initEngine = io => {
           const newPlayer = new Player(data.username);
           players.push(newPlayer);
           player = newPlayer;
-
-          if (!game) {
-            player.isMaster = true;
-            const newGame = new Game(data.room, player);
-            games.push(newGame);
-            socket.room = data.room;
-            game = newGame;
-          } else {
-            const playerExist = game.players.find(element => element.name === player.name);
-            if (!playerExist) {
-              game.players.push(player);
-            }
+          socket.room = data.room;
+        }
+        if (!game) {
+          player.isMaster = true;
+          const newGame = new Game(data.room, player);
+          games.push(newGame);
+          game = newGame;
+        } else {
+          const playerExist = game.players.find(element => element.name === player.name);
+          if (!playerExist) {
+            game.players.push(player);
           }
           console.log(games);
           socket.join(data.room);
           socket.emit('serverAction', {action: {type: SET_PLAYER, payload: {player: player, game: game}}});
           socket.emit('redirect', {to: game.room + '[' + player.name + ']'});
-          socket.emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
+          io.in(data.room).emit('serverAction', {action: {type: SET_PLAYERS_GAMES, payload: {games: playersGames(games)} }});
         }
       }
+    });
+
+    socket.on('disconnect', (reason) => {
+      games = games.map((game) => {
+        if (game.room === socket.room)
+        {
+          game.players.splice(game.players.findIndex(e => e.name === socket.username),1);
+        }
+        console.log("game: ", game);
+        return (game);
+      });
+      players.splice(players.findIndex(e => e.name === socket.username),1);
+      io.in(socket.room).emit('setPlayersGames', playersGames(games));
     });
   });
 };

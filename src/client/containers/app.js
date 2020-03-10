@@ -9,10 +9,11 @@ import {dropPlayer} from "../actions/dropPlayer";
 import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
+import PlayersList from "../components/PlayersList";
 import {HashRouter, Route, Switch} from "react-router-dom";
 
 const App = () => {
-  const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curRoom, store.games, store.player.delay]);
+  const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
@@ -82,6 +83,7 @@ const App = () => {
                 <div>
                   Player {curUser} in {curGame} room.
                   <Board />
+                  <PlayersList curRoom={curRoom}/>
                   <button onClick={() => start()} >Start</button>
                 </div>
               ) : <Ring />

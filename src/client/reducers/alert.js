@@ -309,6 +309,12 @@ const reducer = (state = {}, action) => {
         ...state,
         rooms: action.payload.rooms
       };
+    case "test":
+      console.log(action.payload);
+      return {
+        ...state,
+        test: action.payload
+      };
     default:
       return state
   }

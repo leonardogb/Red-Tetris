@@ -10,6 +10,9 @@ const Login = () => {
   const getGame = () => {
     if (inputUsername.length > 0 && inputRoom.length > 0) {
       socket.emit('getGame', {username: inputUsername, room: inputRoom});
+      socket.on('redirect', (data) => {
+        location.hash = data.to;
+      });
     }
   };
 

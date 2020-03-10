@@ -1,31 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {checkCollision} from "../gameHelpers";
-import {setPieces} from "../actions/setPieces";
 import {setGameOver} from "../actions/setGameOver";
-import {updateTetromino} from "../actions/updateTetromino";
 import {usePlayer} from "../Hooks/usePlayer";
 import {useBoard} from '../Hooks/useBoard';
 import {useInterval} from "../Hooks/useInterval";
 import {dropPlayer} from "../actions/dropPlayer";
-import {setDelay} from "../actions/setDelay";
-import socketsClient from "../socketsClient";
 import Login from "../components/Login";
 import Board from "../components/Board";
-import {setCurRoom} from "../actions/setCurRoom";
 import { Ring } from 'react-awesome-spinners';
-import {HashRouter, Route, BrowserRouter as Router, Switch} from "react-router-dom";
+import {HashRouter, Route, Switch} from "react-router-dom";
 
 const App = () => {
   const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.curRoom, store.games, store.player.delay]);
   const dispatch = useDispatch();
   const [updatePlayerPos, pieceRotate] = usePlayer();
   const [updateStage] = useBoard();
-
-  useEffect(() => {
-    socketsClient(socket, dispatch);
-  }, []);
-
 
   const keyDown = (event) => {
     if (player && !player.gameOver) {
@@ -73,24 +63,9 @@ const App = () => {
 
   const start = () => {
     socket.emit('start');
-    socket.on('startGame', (data) => {
-      dispatch(setPieces(data));
-      dispatch(updateTetromino());
-      dispatch(setDelay(1000));
-    });
-
   };
 
-  const checkUrl = (data) => {
-    return new Promise((resolve, reject) => {
-      console.log("client sending message");
-      socket.emit('checkUrl', data, (response) => {
-        console.log("client got ack response", response);
-        resolve(response);
-      });
-    });
-  };
-
+  console.log('App component')
   return (
     <HashRouter hashType="noslash">
       <Switch>

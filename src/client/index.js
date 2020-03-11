@@ -28,6 +28,8 @@ socket.emit('action', {type: 'server/ping'});
 
 const initialState = {
   socket: socket,
+  id: null,
+  isMaster: null,
   player: {
     // grid: initialBoard(),
     grid: null,

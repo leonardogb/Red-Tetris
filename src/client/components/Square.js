@@ -22,12 +22,6 @@ const square = ({color}) => {
   return (
     <div style={style} />
   )
-}
-
-// const square = ({color}) => {
-//   return (
-//     <div className={'square color_' + color}></div>
-//   )
-// }
+};
 
 export default square;

@@ -162,7 +162,8 @@ const reducer = (state = {}, action) => {
         ...state,
         player: {
           ...state.player,
-          gameOver: true
+          gameOver: true,
+          delay: null
         }
       };
     case SET_CUR_ROOM:
@@ -224,13 +225,7 @@ const reducer = (state = {}, action) => {
           player: action.payload.player,
           curRoom: action.payload.room,
           curUser: action.payload.name
-        }
-    case "test":
-      console.log(action.payload);
-      return {
-        ...state,
-        test: action.payload
-      };
+        };
     default:
       return state
   }

@@ -110,7 +110,6 @@ const initEngine = io => {
       io.in(socket.room).emit('serverAction', {action: {type: UPDATE_TETROMINO}});
       io.in(socket.room).emit('serverAction', {action: {type: SET_DELAY, payload: {delay: 1000}}});
       io.in(socket.room).emit('setIsPLaying');
-      socket.emit('serverAction', {action: {type: 'test', payload: 'Esto es una prueba'}});
       games = games.map((game) => {
         if (game.room === socket.room)
         {

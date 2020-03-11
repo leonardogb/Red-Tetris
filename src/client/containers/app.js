@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {checkCollision} from "../gameHelpers";
 import {setGameOver} from "../actions/setGameOver";
@@ -10,6 +10,7 @@ import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
 import PlayersList from "../components/PlayersList";
+import { reloadPlayer } from '../actions/reloadPlayer';
 import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
 
 const App = () => {
@@ -17,14 +18,18 @@ const App = () => {
   const dispatch = useDispatch();
   const [updateStage] = useBoard();
   const [updatePlayerPos, pieceRotate] = usePlayer();
+  const [showButton, setShowButton] = useState(true);
 
   useEffect(() => {
     socket.on('connect', () => {
       let storedPlayer = localStorage.getItem('player');
       let room = localStorage.getItem('room');
       let login = localStorage.getItem('login');
-      socket.emit('reloadPlayer', storedPlayer, room, 'root');
-      console.log("connected");
+      if (storedPlayer && room && login) {
+        socket.room = room;
+        socket.username = login;
+        socket.emit('reloadPlayer', JSON.parse(storedPlayer), room, login);
+      }
     });
   });
 
@@ -64,7 +69,9 @@ const App = () => {
       if (player.pieces.length < 3) {
         socket.emit('getPiece');
       }
-      localStorage.setItem('player', JSON.stringify(player));
+      if (localStorage.getItem('login')) {
+        // localStorage.setItem('player', JSON.stringify(player));
+      }
     }
   };
 
@@ -105,9 +112,9 @@ const App = () => {
               {curRoom ? (
                 <div>
                   Player {curUser} in {curRoom} room.
-                  <Board curUser={curUser} curRoom={curRoom}/>
+                  <Board curUser={curUser} curRoom={curRoom} player={player}/>
                   <PlayersList curRoom={curRoom}/>
-                  <button onClick={() => start()} >Start</button>
+                  {player.isMaster && showButton && <button onClick={(e) => {start(); setShowButton(!showButton)}} >Start</button>}
                 </div>
               ) : <Redirect to="/" />
               }

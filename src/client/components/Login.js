@@ -3,6 +3,9 @@ import GamesList from "./GamesList";
 import {useSelector} from "react-redux";
 
 const Login = () => {
+  localStorage.removeItem('player');
+  localStorage.removeItem('login');
+  localStorage.removeItem('room');
   const [socket, curUser, playersGames] = useSelector(store => [store.socket, store.curUser, store.playersGames]);
   const [inputUsername, setInputUsername] = useState('');
   const [inputRoom, setInputRoom] = useState('');

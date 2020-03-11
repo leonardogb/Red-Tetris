@@ -1,37 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {checkCollision} from "../gameHelpers";
-import {setGameOver} from "../actions/setGameOver";
-import {usePlayer} from "../Hooks/usePlayer";
-import {useBoard} from '../Hooks/useBoard';
-import {useInterval} from "../Hooks/useInterval";
-import {dropPlayer} from "../actions/dropPlayer";
+import { checkCollision } from "../gameHelpers";
+import { setGameOver } from "../actions/setGameOver";
+import { usePlayer } from "../Hooks/usePlayer";
+import { useBoard } from '../Hooks/useBoard';
+import { useInterval } from "../Hooks/useInterval";
+import { dropPlayer } from "../actions/dropPlayer";
 import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
 import PlayersList from "../components/PlayersList";
 import { reloadPlayer } from '../actions/reloadPlayer';
-import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 const App = () => {
-  const [socket, player, curUser, curGame, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
+  const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
   const [updateStage] = useBoard();
   const [updatePlayerPos, pieceRotate] = usePlayer();
-  const [showButton, setShowButton] = useState(true);
+
+  useEffect(() => {
+    socket.emit('updatePlayer', player);
+  }, [player, player.pieces, player.piece, player.piece.tetronimo, player.piece.pos]);
 
   useEffect(() => {
     socket.on('connect', () => {
-      let storedPlayer = localStorage.getItem('player');
-      let room = localStorage.getItem('room');
-      let login = localStorage.getItem('login');
-      if (storedPlayer && room && login) {
-        socket.room = room;
-        socket.username = login;
-        socket.emit('reloadPlayer', JSON.parse(storedPlayer), room, login);
+      let id = localStorage.getItem('id');
+      if (id) {
+        socket.emit('reloadPlayer', id);
       }
     });
-  });
+
+    socket.on('setId', (id) => {
+      localStorage.setItem('id', id);
+    });
+
+    socket.on('setIsplaying', () => {
+      player.isPlaying = true;
+    })
+
+    socket.on('deleteId', () => {
+      localStorage.removeItem('id');
+    })
+  }, []);
+
+  useEffect(() => {
+    socket.on('setMaster', (value) => {
+      player.isMaster = value;
+    })
+  })
 
   const keyDown = (event) => {
     if (player && !player.gameOver) {
@@ -69,15 +86,10 @@ const App = () => {
       if (player.pieces.length < 3) {
         socket.emit('getPiece');
       }
-      if (localStorage.getItem('login')) {
-        // localStorage.setItem('player', JSON.stringify(player));
-      }
     }
   };
 
   useInterval(() => {
-    localStorage.setItem('player', JSON.stringify(player));
-
     if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
       dispatch(dropPlayer());
     } else {
@@ -90,11 +102,11 @@ const App = () => {
       }
       console.log('collided');
     }
-
   }, delay);
 
   const start = () => {
     socket.emit('start');
+    player.isPlaying = true;
   };
 
   console.log('App component')
@@ -112,17 +124,17 @@ const App = () => {
               {curRoom ? (
                 <div>
                   Player {curUser} in {curRoom} room.
-                  <Board curUser={curUser} curRoom={curRoom} player={player}/>
-                  <PlayersList curRoom={curRoom}/>
-                  {player.isMaster && showButton && <button onClick={(e) => {start(); setShowButton(!showButton)}} >Start</button>}
+                  <Board socket={socket} player={player} />
+                  <PlayersList curRoom={curRoom} />
+                  {player.isMaster && !player.isPlaying && <button onClick={(e) => { start(); }} >Start</button>}
                 </div>
-              ) : <Redirect to="/" />
+              ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
               }
             </div>
           </div>
         </Route>
       </Switch>
-</HashRouter>
+    </HashRouter>
   );
 };
 

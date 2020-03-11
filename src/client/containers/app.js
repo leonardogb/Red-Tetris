@@ -58,8 +58,7 @@ const App = () => {
 
     socket.on('deleteId', () => {
       localStorage.removeItem('id');
-    })
-  }, []);
+    });
 
   useEffect(() => {
     socket.on('setMaster', (value) => {
@@ -158,7 +157,7 @@ const App = () => {
                       <PlayersList curRoom={curRoom}/>
                     </div>
                   </div>
-                  {player.isMaster && showButton && <button onClick={(e) => {start(); setShowButton(!showButton)}} >Start</button>}
+                  {player.isMaster && <button onClick={(e) => {start()}} >Start</button>}
                 </div>
               ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
               }

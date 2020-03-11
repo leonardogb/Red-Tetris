@@ -20,6 +20,7 @@ import {DROP_PLAYER} from "../actions/dropPlayer";
 import {SET_DELAY} from "../actions/setDelay";
 import {SET_PLAYER} from "../actions/setPlayer";
 import { ADD_ROOMS } from '../actions/addRooms';
+import { RELOAD_PLAYER } from '../actions/reloadPlayer';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -62,7 +63,6 @@ const reducer = (state = {}, action) => {
       };
     case UPDATE_BOARD:
       const player = state.player;
-
       if (player.grid) {
         let newBoard = player.grid.map(row =>
           row.map(cell => (cell[1] ? cell : [0, false]))
@@ -90,7 +90,6 @@ const reducer = (state = {}, action) => {
             return ack;
           }, []);
         }
-
         return {
           ...state,
           player: {
@@ -98,59 +97,9 @@ const reducer = (state = {}, action) => {
             grid: newBoard
           }
         };
+      } else {
+        return state;
       }
-
-    // case ADD_ROOM:
-    //   return {
-    //     ...state,
-    //     player: {
-    //       game: {
-    //         room: action.payload.room.room,
-    //         status: action.payload.room.status,
-    //         grid: action.payload.room.grid,
-    //         gameOver: false
-    //       }
-    //     },
-    //     games: {
-    //       ...state.games,
-    //       [action.payload.room.room]: {
-    //         status: action.payload.room.status,
-    //         room: action.payload.room.room,
-    //         master: action.payload.room.master,
-    //         players: {
-    //           [action.payload.room.player]: {
-    //             user: action.payload.room.player,
-    //             grid: action.payload.room.grid
-    //           }
-    //         }
-    //       }
-    //     }
-    //   };
-    // case JOIN_ROOM:
-    //   return {
-    //     ...state,
-    //     player: {
-    //       game: {
-    //         room: action.payload.room.room,
-    //         status: action.payload.room.status,
-    //         grid: action.payload.room.grid,
-    //         gameOver: false
-    //       }
-    //     },
-    //     games: {
-    //       ...state.games,
-    //       [action.payload.room.room]: {
-    //         ...state.games[action.payload.room.room],
-    //         players: {
-    //           ...state.games[action.payload.room.room].players,
-    //           [action.payload.room.player]: {
-    //             user: action.payload.room.player,
-    //             grid: action.payload.room.grid
-    //           }
-    //         }
-    //       }
-    //     }
-    //   };
     case SET_USERNAME:
       return {...state, curUser: action.payload.username};
     case SET_ROOM:
@@ -172,48 +121,6 @@ const reducer = (state = {}, action) => {
       return {...state, playersGames: action.payload.games};
     case SET_GAMES:
       return {...state, games: action.payload};
-    case ADD_GAME:
-      // games: {
-      // ...state.games,
-      //     [action.payload.room.room]: {
-      //     status: 'PENDING',
-      //       room: action.payload.room.room,
-      //       players: {
-      //       [action.payload.room.player]: {
-      //         user: {
-      //           name: action.payload.room.player,
-      //         },
-      //         grid: [
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 2, 2, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      //           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      //         ],
-      //           pos: {
-      //           x: 0,
-      //             y: 0
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
-      return {...state};
     case UPDATE_GAME:
       return {
         ...state,
@@ -280,7 +187,7 @@ const reducer = (state = {}, action) => {
             piece: {
               ...state.player.piece,
               pos: {
-                x: state.player.piece.pos.x + 0,
+                x: state.player.piece.pos.x,
                 y: state.player.piece.pos.y + 1
               },
               collided: false
@@ -302,12 +209,27 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         player: action.payload.player,
-        curRoom: action.payload.room
+        curRoom: action.payload.game.room,
+        curUser: action.payload.player.name
       };
       case ADD_ROOMS:
       return {
         ...state,
         rooms: action.payload.rooms
+      };
+      case RELOAD_PLAYER:
+        // console.log("action: ", action);
+        return {
+          ...state,
+          player: action.payload.player,
+          curRoom: action.payload.room,
+          curUser: action.payload.name
+        }
+    case "test":
+      console.log(action.payload);
+      return {
+        ...state,
+        test: action.payload
       };
     default:
       return state

@@ -10,12 +10,12 @@ export  const usePlayer = () => {
 
   const updatePlayerPos = (y, x, collided ) => {
     dispatch(updatePlayerPosition(y, x, collided));
-    if (collided) {
-      // buscar otra forma de que se actualice el board sin poner setTimeout
-      setTimeout(() => {
-        dispatch(updateTetromino());
-      });
-    }
+    // if (collided) {
+    //   // buscar otra forma de que se actualice el board sin poner setTimeout
+    //   setTimeout(() => {
+    //     dispatch(updateTetromino());
+    //   });
+    // }
   };
 
   const drop = () => {

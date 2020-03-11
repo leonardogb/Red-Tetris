@@ -3,8 +3,11 @@ import { useSelector } from 'react-redux';
 import Square from './Square';
 import { useParams } from 'react-router-dom';
 
-
-const Board = ({curUser, curRoom, player}) => {
+const Board = () => {
+  const board = useSelector(store => store.player ? store.player.grid : null);
+  const curUser = useSelector(store => store.curUser);
+  const curRoom = useSelector(store => store.curRoom);
+  const player = useSelector(store => store.player);
   useEffect(() => {
     if (!localStorage.getItem('login')) {
     localStorage.setItem('login', curUser);
@@ -12,13 +15,10 @@ const Board = ({curUser, curRoom, player}) => {
     if (!localStorage.getItem('room')) {
       localStorage.setItem('room', curRoom);
     }
-    // if (!localStorage.getItem('player')) {
-    // }
-    console.log("here!!!!!!!!!!!");
   }, []);
 
   localStorage.setItem('player', JSON.stringify(player));
-  const board = useSelector(store => store.player ? store.player.grid : null);
+
   return board ? (
     <div className='board'>
       {board.map((value, index) =>

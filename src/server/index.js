@@ -103,7 +103,7 @@ const initEngine = io => {
       const piecesStart = Piece.getTetrominos(5);
       io.in(socket.room).emit('serverAction', { action: { type: SET_PIECES, payload: { pieces: piecesStart } } });
       io.in(socket.room).emit('serverAction', { action: { type: UPDATE_TETROMINO } });
-      // io.in(socket.room).emit('serverAction', { action: { type: SET_DELAY, payload: { delay: 1000 } } });
+      io.in(socket.room).emit('serverAction', { action: { type: SET_DELAY, payload: { delay: 1000 } } });
       io.in(socket.room).emit('setIsPLaying');
       games = games.map((game) => {
         if (game.room === socket.room) {

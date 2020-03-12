@@ -43,7 +43,7 @@ const initialState = {
       collided: false
     },
     status: null,
-    delay: null
+    delay: -60
   },
   curUser: null,
   curRoom: null,

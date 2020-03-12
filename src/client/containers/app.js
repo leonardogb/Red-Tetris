@@ -36,6 +36,14 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log("gameOver: ", player.gameOver);
+    if (player.gameOver === true)
+    {
+      player.isPlaying = false;
+    }
+  }, [player.gameOver]);
+
+  useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
       console.log('test');
       if (player.piece.pos.y < 1) {
@@ -128,7 +136,7 @@ const App = () => {
     player.isPlaying = true;
   };
 
-  console.log('App component')
+  console.log('App component');
   const style = {
     gameContainer: {
       display: 'flex',
@@ -142,13 +150,10 @@ const App = () => {
   return (
     <HashRouter hashType="noslash">
       <Switch>
-        <Route exact path="/" >
-          <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
-            <Login />
-          </div>
-        </Route>
-        <Route exact path="/:room[:player]" >
-          <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+        <Route exact path="/" render={() => <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+            <Login player={player} socket={socket}/>
+          </div>}/>
+        <Route exact path="/:room[:player]" render={() => <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
             <div>
               {curRoom ? (
                 <div>
@@ -165,8 +170,7 @@ const App = () => {
               ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
               }
             </div>
-          </div>
-        </Route>
+          </div>}/>
       </Switch>
     </HashRouter>
   );

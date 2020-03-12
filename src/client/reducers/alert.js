@@ -21,6 +21,7 @@ import {SET_DELAY} from "../actions/setDelay";
 import {SET_PLAYER} from "../actions/setPlayer";
 import { ADD_ROOMS } from '../actions/addRooms';
 import { RELOAD_PLAYER } from '../actions/reloadPlayer';
+import {SWAP_PIECES} from "../actions/swapPieces";
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -226,6 +227,22 @@ const reducer = (state = {}, action) => {
           curRoom: action.payload.room,
           curUser: action.payload.name
         };
+      case SWAP_PIECES:
+        if (state.player.pieces.length > 2) {
+          let pieces = [...state.player.pieces];
+          const tmp = pieces[0];
+          pieces[0] = pieces[1];
+          pieces[1] = tmp;
+          return {
+            ...state,
+            player: {
+              ...state.player,
+              pieces: pieces
+            }
+          }
+        } else {
+          return state;
+        }
     default:
       return state
   }

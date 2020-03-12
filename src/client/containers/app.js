@@ -14,6 +14,7 @@ import { reloadPlayer } from '../actions/reloadPlayer';
 import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
 import NextPiece from "../components/NextPiece";
 import {updateTetromino} from "../actions/updateTetromino";
+import {swapPieces} from "../actions/swapPieces";
 
 const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
@@ -98,6 +99,8 @@ const App = () => {
         }
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
+      } else if (event.keyCode === 16) {
+        dispatch(swapPieces());
       }
       if (player.pieces.length < 3) {
         socket.emit('getPiece');

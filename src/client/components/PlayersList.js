@@ -14,7 +14,7 @@ return (
         //   <div key={index} className={'game'} onClick={() => joinGame(game)}>
             <div key={index}>
             <h1 key={index}>{room}</h1>
-            <div>
+            <div style={{height: '250px', overflow: 'auto'}}>
               {playersGames[room].map((player, index) => {
                 return (<p key={index}>{player}</p> );
               })}

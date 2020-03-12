@@ -90,6 +90,17 @@ const initEngine = io => {
     socket.on('getPiece', () => {
       const pieces = Piece.getTetrominos(5);
       io.in(socket.room).emit('serverAction', {action: {type: SET_PIECES, payload: {pieces}}});
+      games.map((game) => {
+        if (game.room === socket.room) {
+          game.players = game.players.map((player) => {
+            if (player.socketId === null) {
+              player.pieces.push(pieces);
+            }
+            return (player);
+          })
+        }
+        return (game);
+      })
       // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
     });
 

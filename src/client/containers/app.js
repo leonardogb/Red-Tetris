@@ -157,7 +157,7 @@ const App = () => {
                       <PlayersList curRoom={curRoom}/>
                     </div>
                   </div>
-                  {player.isMaster && <button onClick={(e) => {start()}} >Start</button>}
+                  {player.isMaster && !player.isPlaying && <button onClick={(e) => {start()}} >Start</button>}
                 </div>
               ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
               }

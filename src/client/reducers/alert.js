@@ -228,7 +228,7 @@ const reducer = (state = {}, action) => {
           curUser: action.payload.name
         };
       case SWAP_PIECES:
-        if (state.player.pieces.length > 2) {
+        if (state.player.pieces.length > 1) {
           let pieces = [...state.player.pieces];
           const tmp = pieces[0];
           pieces[0] = pieces[1];

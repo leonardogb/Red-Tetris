@@ -42,8 +42,9 @@ const initialState = {
       },
       collided: false
     },
+    gameOver: null,
     status: null,
-    delay: -60
+    delay: null
   },
   curUser: null,
   curRoom: null,

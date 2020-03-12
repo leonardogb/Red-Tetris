@@ -45,7 +45,6 @@ const App = () => {
 
   useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
-      console.log('test');
       if (player.piece.pos.y < 1) {
         console.log('GAME OVER!!!');
         dispatch(setGameOver());

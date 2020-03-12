@@ -3,8 +3,8 @@ import GamesList from "./GamesList";
 import {useSelector, useDispatch} from "react-redux";
 import { setDelay } from '../actions/setDelay';
 
-const Login = ({player}) => {
-  const [socket, curUser, playersGames, curRoom] = useSelector(store => [store.socket, store.curUser, store.playersGames, store.curRoom]);
+const Login = () => {
+  const [socket, curUser, playersGames, player] = useSelector(store => [store.socket, store.curUser, store.playersGames, store.player]);
   const [inputUsername, setInputUsername] = useState('');
   const [inputRoom, setInputRoom] = useState('');
   const dispatch = useDispatch();

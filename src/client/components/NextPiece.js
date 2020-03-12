@@ -31,7 +31,7 @@ const NextPiece = () => {
 
   const style = {
     nextPieceContainer: {
-      margin: '10px'
+      margin: '30px'
     },
     line: {
       display: 'flex',

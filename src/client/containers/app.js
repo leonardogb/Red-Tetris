@@ -45,6 +45,9 @@ const App = () => {
       } else {
         dispatch(updateTetromino());
       }
+      if (player.pieces.length < 3) {
+        socket.emit('getPiece');
+      }
     }
 
   }, [player.piece.collided]);
@@ -55,7 +58,7 @@ const App = () => {
 
     socket.on('setIsplaying', () => {
       player.isPlaying = true;
-    })
+    });
 
     socket.on('deleteId', () => {
       localStorage.removeItem('id');
@@ -65,7 +68,7 @@ const App = () => {
     socket.on('setMaster', (value) => {
       player.isMaster = value;
     })
-  })
+  });
 
   const keyDown = (event) => {
     if (player && !player.gameOver) {
@@ -101,9 +104,6 @@ const App = () => {
         pieceRotate(player.piece, player.grid, 1);
       } else if (event.keyCode === 16) {
         dispatch(swapPieces());
-      }
-      if (player.pieces.length < 3) {
-        socket.emit('getPiece');
       }
     }
   };

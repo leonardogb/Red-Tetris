@@ -43,7 +43,6 @@ const initApp = (app, params, cb) => {
 let games = [];
 
 function checkInactivePlayers() {
-  console.log("games here: ", games);
   if (!isEmpty(games)) {
   games = games.map((game) => {
     console.log("players: ", game.players);

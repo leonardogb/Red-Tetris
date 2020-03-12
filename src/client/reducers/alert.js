@@ -71,7 +71,7 @@ const reducer = (state = {}, action) => {
 
         player.piece.tetromino.forEach((row, y) => {
           row.forEach((value, x) => {
-            if (value !== 0) {
+            if (value !== 0 && newBoard[y + player.piece.pos.y]) {
               newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
                 value,
                 player.piece.collided,

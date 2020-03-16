@@ -1,33 +1,29 @@
 import { UPDATE_PLAYER_POSITION } from '../actions/updatePlayerPosition'
 import { UPDATE_BOARD } from '../actions/updateBoard';
-import {ADD_ROOM} from '../actions/addRoom';
-import {SET_USERNAME} from '../actions/setUsername';
-import {SET_GAMES} from "../actions/setGames";
-import {JOIN_ROOM} from "../actions/joinRoom";
-import {ADD_GAME} from "../actions/addGame";
-import {PIECE_COLLIDED} from '../actions/pieceCollided';
-import {SET_PIECES} from "../actions/setPieces";
-import {SET_GAME_OVER} from "../actions/setGameOver";
-import {UPDATE_GAME} from "../actions/updateGame";
-import {SET_ROOM} from "../actions/setRoom";
-import {SET_PLAYERS_GAMES} from "../actions/setPlayersGames";
-import {SET_PIECE} from "../actions/setPiece";
-import {UPDATE_TETROMINO} from "../actions/updateTetromino";
+import { SET_USERNAME } from '../actions/setUsername';
+import { SET_GAMES } from '../actions/setGames';
+import { PIECE_COLLIDED } from '../actions/pieceCollided';
+import { SET_PIECES } from '../actions/setPieces';
+import { SET_GAME_OVER } from '../actions/setGameOver';
+import { UPDATE_GAME } from '../actions/updateGame';
+import { SET_ROOM } from '../actions/setRoom';
+import { SET_PLAYERS_GAMES } from '../actions/setPlayersGames';
+import { SET_PIECE } from '../actions/setPiece';
+import { UPDATE_TETROMINO } from '../actions/updateTetromino';
 import { SET_CUR_ROOM } from '../actions/setCurRoom';
-import {START_GAME} from "../actions/startGame";
-import {checkCollision} from "../gameHelpers";
-import {DROP_PLAYER} from "../actions/dropPlayer";
-import {SET_DELAY} from "../actions/setDelay";
-import {SET_PLAYER} from "../actions/setPlayer";
+import { START_GAME } from '../actions/startGame';
+import { checkCollision } from '../gameHelpers';
+import { DROP_PLAYER } from '../actions/dropPlayer';
+import { SET_DELAY } from '../actions/setDelay';
+import { SET_PLAYER } from '../actions/setPlayer';
 import { ADD_ROOMS } from '../actions/addRooms';
 import { RELOAD_PLAYER } from '../actions/reloadPlayer';
-import {SWAP_PIECES} from "../actions/swapPieces";
+import { SWAP_PIECES } from '../actions/swapPieces';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
   let piecesList = null;
-
-  switch(action.type) {
+  switch (action.type) {
     case UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;
@@ -49,7 +45,6 @@ const reducer = (state = {}, action) => {
       } else {
         return state;
       }
-
 
     case PIECE_COLLIDED:
       return {

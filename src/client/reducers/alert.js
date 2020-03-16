@@ -21,6 +21,7 @@ import {SET_DELAY} from "../actions/setDelay";
 import {SET_PLAYER} from "../actions/setPlayer";
 import { ADD_ROOMS } from '../actions/addRooms';
 import { RELOAD_PLAYER } from '../actions/reloadPlayer';
+import {SWAP_PIECES} from "../actions/swapPieces";
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -70,7 +71,7 @@ const reducer = (state = {}, action) => {
 
         player.piece.tetromino.forEach((row, y) => {
           row.forEach((value, x) => {
-            if (value !== 0) {
+            if (value !== 0 && newBoard[y + player.piece.pos.y]) {
               newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
                 value,
                 player.piece.collided,
@@ -162,7 +163,8 @@ const reducer = (state = {}, action) => {
         ...state,
         player: {
           ...state.player,
-          gameOver: true
+          gameOver: true,
+          delay: null
         }
       };
     case SET_CUR_ROOM:
@@ -224,13 +226,23 @@ const reducer = (state = {}, action) => {
           player: action.payload.player,
           curRoom: action.payload.room,
           curUser: action.payload.name
+        };
+      case SWAP_PIECES:
+        if (state.player.pieces.length > 1) {
+          let pieces = [...state.player.pieces];
+          const tmp = pieces[0];
+          pieces[0] = pieces[1];
+          pieces[1] = tmp;
+          return {
+            ...state,
+            player: {
+              ...state.player,
+              pieces: pieces
+            }
+          }
+        } else {
+          return state;
         }
-    case "test":
-      console.log(action.payload);
-      return {
-        ...state,
-        test: action.payload
-      };
     default:
       return state
   }

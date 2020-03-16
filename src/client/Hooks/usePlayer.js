@@ -1,21 +1,13 @@
 import {useDispatch} from "react-redux";
 import {updatePlayerPosition} from "../actions/updatePlayerPosition";
-import {updateTetromino} from "../actions/updateTetromino";
 import {checkCollision} from "../gameHelpers";
 import {setPiece} from "../actions/setPiece";
-import {updateBoard} from "../actions/updateBoard";
 
 export  const usePlayer = () => {
   const dispatch = useDispatch();
 
   const updatePlayerPos = (y, x, collided ) => {
     dispatch(updatePlayerPosition(y, x, collided));
-    if (collided) {
-      // buscar otra forma de que se actualice el board sin poner setTimeout
-      setTimeout(() => {
-        dispatch(updateTetromino());
-      });
-    }
   };
 
   const drop = () => {

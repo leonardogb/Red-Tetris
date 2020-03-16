@@ -1,13 +1,24 @@
 import React, {useState} from 'react';
 import GamesList from "./GamesList";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import { setDelay } from '../actions/setDelay';
 
 const Login = () => {
-  // localStorage.removeItem('id');
-  const [socket, curUser, playersGames] = useSelector(store => [store.socket, store.curUser, store.playersGames]);
+  const [socket, curUser, playersGames, player] = useSelector(store => [store.socket, store.curUser, store.playersGames, store.player]);
   const [inputUsername, setInputUsername] = useState('');
   const [inputRoom, setInputRoom] = useState('');
+  const dispatch = useDispatch();
 
+  if (player && player.delay != null)
+  {
+    dispatch(setDelay(null));
+      let id = localStorage.getItem('id');
+      if (id) {
+        socket.emit('removePlayer', id, player.room);
+        localStorage.removeItem('id');
+      }
+  }
+  // localStorage.removeItem('id');
   const getGame = () => {
     if (inputUsername.length > 0 && inputRoom.length > 0) {
       socket.emit('getGame', {username: inputUsername, room: inputRoom});

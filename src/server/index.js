@@ -12,7 +12,7 @@ import { SET_DELAY } from "../client/actions/setDelay";
 import { SET_PLAYERS_GAMES } from "../client/actions/setPlayersGames";
 import { RELOAD_PLAYER } from '../client/actions/reloadPlayer';
 import { SET_GAMES } from '../client/actions/setGames';
-
+import { SET_SPECTRES } from '../client/actions/setSpectres';
 
 const logerror = debug('tetris:error'),
   logInfo = debug('tetris:info');
@@ -71,6 +71,16 @@ const playersGames = (games) => {
       }, [])
     };
   }, {});
+};
+
+const getSpectres = () => {
+  const spectresArray = [];
+  games.map((game) => {
+    game.players.map((player) => {
+      spectresArray.push({ playerName: player.name, spectre: player.spectre });
+    });
+  });
+  return spectresArray;
 };
 
 const initEngine = io => {
@@ -243,6 +253,31 @@ const initEngine = io => {
       // players.splice(players.findIndex(e => e.name === socket.username),1);
       // io.in(socket.room).emit('setPlayersGames', playersGames(games));
     });
+
+    socket.on('updateGrid', (data) => {
+      games = games.map((game) => {
+        if (game.room === socket.room) {
+          game.players.map((player) => {
+            if (player.name === socket.username) {
+              // Générer l'spectre
+              const spectre = data.grid.map((row) => row.map((cell) => cell[0]));
+              for (let i = 0; i < spectre.length; i++) {
+                for (let j = 0; j < spectre[i].length; j++) {
+                  if (spectre[i][j] > 0) {
+                    for (let k = i; k < spectre.length; k++) {
+                      spectre[k][j] = 1;
+                    }
+                  }
+                }
+              }
+              player.spectre = spectre;
+            }
+          });
+        }
+        return game;
+      });
+      socket.emit('serverAction', { action: { type: SET_SPECTRES, payload: { spectres: getSpectres() } } });
+    })
   });
 };
 

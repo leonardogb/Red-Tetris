@@ -9,6 +9,7 @@ import { dropPlayer } from "../actions/dropPlayer";
 import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
+import Spectres from '../components/Spectres';
 import PlayersList from "../components/PlayersList";
 import { reloadPlayer } from '../actions/reloadPlayer';
 import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
@@ -20,7 +21,7 @@ const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
   const [updateStage] = useBoard();
-  const [updatePlayerPos, pieceRotate] = usePlayer();
+  const [updatePlayerPos, pieceRotate, drop] = usePlayer();
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
@@ -95,18 +96,19 @@ const App = () => {
           updatePlayerPos(null, -1, false);
         }
       } else if (event.keyCode === 40) {
-        if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
-          updatePlayerPos(1, null, false);
-        } else {
-          if (player.piece.pos.y < 1) {
-            console.log('GAME OVER!!!');
-            dispatch(setGameOver());
-            // setDropTime(null);
-          } else {
-            updatePlayerPos(null, null, true);
-          }
-          console.log('collided');
-        }
+        // if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
+        //   updatePlayerPos(1, null, false);
+        // } else {
+        //   if (player.piece.pos.y < 1) {
+        //     console.log('GAME OVER!!!');
+        //     dispatch(setGameOver());
+        //     // setDropTime(null);
+        //   } else {
+        //     updatePlayerPos(null, null, true);
+        //   }
+        //   console.log('collided');
+        // }
+        drop();
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
       } else if (event.keyCode === 16) {
@@ -116,18 +118,20 @@ const App = () => {
   };
 
   useInterval(() => {
-    if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
-      dispatch(dropPlayer());
-    } else {
-      if (player.piece.pos.y < 1) {
-        console.log('GAME OVER!!!');
-        dispatch(setGameOver());
-        // setDropTime(null);
-      } else {
-        updatePlayerPos(null, null, true);
-      }
-      console.log('collided');
-    }
+    // if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
+    //   dispatch(dropPlayer());
+    // } else {
+    //   if (player.piece.pos.y < 1) {
+    //     console.log('GAME OVER!!!');
+    //     dispatch(setGameOver());
+    //     // setDropTime(null);
+    //   } else {
+    //     updatePlayerPos(null, null, true);
+    //   }
+    //   console.log('collided');
+    // }
+
+    // drop();
   }, delay);
 
   const start = () => {
@@ -165,6 +169,7 @@ const App = () => {
                     </div>
                   </div>
                   {player.isMaster && !player.isPlaying && <button onClick={(e) => {start()}} >Start</button>}
+                  <Spectres />
                 </div>
               ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
               }

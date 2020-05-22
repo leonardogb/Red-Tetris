@@ -19,6 +19,7 @@ import { SET_PLAYER } from '../actions/setPlayer';
 import { ADD_ROOMS } from '../actions/addRooms';
 import { RELOAD_PLAYER } from '../actions/reloadPlayer';
 import { SWAP_PIECES } from '../actions/swapPieces';
+import { SET_SPECTRES } from '../actions/setSpectres';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -237,7 +238,12 @@ const reducer = (state = {}, action) => {
           }
         } else {
           return state;
-        }
+        };
+      case SET_SPECTRES:
+        return {
+          ...state,
+          spectres: action.payload.spectres
+        };
     default:
       return state
   }

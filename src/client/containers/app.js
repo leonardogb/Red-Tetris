@@ -79,7 +79,11 @@ const App = () => {
   });
 
   const keyDown = (event) => {
+    // event.preventDefault()
+    // event.stopPropagation()
     if (player && !player.gameOver) {
+      event.preventDefault()
+      event.stopPropagation()
       if (event.keyCode === 32) {
         let tmpPiece = JSON.parse(JSON.stringify(player.piece));
         while (!checkCollision(tmpPiece, player.grid, { x: 0, y: 1 })) {
@@ -153,7 +157,7 @@ const App = () => {
   return (
     <HashRouter hashType="noslash">
       <Switch>
-        <Route exact path="/" render={() => <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+        <Route exact path="/" render={() => <div tabIndex={0}>
             <Login player={player} socket={socket}/>
           </div>}/>
         <Route exact path="/:room[:player]" render={() => <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>

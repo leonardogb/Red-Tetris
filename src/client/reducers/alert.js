@@ -240,6 +240,21 @@ const reducer = (state = {}, action) => {
           return state;
         };
       case SET_SPECTRES:
+        let spectres = [...state.spectres];
+        if (state.spectres) {
+          const indexSpectre = spectres.findIndex(element => element.playerName === action.payload.username);
+          if (indexSpectre !== -1) {
+            spectres[indexSpectre] = action.payload.spectres
+          } else {
+            spectres.push(action.payload.spectres);
+          }
+          return {
+            ...state,
+            spectres: spectres
+          };
+        }
+        console.log(spectres);
+        
         return {
           ...state,
           spectres: action.payload.spectres

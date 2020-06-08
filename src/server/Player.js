@@ -1,4 +1,4 @@
-import {initialBoard} from "../client/gameHelpers";
+import { initialBoard, initialSpectre } from "../client/gameHelpers";
 
 
 class Player {
@@ -22,6 +22,7 @@ class Player {
     };
     this.gameOver = false;
     this.delay = null;
+    this.spectre = initialSpectre();
   }
 }
 

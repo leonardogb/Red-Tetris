@@ -39,7 +39,8 @@ const reducer = (state = {}, action) => {
                 x: state.player.piece.pos.x + posX,
                 y: state.player.piece.pos.y + posY
               },
-              collided: action.payload.collided
+              collided: action.payload.collided,
+              new: false
             }
           }
         };
@@ -86,6 +87,7 @@ const reducer = (state = {}, action) => {
             ack.push(row);
             return ack;
           }, []);
+          //
         }
         return {
           ...state,
@@ -150,7 +152,8 @@ const reducer = (state = {}, action) => {
               x: state.player.grid[0].length / 2 - 2,
               y: 0
             },
-            collided: false
+            collided: false,
+            new: true
           }
         }
       };
@@ -216,7 +219,6 @@ const reducer = (state = {}, action) => {
         rooms: action.payload.rooms
       };
       case RELOAD_PLAYER:
-        // console.log("action: ", action);
         return {
           ...state,
           player: action.payload.player,
@@ -244,7 +246,6 @@ const reducer = (state = {}, action) => {
         
         if (state.spectres) {
           spectres = JSON.parse(JSON.stringify(state.spectres));
-          console.log(spectres);
           const indexSpectre = spectres.findIndex(element => element.playerName === action.payload.username);
           if (indexSpectre !== -1) {
             spectres[indexSpectre] = action.payload.spectre

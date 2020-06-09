@@ -5,13 +5,11 @@ import { setGameOver } from "../actions/setGameOver";
 import { usePlayer } from "../Hooks/usePlayer";
 import { useBoard } from '../Hooks/useBoard';
 import { useInterval } from "../Hooks/useInterval";
-import { dropPlayer } from "../actions/dropPlayer";
 import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
 import Spectres from '../components/Spectres';
 import PlayersList from "../components/PlayersList";
-import { reloadPlayer } from '../actions/reloadPlayer';
 import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
 import NextPiece from "../components/NextPiece";
 import {updateTetromino} from "../actions/updateTetromino";
@@ -51,6 +49,7 @@ const App = () => {
         dispatch(setGameOver());
         // setDropTime(null);
       } else {
+        // socket.emit('updateGrid', { grid: player.grid }); déjà fait dans useBoard if player.piece.new
         dispatch(updateTetromino());
       }
       if (player.pieces.length < 3) {
@@ -85,12 +84,7 @@ const App = () => {
       event.preventDefault()
       event.stopPropagation()
       if (event.keyCode === 32) {
-        let tmpPiece = JSON.parse(JSON.stringify(player.piece));
-        while (!checkCollision(tmpPiece, player.grid, { x: 0, y: 1 })) {
-          tmpPiece.pos.y++;
-        }
-        updatePlayerPos(tmpPiece.pos.y - player.piece.pos.y, null, true);
-        // Mejorar porque actualizo tablero cuando se actualiza la posición, pego la pieza y lo vuelvo a actualizar.
+        drop(true);
       } else if (event.keyCode === 39) {
         if (!checkCollision(player.piece, player.grid, { x: 1, y: 0 })) {
           updatePlayerPos(null, 1, false);
@@ -100,18 +94,6 @@ const App = () => {
           updatePlayerPos(null, -1, false);
         }
       } else if (event.keyCode === 40) {
-        // if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
-        //   updatePlayerPos(1, null, false);
-        // } else {
-        //   if (player.piece.pos.y < 1) {
-        //     console.log('GAME OVER!!!');
-        //     dispatch(setGameOver());
-        //     // setDropTime(null);
-        //   } else {
-        //     updatePlayerPos(null, null, true);
-        //   }
-        //   console.log('collided');
-        // }
         drop();
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
@@ -122,20 +104,7 @@ const App = () => {
   };
 
   useInterval(() => {
-    // if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
-    //   dispatch(dropPlayer());
-    // } else {
-    //   if (player.piece.pos.y < 1) {
-    //     console.log('GAME OVER!!!');
-    //     dispatch(setGameOver());
-    //     // setDropTime(null);
-    //   } else {
-    //     updatePlayerPos(null, null, true);
-    //   }
-    //   console.log('collided');
-    // }
-
-    // drop();
+    drop();
   }, delay);
 
   const start = () => {

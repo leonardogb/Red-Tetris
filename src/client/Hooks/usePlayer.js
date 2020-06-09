@@ -2,32 +2,39 @@ import { useDispatch, useSelector } from "react-redux";
 import { updatePlayerPosition } from "../actions/updatePlayerPosition";
 import { checkCollision } from "../gameHelpers";
 import { setPiece } from "../actions/setPiece";
+import { setGameOver } from '../actions/setGameOver';
 
 export  const usePlayer = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player);
-  const socket = useSelector(state => state.socket);
 
   const updatePlayerPos = (y, x, collided ) => {
     dispatch(updatePlayerPosition(y, x, collided));
   };
 
-  const drop = () => {
-    if (checkCollision(player.piece, player.grid, { x: 0, y: 1 }) === false) {
-      updatePlayerPos(1, null, false);
-    }
-    else {
-      if (player.piece.pos.y < 1) {
-        console.log('GAME OVER 1!!!');
-        dispatch(setGameOver());
-
-        // setDropTime(null);
+  const drop = (bottom = false) => {
+    if (!bottom) {
+      if (checkCollision(player.piece, player.grid, { x: 0, y: 1 }) === false) {
+        updatePlayerPos(1, null, false);
       }
       else {
-        updatePlayerPos(null, null, true);
+        if (player.piece.pos.y < 1) {
+          console.log('GAME OVER 1!!!');
+          dispatch(setGameOver());
+
+          // setDropTime(null);
+        }
+        else {
+          updatePlayerPos(null, null, true);
+        }
+        console.log('collided');
       }
-      console.log('collided');
-      socket.emit('updateGrid', { grid: player.grid });
+    } else {
+      let tmpPiece = JSON.parse(JSON.stringify(player.piece));
+      while (!checkCollision(tmpPiece, player.grid, { x: 0, y: 1 })) {
+        tmpPiece.pos.y++;
+      }
+      updatePlayerPos(tmpPiece.pos.y - player.piece.pos.y, null, true);
     }
   };
 

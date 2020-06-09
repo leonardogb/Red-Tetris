@@ -1,7 +1,6 @@
 import fs from 'fs';
 import debug from 'debug';
-import { initialBoard, isEmpty } from "../client/gameHelpers";
-import { randomTetromino } from "../client/tetrominos";
+import { isEmpty } from "../client/gameHelpers";
 import { Player } from "./Player";
 import { Game } from "./Game";
 import { Piece } from "./Piece";
@@ -11,7 +10,6 @@ import { UPDATE_TETROMINO } from "../client/actions/updateTetromino";
 import { SET_DELAY } from "../client/actions/setDelay";
 import { SET_PLAYERS_GAMES } from "../client/actions/setPlayersGames";
 import { RELOAD_PLAYER } from '../client/actions/reloadPlayer';
-import { SET_GAMES } from '../client/actions/setGames';
 import { SET_SPECTRES } from '../client/actions/setSpectres';
 
 const logerror = debug('tetris:error'),

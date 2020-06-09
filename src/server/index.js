@@ -73,17 +73,17 @@ const playersGames = (games) => {
   }, {});
 };
 
-const getSpectres = (curUser) => {
-  const spectresArray = [];
+const getSpectre = (curUser) => {
+  let spectre = null;
   games.map((game) => {
     game.players.map((player) => {
       if (player.name === curUser) {
-        spectresArray.push({ playerName: player.name, spectre: player.spectre });
+        spectre = { playerName: player.name, spectre: player.spectre };
         // spectresArray[player.name] = { playerName: player.name, spectre: player.spectre };
       }
     });
   });
-  return spectresArray;
+  return spectre;
 };
 
 const initEngine = io => {
@@ -279,7 +279,7 @@ const initEngine = io => {
         }
         return game;
       });
-      socket.to(socket.room).emit('serverAction', { action: { type: SET_SPECTRES, payload: { spectres: getSpectres(socket.username), username: socket.username } } });
+      socket.to(socket.room).emit('serverAction', { action: { type: SET_SPECTRES, payload: { spectre: getSpectre(socket.username), username: socket.username } } });
     })
   });
 };

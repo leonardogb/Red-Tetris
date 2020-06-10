@@ -149,10 +149,10 @@ const App = () => {
   return (
     <HashRouter hashType="noslash">
       <Switch>
-        <Route exact path="/" render={() => <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+        <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0} onKeyDown={(event) => keyDown(event)}>
             <Login player={player} socket={socket}/>
           </div>}/>
-        <Route exact path="/:room[:player]" render={() => <div tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+        <Route exact path="/:room[:player]" render={() => <div style={{ height: '100%' }} tabIndex={0} onKeyDown={(event) => keyDown(event)}>
             <div>
               {curRoom ? (
                 <div>

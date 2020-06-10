@@ -2,6 +2,11 @@ import React, {useState} from 'react';
 import GamesList from "./GamesList";
 import {useSelector, useDispatch} from "react-redux";
 import { setDelay } from '../actions/setDelay';
+import { Button } from 'evergreen-ui'
+import { TextInput } from 'evergreen-ui'
+import { TextInputField } from 'evergreen-ui'
+import { Icon } from 'evergreen-ui'
+import './Login.css';
 
 const Login = () => {
   const [socket, curUser, playersGames, player] = useSelector(store => [store.socket, store.curUser, store.playersGames, store.player]);
@@ -29,32 +34,54 @@ const Login = () => {
   };
 
   return (
-    <div>
-        <div>
+    <div style={{ height: '100%' }}>
+      {/* <div className="Credentials"> */}
+      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ height: '100px', width: '200px' }}>
           <div>
-            <div>
-              {curUser}
-            </div>
             <GamesList playersGames={playersGames} socket={socket} />
             <div>
-              <p>Login :</p>
-              <input type="text" name="username" onChange={() => setInputUsername(event.target.value)} onKeyPress={(e) => {
-                if (e.charCode === 13) {
-                  getGame();
-                }
-              }} />
-              <p>Créer ou joindre une partie :</p>
-              <input type="text" name="room" onChange={() => setInputRoom(event.target.value)} onKeyPress={(e) => {
-                if (e.charCode === 13) {
-                  getGame();
-                }
-              }} />
+              <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '16px' }}>
+                <div style={{ backgroundColor: '#f3f7f8', width: '20%' }}>
+                  <div style={{height: '32px'}}>
+                  <Icon icon="user" size={28}/>
+                  </div>
+                </div>
+                <TextInput
+                  // marginBottom={0}
+                  // marginRight={0}
+                  // marginTop={0}
+                  // height={'200%'}
+                  height={'32px'}
+                  width={'80%'}
+                  type="text"
+                  name="username"
+                  placeholder="Login"
+                  onChange={() => setInputUsername(event.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.charCode === 13) {
+                      getGame();
+                    }
+                  }} />
+              </div>
+              <TextInput
+                marginBottom={16}
+                type="text"
+                name="room"
+                placeholder="Créer ou joindre une partie"
+                onChange={() => setInputRoom(event.target.value)}
+                onKeyPress={(e) => {
+                  if (e.charCode === 13) {
+                    getGame();
+                  }
+                }} />
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <Button marginBottom={16} marginRight={16} onClick={() => getGame()}>Envoyer</Button>
             </div>
           </div>
-          <div>
-            <button onClick={() => getGame()}>Envoyer</button>
-          </div>
         </div>
+      </div>
     </div>
   );
 };

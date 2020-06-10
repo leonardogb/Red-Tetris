@@ -1,0 +1,14 @@
+/* html, body { */
+  /* height: 100%; */
+  /* margin: 0; */
+/* } */
+
+.Credentials {
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+}
+
+body {
+  background-image: url("https://www.itl.cat/pics/b/32/325186_neon-city-wallpaper.jpg");
+}

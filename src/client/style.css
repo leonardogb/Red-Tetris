@@ -1,6 +1,12 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   color: #34495f;
 }
+
 .board {
   background-color: gray;
   width: 320px;

@@ -6,6 +6,11 @@ export const initialBoard = () =>
     new Array(STAGE_WIDTH).fill([0, false])
   );
 
+export const initialSpectre = () =>
+  Array.from(Array(STAGE_HEIGHT), () =>
+  new Array(STAGE_WIDTH).fill(0)
+  );
+
 export const checkCollision = (piece, stage, { x: moveX, y: moveY }) => {
 
   for (let y = 0; y < piece.tetromino.length; y++) {

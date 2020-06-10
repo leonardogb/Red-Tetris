@@ -44,7 +44,8 @@ const initialState = {
     },
     gameOver: null,
     status: null,
-    delay: null
+    delay: null,
+    new: false
   },
   curUser: null,
   curRoom: null,

@@ -19,6 +19,7 @@ import { SET_PLAYER } from '../actions/setPlayer';
 import { ADD_ROOMS } from '../actions/addRooms';
 import { RELOAD_PLAYER } from '../actions/reloadPlayer';
 import { SWAP_PIECES } from '../actions/swapPieces';
+import { SET_SPECTRES } from '../actions/setSpectres';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -38,7 +39,8 @@ const reducer = (state = {}, action) => {
                 x: state.player.piece.pos.x + posX,
                 y: state.player.piece.pos.y + posY
               },
-              collided: action.payload.collided
+              collided: action.payload.collided,
+              new: false
             }
           }
         };
@@ -76,7 +78,7 @@ const reducer = (state = {}, action) => {
         });
 
         if (player.piece.collided) {
-          newBoard = newBoard.reduce((ack, row) => {
+          newBoard = newBoard.reduce((ack, row, index) => {
             if (row.findIndex(cell => cell[0] === 0) === -1) {
               // Gestión de puntos
               ack.unshift(new Array(newBoard[0].length).fill([0, false]));
@@ -149,7 +151,8 @@ const reducer = (state = {}, action) => {
               x: state.player.grid[0].length / 2 - 2,
               y: 0
             },
-            collided: false
+            collided: false,
+            new: true
           }
         }
       };
@@ -215,7 +218,6 @@ const reducer = (state = {}, action) => {
         rooms: action.payload.rooms
       };
       case RELOAD_PLAYER:
-        // console.log("action: ", action);
         return {
           ...state,
           player: action.payload.player,
@@ -237,7 +239,27 @@ const reducer = (state = {}, action) => {
           }
         } else {
           return state;
+        };
+      case SET_SPECTRES:
+        let spectres = [];
+        
+        if (state.spectres) {
+          spectres = JSON.parse(JSON.stringify(state.spectres));
+          const indexSpectre = spectres.findIndex(element => element.playerName === action.payload.username);
+          if (indexSpectre !== -1) {
+            spectres[indexSpectre] = action.payload.spectre
+          } else {
+            spectres.push(action.payload.spectre);
+          }
+          return {
+            ...state,
+            spectres: spectres
+          };
         }
+        return {
+          ...state,
+          spectres: [action.payload.spectre]
+        };
     default:
       return state
   }

@@ -5,12 +5,11 @@ import { setGameOver } from "../actions/setGameOver";
 import { usePlayer } from "../Hooks/usePlayer";
 import { useBoard } from '../Hooks/useBoard';
 import { useInterval } from "../Hooks/useInterval";
-import { dropPlayer } from "../actions/dropPlayer";
 import Login from "../components/Login";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
+import Spectres from '../components/Spectres';
 import PlayersList from "../components/PlayersList";
-import { reloadPlayer } from '../actions/reloadPlayer';
 import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
 import NextPiece from "../components/NextPiece";
 import {updateTetromino} from "../actions/updateTetromino";
@@ -20,7 +19,7 @@ const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
   const [updateStage] = useBoard();
-  const [updatePlayerPos, pieceRotate] = usePlayer();
+  const [updatePlayerPos, pieceRotate, drop] = usePlayer();
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
@@ -50,6 +49,7 @@ const App = () => {
         dispatch(setGameOver());
         // setDropTime(null);
       } else {
+        // socket.emit('updateGrid', { grid: player.grid }); déjà fait dans useBoard if player.piece.new
         dispatch(updateTetromino());
       }
       if (player.pieces.length < 3) {
@@ -78,14 +78,13 @@ const App = () => {
   });
 
   const keyDown = (event) => {
+    // event.preventDefault()
+    // event.stopPropagation()
     if (player && !player.gameOver) {
+      event.preventDefault()
+      event.stopPropagation()
       if (event.keyCode === 32) {
-        let tmpPiece = JSON.parse(JSON.stringify(player.piece));
-        while (!checkCollision(tmpPiece, player.grid, { x: 0, y: 1 })) {
-          tmpPiece.pos.y++;
-        }
-        updatePlayerPos(tmpPiece.pos.y - player.piece.pos.y, null, true);
-        // Mejorar porque actualizo tablero cuando se actualiza la posición, pego la pieza y lo vuelvo a actualizar.
+        drop(true);
       } else if (event.keyCode === 39) {
         if (!checkCollision(player.piece, player.grid, { x: 1, y: 0 })) {
           updatePlayerPos(null, 1, false);
@@ -95,18 +94,7 @@ const App = () => {
           updatePlayerPos(null, -1, false);
         }
       } else if (event.keyCode === 40) {
-        if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
-          updatePlayerPos(1, null, false);
-        } else {
-          if (player.piece.pos.y < 1) {
-            console.log('GAME OVER!!!');
-            dispatch(setGameOver());
-            // setDropTime(null);
-          } else {
-            updatePlayerPos(null, null, true);
-          }
-          console.log('collided');
-        }
+        drop();
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
       } else if (event.keyCode === 16) {
@@ -116,18 +104,7 @@ const App = () => {
   };
 
   useInterval(() => {
-    if (!checkCollision(player.piece, player.grid, { x: 0, y: 1 })) {
-      dispatch(dropPlayer());
-    } else {
-      if (player.piece.pos.y < 1) {
-        console.log('GAME OVER!!!');
-        dispatch(setGameOver());
-        // setDropTime(null);
-      } else {
-        updatePlayerPos(null, null, true);
-      }
-      console.log('collided');
-    }
+    drop();
   }, delay);
 
   const start = () => {
@@ -149,7 +126,7 @@ const App = () => {
   return (
     <HashRouter hashType="noslash">
       <Switch>
-        <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+        <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>
             <Login player={player} socket={socket}/>
           </div>}/>
         <Route exact path="/:room[:player]" render={() => <div style={{ height: '100%' }} tabIndex={0} onKeyDown={(event) => keyDown(event)}>
@@ -165,6 +142,7 @@ const App = () => {
                     </div>
                   </div>
                   {player.isMaster && !player.isPlaying && <button onClick={(e) => {start()}} >Start</button>}
+                  <Spectres />
                 </div>
               ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
               }

@@ -81,6 +81,7 @@ const reducer = (state = {}, action) => {
           newBoard = newBoard.reduce((ack, row, index) => {
             if (row.findIndex(cell => cell[0] === 0) === -1) {
               // Gestión de puntos
+              console.log(index);
               ack.unshift(new Array(newBoard[0].length).fill([0, false]));
               return ack;
             }

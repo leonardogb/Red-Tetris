@@ -11,6 +11,7 @@ import { SET_DELAY } from "../client/actions/setDelay";
 import { SET_PLAYERS_GAMES } from "../client/actions/setPlayersGames";
 import { RELOAD_PLAYER } from '../client/actions/reloadPlayer';
 import { SET_SPECTRES } from '../client/actions/setSpectres';
+import * as actionTypes from '../client/actions/actionTypes';
 
 const logerror = debug('tetris:error'),
   logInfo = debug('tetris:info');
@@ -279,6 +280,16 @@ const initEngine = io => {
       });
       socket.to(socket.room).emit('serverAction', { action: { type: SET_SPECTRES, payload: { spectre: getSpectre(socket.username), username: socket.username } } });
     })
+
+    socket.on('malus', data => {
+      const malus = data.malus.map(row => {
+         return row.reduce((acc, value) => {
+          acc.push([value[1] ? value[0] : 0, value[1]]);
+          return acc;
+        }, []);
+      });
+      socket.to(socket.room).emit('serverAction', { action: { type: actionTypes.SET_MALUS, payload: { malus: malus, username: socket.username } } });
+    });
   });
 };
 

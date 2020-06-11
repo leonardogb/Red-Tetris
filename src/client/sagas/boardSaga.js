@@ -4,8 +4,9 @@ import { UPDATE_BOARD } from '../actions/updateBoard';
 // worker Saga: will be fired on UPDATE_GRID actions
 function* updateBoard(action) {
    try {
-        const getPlayer = (state) => state.player;
-        const player = yield select(getPlayer);
+       const getPlayer = (state) => state.player;
+       const player = yield select(getPlayer);
+       const socket = yield select(state => state.socket);
 
         if (player.grid) {
             let newBoard = player.grid.map(row =>
@@ -23,16 +24,20 @@ function* updateBoard(action) {
             });
             
             if (player.piece.collided) {
+                const malusArray = [];
                 newBoard = newBoard.reduce((ack, row, index) => {
                     if (row.findIndex(cell => cell[0] === 0) === -1) {
                         // Gestión de puntos
-                        console.log(index);
+                        malusArray.push(player.grid[index]);
                         ack.unshift(new Array(newBoard[0].length).fill([0, false]));
                         return ack;
                     }
                     ack.push(row);
                     return ack;
                 }, []);
+                if (malusArray.length > 0) {
+                    socket.emit('malus', {malus: malusArray});
+                }
             }
             yield put({type: UPDATE_BOARD, payload: {newBoard: newBoard}});
         }
@@ -45,7 +50,7 @@ function* updateBoard(action) {
   Starts fetchUser on each dispatched `UPDATE_GRID` action.
   Allows concurrent fetches of user.
 */
-function* mySaga() {
+function* mySaga(socket) {
   yield takeEvery("UPDATE_GRID", updateBoard);
 }
 

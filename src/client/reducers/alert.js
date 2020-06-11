@@ -20,6 +20,7 @@ import { ADD_ROOMS } from '../actions/addRooms';
 import { RELOAD_PLAYER } from '../actions/reloadPlayer';
 import { SWAP_PIECES } from '../actions/swapPieces';
 import { SET_SPECTRES } from '../actions/setSpectres';
+import { SET_MALUS } from '../actions/actionTypes';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -267,6 +268,27 @@ const reducer = (state = {}, action) => {
         return {
           ...state,
           spectres: [action.payload.spectre]
+        };
+      case SET_MALUS:
+        const grid = state.player.grid;
+        const malusArray = action.payload.malus;
+
+        for(let i = 0; i < grid.length; i++) {
+          if (grid[i].findIndex(cell => cell[0] !== 0) === -1) {
+            if (malusArray.length > 0) {
+              grid.splice(i, 1);
+              const row = malusArray.shift();
+              console.log(row);
+              grid.push(row);
+            }
+          }
+        }
+        return {
+          ...state,
+          player: {
+            ...state.player,
+            grid: grid
+          }
         };
     default:
       return state

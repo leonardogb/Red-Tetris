@@ -21,7 +21,6 @@ function createSocketChannel(socket) {
 
     // setup the subscription
     socket.on('serverAction', serverAction);
-    socket.on('dfgdf', serverAction);
     socket.on('error', errorHandler);
 
     // the subscriber must return an unsubscribe function

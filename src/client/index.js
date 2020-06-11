@@ -15,7 +15,8 @@ import { updateBoard } from './actions/updateBoard';
 import createSagaMiddleware from 'redux-saga';
 import watchUpdatePlayerPosition from './sagas/index';
 import countdown from './sagas/countdown';
-import socketSaga from './sagas/socketSaga';
+// import socketSaga from './sagas/socketSaga';
+import rootSaga from './sagas/rootSaga';
 
 import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
@@ -61,7 +62,8 @@ const store = createStore(
   // composeEnhancer(applyMiddleware(sagaMiddleware, createLogger())),
   composeEnhancer(applyMiddleware(sagaMiddleware)),
 );
-sagaMiddleware.run(socketSaga, socket, store.dispatch);
+// sagaMiddleware.run(socketSaga, socket, store.dispatch);
+sagaMiddleware.run(rootSaga, socket, store.dispatch);
 
 // const keyDown = (keyCode) => {
 //

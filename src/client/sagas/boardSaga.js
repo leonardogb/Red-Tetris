@@ -1,32 +1,52 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { select, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { UPDATE_BOARD } from '../actions/updateBoard';
 
-// worker Saga: will be fired on USER_FETCH_REQUESTED actions
-function* fetchUser(action) {
+// worker Saga: will be fired on UPDATE_GRID actions
+function* updateBoard(action) {
    try {
-      const user = yield call(Api.fetchUser, action.payload.userId);
-      yield put({type: "USER_FETCH_SUCCEEDED", user: user});
+        const getPlayer = (state) => state.player;
+        const player = yield select(getPlayer);
+
+        if (player.grid) {
+            let newBoard = player.grid.map(row =>
+                row.map(cell => (cell[1] ? cell : [0, false]))
+                );
+            player.piece.tetromino.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0 && newBoard[y + player.piece.pos.y]) {
+                        newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
+                            value,
+                            player.piece.collided,
+                        ];
+                    }
+                });
+            });
+            
+            if (player.piece.collided) {
+                newBoard = newBoard.reduce((ack, row, index) => {
+                    if (row.findIndex(cell => cell[0] === 0) === -1) {
+                        // Gestión de puntos
+                        console.log(index);
+                        ack.unshift(new Array(newBoard[0].length).fill([0, false]));
+                        return ack;
+                    }
+                    ack.push(row);
+                    return ack;
+                }, []);
+            }
+            yield put({type: UPDATE_BOARD, payload: {newBoard: newBoard}});
+        }
    } catch (e) {
-      yield put({type: "USER_FETCH_FAILED", message: e.message});
+        yield put({type: "UPDATE_BOARD_FAILED", message: e.message});
    }
 }
 
 /*
-  Starts fetchUser on each dispatched `USER_FETCH_REQUESTED` action.
+  Starts fetchUser on each dispatched `UPDATE_GRID` action.
   Allows concurrent fetches of user.
 */
 function* mySaga() {
-  yield takeEvery("USER_FETCH_REQUESTED", fetchUser);
-}
-
-/*
-  Alternatively you may use takeLatest.
-
-  Does not allow concurrent fetches of user. If "USER_FETCH_REQUESTED" gets
-  dispatched while a fetch is already pending, that pending fetch is cancelled
-  and only the latest one will be run.
-*/
-function* mySaga() {
-  yield takeLatest("USER_FETCH_REQUESTED", fetchUser);
+  yield takeEvery("UPDATE_GRID", updateBoard);
 }
 
 export default mySaga;

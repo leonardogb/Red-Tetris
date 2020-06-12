@@ -9,6 +9,25 @@
   justify-content: 'center';
 }
 
-body {
-  background-image: url("https://www.itl.cat/pics/b/32/325186_neon-city-wallpaper.jpg");
+/* body {
+  background-image: url('/src/assets/325186_neon-city-wallpaper.jpg');
+} */
+
+.loginBox {
+  border-radius: 25px;
+  height: 250px;
+  width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #34393e;
+  box-shadow: 0px 0px 8px 5px rgba(0, 0, 0, .4);
 }
+
+.loginBox h1{
+  color: white;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-align: center;
+}
+

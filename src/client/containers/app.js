@@ -10,10 +10,12 @@ import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
 import Spectres from '../components/Spectres';
 import PlayersList from "../components/PlayersList";
-import {HashRouter, Route, Switch, Redirect} from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import NextPiece from "../components/NextPiece";
-import {updateTetromino} from "../actions/updateTetromino";
-import {swapPieces} from "../actions/swapPieces";
+import { updateTetromino } from "../actions/updateTetromino";
+import { swapPieces } from "../actions/swapPieces";
+import Footer from "../components/Footer";
+import "./app.css";
 
 const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
@@ -36,8 +38,7 @@ const App = () => {
 
   useEffect(() => {
     console.log("gameOver: ", player.gameOver);
-    if (player.gameOver === true)
-    {
+    if (player.gameOver === true) {
       player.isPlaying = false;
     }
   }, [player.gameOver]);
@@ -59,17 +60,17 @@ const App = () => {
 
   }, [player.piece.collided]);
 
-    socket.on('setId', (id) => {
-      localStorage.setItem('id', id);
-    });
+  socket.on('setId', (id) => {
+    localStorage.setItem('id', id);
+  });
 
-    socket.on('setIsplaying', () => {
-      player.isPlaying = true;
-    });
+  socket.on('setIsplaying', () => {
+    player.isPlaying = true;
+  });
 
-    socket.on('deleteId', () => {
-      localStorage.removeItem('id');
-    });
+  socket.on('deleteId', () => {
+    localStorage.removeItem('id');
+  });
 
   useEffect(() => {
     socket.on('setMaster', (value) => {
@@ -124,32 +125,37 @@ const App = () => {
   };
 
   return (
-    <HashRouter hashType="noslash">
-      <Switch>
-        <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>
-            <Login player={player} socket={socket}/>
-          </div>}/>
-        <Route exact path="/:room[:player]" render={() => <div style={{ height: '100%' }} tabIndex={0} onKeyDown={(event) => keyDown(event)}>
-            <div>
-              {curRoom ? (
-                <div>
-                  Player {curUser} in {curRoom} room.
-                  <div style={style.gameContainer}>
-                    <Board />
-                    <div style={style.asideSection}>
-                      <NextPiece/>
-                      <PlayersList curRoom={curRoom}/>
+    <div className="page-container">
+      <div className="content-wrap">
+        <HashRouter hashType="noslash">
+          <Switch>
+            <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>
+              <Login player={player} socket={socket} />
+            </div>} />
+            <Route exact path="/:room[:player]" render={() => <div style={{ height: '100%' }} tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+              <div>
+                {curRoom ? (
+                  <div>
+                    Player {curUser} in {curRoom} room.
+                    <div style={style.gameContainer}>
+                      <Board />
+                      <div style={style.asideSection}>
+                        <NextPiece />
+                        <PlayersList curRoom={curRoom} />
+                      </div>
                     </div>
+                    {player.isMaster && !player.isPlaying && <button onClick={(e) => { start() }} >Start</button>}
+                    <Spectres />
                   </div>
-                  {player.isMaster && !player.isPlaying && <button onClick={(e) => {start()}} >Start</button>}
-                  <Spectres />
-                </div>
-              ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
-              }
-            </div>
-          </div>}/>
-      </Switch>
-    </HashRouter>
+                ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
+                }
+              </div>
+            </div>} />
+          </Switch>
+        </HashRouter>
+      </div>
+      <Footer />
+    </div>
   );
 };
 

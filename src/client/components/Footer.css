@@ -1,0 +1,106 @@
+.full-footer {
+  /* overflow: auto; */
+  /* display: table; */
+  /* display: flex; */
+}
+
+.sub-footer {
+  display: flex;
+  background-color: #34393e;
+  justify-content: center;
+  cursor: pointer;
+
+  /* padding-top: 25px; */
+}
+
+.sub-footer:hover {
+  background-color: #555;
+}
+
+.main-footer {
+  color: white;
+  background-color: #34393e;
+  padding-top: 1em;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.social {
+  width: 20%;
+}
+
+.social h4{
+  text-align: center;
+}
+
+.list-unstyled {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 30px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+  border-radius: 50%;
+}
+
+.fa:active, .fa:focus {
+  outline: 0;
+  border: none;
+  -moz-outline-style: none;
+}
+
+.fa:hover {
+  opacity: 0.7;
+}
+
+.fa-github {
+  background: white;
+  color: black;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+  color: white;
+}
+
+.subject {
+  color: red;
+}
+
+.arrow-up {
+  /* justify-content: center; */
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+
+  border-bottom: 25px solid white;
+}
+
+.arrow-down {
+  /* justify-content: center; */
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+
+  border-top: 25px solid white;
+}

@@ -9,7 +9,9 @@ export  const useBoard = () => {
   const socket = useSelector(state => state.socket);
 
   const updateStage = () => {
-    dispatch(updateBoard());
+    // dispatch(updateBoard());
+    dispatch({type: 'UPDATE_GRID'})
+
     // socket.emit('updateGrid', { grid: player.grid });
     // if (player.piece.collided) {
     //   socket.emit('updateGrid', { grid: player.grid });

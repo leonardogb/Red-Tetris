@@ -14,6 +14,7 @@ import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import NextPiece from "../components/NextPiece";
 import { updateTetromino } from "../actions/updateTetromino";
 import { swapPieces } from "../actions/swapPieces";
+import ToggleSwitch from '../components/ToggleSwitch';
 import Footer from "../components/Footer";
 import "./app.css";
 
@@ -22,6 +23,7 @@ const App = () => {
   const dispatch = useDispatch();
   const [updateStage] = useBoard();
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
+  const [switchValue, setSwitchValue] = useState(true);
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
@@ -124,6 +126,11 @@ const App = () => {
     }
   };
 
+  const setIsDestructible = () => {
+    setSwitchValue(!switchValue);
+    socket.emit('setIsDestructible', !switchValue);
+  }
+
   return (
     <div className="page-container">
       <div className="content-wrap">
@@ -144,7 +151,18 @@ const App = () => {
                         <PlayersList curRoom={curRoom} />
                       </div>
                     </div>
-                    {player.isMaster && !player.isPlaying && <button onClick={(e) => { start() }} >Start</button>}
+                    {
+                      player.isMaster && !player.isPlaying && 
+                      <div>
+                        <ToggleSwitch
+                          isOn={switchValue}
+                          onColor="#41C83C"
+                          handleToggle={() => setIsDestructible()}
+                          id="react-switch-new"
+                        />
+                        <button onClick={(e) => {start()}} >Start</button>
+                      </div>
+                    }
                     <Spectres />
                   </div>
                 ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)

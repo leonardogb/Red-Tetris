@@ -61,45 +61,6 @@ const reducer = (state = {}, action) => {
         }
       };
     case UPDATE_BOARD:
-      // const player = state.player;
-      // if (player.grid) {
-      //   let newBoard = player.grid.map(row =>
-      //     row.map(cell => (cell[1] ? cell : [0, false]))
-      //   );
-
-      //   player.piece.tetromino.forEach((row, y) => {
-      //     row.forEach((value, x) => {
-      //       if (value !== 0 && newBoard[y + player.piece.pos.y]) {
-      //         newBoard[y + player.piece.pos.y][x + player.piece.pos.x] = [
-      //           value,
-      //           player.piece.collided,
-      //         ];
-      //       }
-      //     });
-      //   });
-
-      //   if (player.piece.collided) {
-      //     newBoard = newBoard.reduce((ack, row, index) => {
-      //       if (row.findIndex(cell => cell[0] === 0) === -1) {
-      //         // Gestión de puntos
-      //         console.log(index);
-      //         ack.unshift(new Array(newBoard[0].length).fill([0, false]));
-      //         return ack;
-      //       }
-      //       ack.push(row);
-      //       return ack;
-      //     }, []);
-      //   }
-      //   return {
-      //     ...state,
-      //     player: {
-      //       ...state.player,
-      //       grid: newBoard
-      //     }
-      //   };
-      // } else {
-      //   return state;
-      // }
       return {
         ...state,
         player: {

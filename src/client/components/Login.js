@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import GamesList from "./GamesList";
 import { useSelector, useDispatch } from "react-redux";
 import { setDelay } from '../actions/setDelay';
-import { Button } from 'evergreen-ui'
-import { TextInput } from 'evergreen-ui'
-import { TextInputField } from 'evergreen-ui'
-import { Icon } from 'evergreen-ui'
 import './Login.css';
 
 const Login = () => {
@@ -41,11 +37,12 @@ const Login = () => {
           <div>
             <h1>Login</h1>
             <div>
-              <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '16px' }}>
-                <TextInput
+              <div className="inputLoginContainer">
+                <input
                   type="text"
                   name="username"
                   placeholder="Enter name"
+                  className="inputLogin"
                   onChange={() => setInputUsername(event.target.value)}
                   onKeyPress={(e) => {
                     if (e.charCode === 13) {
@@ -53,21 +50,22 @@ const Login = () => {
                     }
                   }} />
               </div>
-              <TextInput
-                marginBottom={16}
-                type="text"
-                name="room"
-                placeholder="Enter or join room"
-                // placeholder="Créer ou joindre une partie"
-                onChange={() => setInputRoom(event.target.value)}
-                onKeyPress={(e) => {
-                  if (e.charCode === 13) {
-                    getGame();
-                  }
-                }} />
+              <div className="inputLoginContainer">
+                <input
+                  type="text"
+                  name="room"
+                  placeholder="Enter or join room"
+                  className="inputLogin"
+                  onChange={() => setInputRoom(event.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.charCode === 13) {
+                      getGame();
+                    }
+                  }} />
+              </div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <Button  marginRight={16} onClick={() => getGame()}>Start</Button>
+            <div style={{ textAlign: 'center'}}>
+              <button className="buttonLogin" onClick={() => getGame()} >Start</button>
             </div>
           </div>
         </div>

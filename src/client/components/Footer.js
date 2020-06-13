@@ -6,43 +6,7 @@ import { useHover } from '../Hooks/useHover';
 
 const Footer = () => {
   const [hoverRef, isHovered] = useHover();
-  // const [hoverRef2, isHovered2] = useHover();
-  // const state = false;
-
   const [state, setCount] = useState(false);
-
-  // var state = false;
-  // useEffect(() => {    // Met à jour le titre du document via l’API du navigateur
-  //   // document.title = `Vous avez cliqué ${count} fois`;
-  //   console.log('isHovered: ' + isHovered);
-  //   if (isHovered != state) {
-  //     // console.log('hereeeee!!!!!!');
-  //     // state = true;
-  //   // console.log("state: " + state);
-  //   // console.log("state: " + !state);
-  //     setCount(!state);
-  //     // console.log("state here: " + state);
-
-  //   }
-  //   // if (isHovered == false && state == true) {
-  //   //   setCount(false);
-  //   // }
-  //   // useState(!state);
-  // });
-
-  // useEffect(() => {    // Met à jour le titre du document via l’API du navigateur
-  //   // document.title = `Vous avez cliqué ${count} fois`;
-  //   console.log("useEffect ishovered2");
-  //   console.log("state: " + state);
-  //   console.log('isHovered2: ' + isHovered2);
-  //   console.log('isHovered: ' + isHovered);
-  //   // console.log('isHovered1: ' + isHovered);
-  //   // if (isHovered2 == false && isHovered == false && state == true) {
-  //   //   setCount(false);
-  //   //   console.log('hereeeeergerghergerg!!!!');
-  //   // }
-  //   // useState(!state);
-  // }, [isHovered2]);
 
   return (
 

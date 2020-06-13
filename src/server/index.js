@@ -282,13 +282,27 @@ const initEngine = io => {
     })
 
     socket.on('malus', data => {
-      const malus = data.malus.map(row => {
-         return row.reduce((acc, value) => {
-          acc.push([value[1] ? value[0] : 0, value[1]]);
-          return acc;
-        }, []);
-      });
-      socket.to(socket.room).emit('serverAction', { action: { type: actionTypes.SET_MALUS, payload: { malus: malus, username: socket.username } } });
+      let game = games.find(elem => elem.room === socket.room);
+      if (game) {
+        const malus = data.malus.map(row => {
+           return row.reduce((acc, value) => {
+             if (game.options.isIndestructible) {
+               acc.push([8, true]);
+             } else {
+                acc.push([value[1] ? value[0] : 0, value[1]]);
+             }
+             return acc;
+          }, []);
+        });
+        socket.to(socket.room).emit('serverAction', { action: { type: actionTypes.SET_MALUS, payload: { malus: malus } } });
+      }
+    });
+
+    socket.on('setIsDestructible', data => {
+      let game = games.find(elem => elem.room === socket.room);
+      if (game) {
+        game.options.isIndestructible = data;
+      }
     });
   });
 };

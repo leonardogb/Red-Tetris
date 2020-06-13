@@ -5,6 +5,9 @@ class Game {
     this.room = room;
     this.players = [player];
     this.playing = false;
+    this.options = {
+      isIndestructible: true
+    }
   }
 }
 

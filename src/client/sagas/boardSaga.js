@@ -26,7 +26,7 @@ function* updateBoard(action) {
             if (player.piece.collided) {
                 const malusArray = [];
                 newBoard = newBoard.reduce((ack, row, index) => {
-                    if (row.findIndex(cell => cell[0] === 0) === -1) {
+                    if (row.findIndex(cell => cell[0] === 0 || cell[0] === 8) === -1) {
                         // Gestión de puntos
                         malusArray.push(player.grid[index]);
                         ack.unshift(new Array(newBoard[0].length).fill([0, false]));

@@ -8,7 +8,8 @@ const colors = [
   '#F538FF',
   '#FF8E0D',
   '#FFE138',
-  '#3877FF'
+  '#3877FF',
+  '#ADADAD',
 ];
 
 const square = ({color}) => {

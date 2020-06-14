@@ -65,7 +65,7 @@ const playersGames = (games) => {
   return games.reduce((gamesList, game) => {
     return {
       [game.room]: game.players.reduce((playersList, player) => {
-        playersList.push(player.name);
+        playersList.push([player.name, player.score]);
         return playersList;
       }, [])
     };
@@ -282,11 +282,51 @@ const initEngine = io => {
     })
 
     socket.on('malus', data => {
-      let game = games.find(elem => elem.room === socket.room);
-      if (game) {
+      // console.log(games);
+      let curGame = games.find(elem => elem.room === socket.room);
+      if (curGame) {
+        // let curPlayer = curGame.players.find(elem => elem.name === socket.username);
+        // curPlayer.score = curPlayer.score + (10 * data.malus.length);
+        // curPlayer.increaseScore(10 * data.malus.length);
+        
+        
+        // let playerIndex = curGame.players.findIndex(elem => elem.name === socket.username);
+        // console.log(curGame.players[playerIndex]);
+        
+        // curGame.players[playerIndex] = 42;
+        
+
+        
+          console.log(curGame.players);
+          curGame.players = curGame.players.map((playerIn) => {
+            if (playerIn.name === socket.username) {
+              playerIn.score = playerIn.score + 5;
+            }
+            return (playerIn);
+          });
+          console.log(curGame.players);
+
+
+
+
+        // games = games.map((game) => {
+        //   if (game.room === socket.room) {
+        //     game.players = game.players.map((player) => {
+        //       if (player.name === socket.username) {
+        //         console.log(player['score']);
+        //         player['score'] = player['score'] + 5;
+        //       }
+        //       return player;
+        //     });
+        //   }
+        //   return game;
+        // });
+
+
+
         const malus = data.malus.map(row => {
            return row.reduce((acc, value) => {
-             if (game.options.isIndestructible) {
+             if (curGame.options.isIndestructible) {
                acc.push([8, true]);
              } else {
                 acc.push([value[1] ? value[0] : 0, value[1]]);
@@ -295,6 +335,7 @@ const initEngine = io => {
           }, []);
         });
         socket.to(socket.room).emit('serverAction', { action: { type: actionTypes.SET_MALUS, payload: { malus: malus } } });
+        io.in(socket.room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
       }
     });
 

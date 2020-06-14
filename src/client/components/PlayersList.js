@@ -12,13 +12,19 @@ return (
         if (room == curRoom)
         return (
         //   <div key={index} className={'game'} onClick={() => joinGame(game)}>
-            <div key={index}>
-            <h1 key={index}>{room}</h1>
-            <div style={{height: '215px', overflow: 'auto'}}>
-              {playersGames[room].map((player, index) => {
-                return (<p key={index}>{player}</p> );
-              })}
-            </div>
+            <div key={index} style={{backgroundColor: 'white'}}>
+              <h1 key={index}>{room}</h1>
+              <div style={{height: '215px', overflow: 'auto'}}>
+                {playersGames[room].map((player, index) => {
+                  
+                  return (
+                  <div key={index} style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <p>{player[0]}</p>
+                    <p>{player[1]}</p>
+                  </div>
+                  );
+                })}
+              </div>
             </div>
         )
       }) : ""}

@@ -10,12 +10,17 @@ import { useInterval } from "../Hooks/useInterval";
 import { usePlayer } from "../Hooks/usePlayer";
 import { checkCollision } from "../gameHelpers";
 import "./BoardGame.css";
+import { useDispatch } from 'react-redux';
+import { swapPieces } from "../actions/swapPieces";
+
+
 
 const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const [buttonValue, setButtonValue] = useState(false);
+  const dispatch = useDispatch();
 
   const setIsDestructible = () => {
     setSwitchValue(!switchValue);

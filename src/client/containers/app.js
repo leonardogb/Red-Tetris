@@ -5,7 +5,6 @@ import { useBoard } from '../Hooks/useBoard';
 import Login from "../components/Login";
 import { updateTetromino } from "../actions/updateTetromino";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import { swapPieces } from "../actions/swapPieces";
 import Footer from "../components/Footer";
 import BoardGame from "../components/BoardGame";
 import "./app.css";

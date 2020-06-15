@@ -77,7 +77,7 @@ const getSpectre = (curUser) => {
   games.map((game) => {
     game.players.map((player) => {
       if (player.name === curUser) {
-        spectre = { playerName: player.name, spectre: player.spectre };
+        spectre = { playerName: player.name, spectre: player.spectre, score: player.score };
         // spectresArray[player.name] = { playerName: player.name, spectre: player.spectre };
       }
     });

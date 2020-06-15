@@ -1,9 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Ring } from 'react-awesome-spinners';
+import "../components/Spectres.css"
 
 const Spectres = () => {
   const spectres = useSelector(state => state.spectres);
+
   const styleSquare = {
     width: '15px',
     height: '15px',
@@ -26,6 +28,7 @@ const Spectres = () => {
             spectres.map((player, index) =>
               <div key={index}>
                 <p style={{ textAlign: 'center' }}>{ player.playerName }</p>
+                {/* <p>Score : {}</p> */}
                 <div key={index}>
                   {player.spectre.map((spectre, indexS) =>
                     <div className={'line'} key={indexS}>

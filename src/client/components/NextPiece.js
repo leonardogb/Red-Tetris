@@ -27,6 +27,12 @@ const NextPiece = () => {
 
   const firstPiece = pieces[0] ? resizePiece([...pieces[0]]) : null;
   const secondPiece = pieces[1] ? resizePiece([...pieces[1]]) : null;
+  const emptyPiece = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
 
 
   const style = {
@@ -45,7 +51,10 @@ const NextPiece = () => {
           <div key={index} style={style.line}>
             {value.map((sValue, sIndex) => <Square color={sValue} key={sIndex} />)}
           </div>
-        ) : null
+        ) : emptyPiece.map((row, rIndex) =>
+            <div key={rIndex} style={style.line}>
+              {row.map((cell, cIndex) => <Square color={cell} key={cIndex}/>)}
+            </div>)
         }
       </div>
       <div style={style.nextPieceContainer}>
@@ -53,7 +62,11 @@ const NextPiece = () => {
           <div key={index} style={style.line}>
             {value.map((sValue, sIndex) => <Square color={sValue} key={sIndex} />)}
           </div>
-        ) : null
+        ) : 
+            emptyPiece.map((row, rIndex) =>
+            <div key={rIndex} style={style.line}>
+              {row.map((cell, cIndex) => <Square color={cell} key={cIndex}/>)}
+            </div>)
         }
       </div>
     </div>

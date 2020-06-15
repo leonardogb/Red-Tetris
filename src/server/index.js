@@ -4,13 +4,6 @@ import { isEmpty } from "../client/gameHelpers";
 import { Player } from "./Player";
 import { Game } from "./Game";
 import { Piece } from "./Piece";
-import { SET_PLAYER } from "../client/actions/setPlayer";
-import { SET_PIECES } from "../client/actions/setPieces";
-import { UPDATE_TETROMINO } from "../client/actions/updateTetromino";
-import { SET_DELAY } from "../client/actions/setDelay";
-import { SET_PLAYERS_GAMES } from "../client/actions/setPlayersGames";
-import { RELOAD_PLAYER } from '../client/actions/reloadPlayer';
-import { SET_SPECTRES } from '../client/actions/setSpectres';
 import * as types from '../client/actions/actionTypes';
 
 const logerror = debug('tetris:error'),
@@ -77,7 +70,7 @@ const getSpectre = (curUser) => {
   games.map((game) => {
     game.players.map((player) => {
       if (player.name === curUser) {
-        spectre = { playerName: player.name, spectre: player.spectre };
+        spectre = { playerName: player.name, spectre: player.spectre, score: player.score };
         // spectresArray[player.name] = { playerName: player.name, spectre: player.spectre };
       }
     });
@@ -88,15 +81,10 @@ const getSpectre = (curUser) => {
 const initEngine = io => {
   io.on('connection', (socket) => {
     logInfo("Socket connected: " + socket.id);
-    // socket.join('room 123', () => {
-    //   io.in('room 123').clients((err, clients) => {
-    //     console.log(clients);
-    //   });
-    // });
 
     socket.on('getPiece', () => {
       const pieces = Piece.getTetrominos(5);
-      io.in(socket.room).emit('serverAction', { action: { type: SET_PIECES, payload: { pieces } } });
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_PIECES, payload: { pieces } } });
       games.map((game) => {
         if (game.room === socket.room) {
           game.players = game.players.map((player) => {
@@ -113,9 +101,9 @@ const initEngine = io => {
 
     socket.on('start', () => {
       const piecesStart = Piece.getTetrominos(5);
-      io.in(socket.room).emit('serverAction', { action: { type: SET_PIECES, payload: { pieces: piecesStart } } });
-      io.in(socket.room).emit('serverAction', { action: { type: UPDATE_TETROMINO } });
-      io.in(socket.room).emit('serverAction', { action: { type: SET_DELAY, payload: { delay: 1000 } } });
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_PIECES, payload: { pieces: piecesStart } } });
+      io.in(socket.room).emit('serverAction', { action: { type: types.UPDATE_TETROMINO } });
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_DELAY, payload: { delay: 1000 } } });
       io.in(socket.room).emit('setIsPLaying');
       games = games.map((game) => {
         if (game.room === socket.room) {
@@ -162,9 +150,9 @@ const initEngine = io => {
             }
           }
           socket.join(data.room);
-          socket.emit('serverAction', { action: { type: SET_PLAYER, payload: { player: player, game: game } } });
+          socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
           socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
-          io.in(data.room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+          io.in(data.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
         }
       }
     });
@@ -182,7 +170,7 @@ const initEngine = io => {
               player.socketId = socket.id;
               room = game.room;
               socket.join(game.room);
-              socket.emit('serverAction', { action: { type: RELOAD_PLAYER, payload: { player: player, room: game.room, name: player.name } } });
+              socket.emit('serverAction', { action: { type: types.RELOAD_PLAYER, payload: { player: player, room: game.room, name: player.name } } });
               found = true;
               // socket.emit('serverAction', {action: {type: SET_GAMES, payload: {player: player, room: game.room, name: player.name}}});
             }
@@ -191,7 +179,7 @@ const initEngine = io => {
           return (game);
         });
         if (found === true) {
-          io.in(room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+          io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
         }
         else {
           socket.emit('deleteId');
@@ -212,7 +200,7 @@ const initEngine = io => {
     });
 
     socket.on('setPlayerGames', (room) => {
-      io.in(room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+      io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
 
     socket.on('removePlayer', (id) => {
@@ -231,7 +219,7 @@ const initEngine = io => {
         }
       }
       if (room != null) {
-        io.in(room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+        io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
       }
     });
 
@@ -250,10 +238,7 @@ const initEngine = io => {
         }
         return (game);
       });
-      io.in(socket.room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
-
-      // players.splice(players.findIndex(e => e.name === socket.username),1);
-      // io.in(socket.room).emit('setPlayersGames', playersGames(games));
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
 
     socket.on('updateGrid', (data) => {
@@ -278,11 +263,10 @@ const initEngine = io => {
         }
         return game;
       });
-      socket.to(socket.room).emit('serverAction', { action: { type: SET_SPECTRES, payload: { spectre: getSpectre(socket.username), username: socket.username } } });
+      socket.to(socket.room).emit('serverAction', { action: { type: types.SET_SPECTRES, payload: { spectre: getSpectre(socket.username), username: socket.username } } });
     })
 
     socket.on('malus', data => {
-      // console.log(games);
       let curGame = games.find(elem => elem.room === socket.room);
       if (curGame) {
 
@@ -300,7 +284,7 @@ const initEngine = io => {
           }, []);
         });
         socket.to(socket.room).emit('serverAction', { action: { type: types.SET_MALUS, payload: { malus: malus } } });
-        io.in(socket.room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+        io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
       }
     });
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import GamesList from "./GamesList";
 import { useSelector, useDispatch } from "react-redux";
-import { setDelay } from '../actions/setDelay';
+import * as action from '../actions/actions';
 import './Login.css';
 
 const Login = () => {
@@ -11,7 +11,7 @@ const Login = () => {
   const dispatch = useDispatch();
 
   if (player && player.delay != null) {
-    dispatch(setDelay(null));
+    dispatch(action.setDelay(null));
     let id = localStorage.getItem('id');
     if (id) {
       socket.emit('removePlayer', id, player.room);

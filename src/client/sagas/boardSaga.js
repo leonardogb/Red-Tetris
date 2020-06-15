@@ -1,5 +1,4 @@
 import { select, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
-import { UPDATE_BOARD } from '../actions/updateBoard';
 import * as types from '../actions/actionTypes';
 
 // worker Saga: will be fired on UPDATE_GRID actions
@@ -41,7 +40,7 @@ function* updateBoard(action) {
                     socket.emit('malus', {malus: malusArray});
                 }
             }
-            yield put({type: UPDATE_BOARD, payload: {newBoard: newBoard}});
+            yield put({type: types.UPDATE_BOARD, payload: {newBoard: newBoard}});
         }
    } catch (e) {
         yield put({type: "UPDATE_BOARD_FAILED", message: e.message});
@@ -52,8 +51,8 @@ function* updateBoard(action) {
   Starts fetchUser on each dispatched `UPDATE_GRID` action.
   Allows concurrent fetches of user.
 */
-function* mySaga(socket) {
-  yield takeEvery("UPDATE_GRID", updateBoard);
+function* mySaga() {
+  yield takeEvery(types.UPDATE_GRID, updateBoard);
 }
 
 export default mySaga;

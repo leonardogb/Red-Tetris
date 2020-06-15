@@ -3,18 +3,21 @@ import { Redirect } from "react-router-dom";
 import Board from "../components/Board";
 import { Ring } from 'react-awesome-spinners';
 import Spectres from '../components/Spectres';
-import PlayersList from "../components/PlayersList";
 import NextPiece from "../components/NextPiece";
 import ToggleSwitch from '../components/ToggleSwitch';
 import { useInterval } from "../Hooks/useInterval";
 import { usePlayer } from "../Hooks/usePlayer";
 import { checkCollision } from "../gameHelpers";
 import "./BoardGame.css";
+import { useDispatch } from 'react-redux';
+import * as action from '../actions/actions';
 
 const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
+  const [buttonValue, setButtonValue] = useState(false);
+  const dispatch = useDispatch();
 
   const setIsDestructible = () => {
     setSwitchValue(!switchValue);
@@ -51,7 +54,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
       } else if (event.keyCode === 38) {
         pieceRotate(player.piece, player.grid, 1);
       } else if (event.keyCode === 16) {
-        dispatch(swapPieces());
+        dispatch(action.swapPieces());
       }
     }
   };

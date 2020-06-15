@@ -34,7 +34,6 @@ function createSocketChannel(socket) {
 }
 
 function* watchSockets(socket) {
-  console.log('socketSaga');
 
   const socketChannel = yield call(createSocketChannel, socket);
 

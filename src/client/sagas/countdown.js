@@ -1,6 +1,5 @@
 import { take, put, call, takeEvery, select, all } from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga';
-import { startGame } from "../actions/startGame";
 import {checkCollision} from "../gameHelpers";
 
 const countdown = (player) => {

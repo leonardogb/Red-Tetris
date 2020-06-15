@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setGameOver } from "../actions/setGameOver";
+import * as action from '../actions/actions';
 import { useBoard } from '../Hooks/useBoard';
 import Login from "../components/Login";
-import { updateTetromino } from "../actions/updateTetromino";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import { swapPieces } from "../actions/swapPieces";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import Footer from "../components/Footer";
 import BoardGame from "../components/BoardGame";
 import "./app.css";
@@ -40,11 +38,11 @@ const App = () => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
       if (player.piece.pos.y < 1) {
         console.log('GAME OVER!!!');
-        dispatch(setGameOver());
+        dispatch(action.setGameOver());
         // setDropTime(null);
       } else {
         // socket.emit('updateGrid', { grid: player.grid }); déjà fait dans useBoard if player.piece.new
-        dispatch(updateTetromino());
+        dispatch(action.updateTetromino());
       }
       if (player.pieces.length < 3) {
         socket.emit('getPiece');

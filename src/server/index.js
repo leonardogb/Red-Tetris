@@ -11,7 +11,7 @@ import { SET_DELAY } from "../client/actions/setDelay";
 import { SET_PLAYERS_GAMES } from "../client/actions/setPlayersGames";
 import { RELOAD_PLAYER } from '../client/actions/reloadPlayer';
 import { SET_SPECTRES } from '../client/actions/setSpectres';
-import * as actionTypes from '../client/actions/actionTypes';
+import * as types from '../client/actions/actionTypes';
 
 const logerror = debug('tetris:error'),
   logInfo = debug('tetris:info');
@@ -65,7 +65,7 @@ const playersGames = (games) => {
   return games.reduce((gamesList, game) => {
     return {
       [game.room]: game.players.reduce((playersList, player) => {
-        playersList.push(player.name);
+        playersList.push([player.name, player.score]);
         return playersList;
       }, [])
     };
@@ -282,11 +282,16 @@ const initEngine = io => {
     })
 
     socket.on('malus', data => {
-      let game = games.find(elem => elem.room === socket.room);
-      if (game) {
+      // console.log(games);
+      let curGame = games.find(elem => elem.room === socket.room);
+      if (curGame) {
+
+        let curPlayer = curGame.players.find(elem => elem.name === socket.username);
+        curPlayer.score = curPlayer.score + (10 * data.malus.length);
+
         const malus = data.malus.map(row => {
            return row.reduce((acc, value) => {
-             if (game.options.isIndestructible) {
+             if (curGame.options.isIndestructible) {
                acc.push([8, true]);
              } else {
                 acc.push([value[1] ? value[0] : 0, value[1]]);
@@ -294,7 +299,8 @@ const initEngine = io => {
              return acc;
           }, []);
         });
-        socket.to(socket.room).emit('serverAction', { action: { type: actionTypes.SET_MALUS, payload: { malus: malus } } });
+        socket.to(socket.room).emit('serverAction', { action: { type: types.SET_MALUS, payload: { malus: malus } } });
+        io.in(socket.room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
       }
     });
 

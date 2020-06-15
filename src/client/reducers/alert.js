@@ -21,6 +21,7 @@ import { RELOAD_PLAYER } from '../actions/reloadPlayer';
 import { SWAP_PIECES } from '../actions/swapPieces';
 import { SET_SPECTRES } from '../actions/setSpectres';
 import { SET_MALUS } from '../actions/actionTypes';
+import * as Types from '../actions/actionTypes';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
@@ -251,6 +252,14 @@ const reducer = (state = {}, action) => {
             grid: grid
           }
         };
+      case Types.UPDATE_SCORE:
+        return {
+          ...state,
+          player: {
+            ...state.player,
+            score: state.player.score + action.payload.score
+          }
+        }
     default:
       return state
   }

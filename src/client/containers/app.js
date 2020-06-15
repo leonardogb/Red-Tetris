@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
-  }, [player, player.pieces, player.piece, player.piece.tetronimo, player.piece.pos]);
+  }, [player, player.pieces, player.piece]);
 
   useEffect(() => {
     socket.on('connect', () => {

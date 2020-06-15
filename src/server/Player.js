@@ -23,6 +23,15 @@ class Player {
     this.gameOver = false;
     this.delay = null;
     this.spectre = initialSpectre();
+    this.score = 0;
+  }
+
+  increaseScore(value) {
+    this.score = this.score + value;
+  }
+
+  getScore() {
+    return this.score;
   }
 }
 

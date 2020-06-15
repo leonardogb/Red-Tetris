@@ -46,7 +46,8 @@ const initialState = {
     gameOver: null,
     status: null,
     delay: null,
-    new: false
+    new: false,
+    score: 0
   },
   curUser: null,
   curRoom: null,

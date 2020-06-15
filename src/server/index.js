@@ -203,7 +203,9 @@ const initEngine = io => {
       games = games.map((game) => {
         game.players = game.players.map((playerIn) => {
           if (playerIn && player.id === playerIn.id) {
+            const tmpPoints = playerIn.score;
             playerIn = player;
+            playerIn.score = tmpPoints;
           }
           return (playerIn);
         })
@@ -285,42 +287,11 @@ const initEngine = io => {
       // console.log(games);
       let curGame = games.find(elem => elem.room === socket.room);
       if (curGame) {
-        // let curPlayer = curGame.players.find(elem => elem.name === socket.username);
-        // curPlayer.score = curPlayer.score + (10 * data.malus.length);
-        // curPlayer.increaseScore(10 * data.malus.length);
-        
-        
-        // let playerIndex = curGame.players.findIndex(elem => elem.name === socket.username);
-        // console.log(curGame.players[playerIndex]);
-        
-        // curGame.players[playerIndex] = 42;
-        
 
-        
-          console.log(curGame.players);
-          curGame.players = curGame.players.map((playerIn) => {
-            if (playerIn.name === socket.username) {
-              playerIn.score = playerIn.score + 5;
-            }
-            return (playerIn);
-          });
-          console.log(curGame.players);
+        let curPlayer = curGame.players.find(elem => elem.name === socket.username);
+        curPlayer.score = curPlayer.score + (10 * data.malus.length);
 
-
-
-
-        // games = games.map((game) => {
-        //   if (game.room === socket.room) {
-        //     game.players = game.players.map((player) => {
-        //       if (player.name === socket.username) {
-        //         console.log(player['score']);
-        //         player['score'] = player['score'] + 5;
-        //       }
-        //       return player;
-        //     });
-        //   }
-        //   return game;
-        // });
+        console.log(curGame);
 
 
 

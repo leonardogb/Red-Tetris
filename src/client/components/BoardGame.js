@@ -16,7 +16,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
-  const [buttonValue, setButtonValue] = useState(false);
   const dispatch = useDispatch();
 
   const setIsDestructible = () => {
@@ -76,7 +75,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
           <div className="room-name">
             <h1>{curRoom}</h1>
           </div>
-          <div className="dash-board">
+          <div className={player.isMaster ? "dash-board-master" : "dash-board"}>
             {/* Player {curUser} in {curRoom} room. */}
             <div className="left-side">
               <div className="player">

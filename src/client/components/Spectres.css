@@ -1,3 +1,9 @@
+.player-spectre {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
 .no-opponenets {
   display: flex;
   align-items: center;

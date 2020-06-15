@@ -22,13 +22,13 @@ const Spectres = () => {
   if (spectres) {
 
     return (
-      <div style={{ display: 'flex' }}>
-        <div style={boardContent}>
+      // <div>
+        <div className="player-spectre" >
           {
             spectres.map((player, index) =>
               <div key={index}>
                 <p style={{ textAlign: 'center' }}>{ player.playerName }</p>
-                {/* <p>Score : {}</p> */}
+                <p>Score : {player.score}</p>
                 <div key={index}>
                   {player.spectre.map((spectre, indexS) =>
                     <div className={'line'} key={indexS}>
@@ -43,7 +43,7 @@ const Spectres = () => {
             )
           }
         </div>
-      </div>
+      // </div>
     );
   }
   return (

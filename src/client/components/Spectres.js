@@ -23,12 +23,12 @@ const Spectres = () => {
 
     return (
       // <div>
-        <div className="player-spectre" >
+        <div className="players-spectre" >
           {
             spectres.map((player, index) =>
-              <div key={index}>
-                <p style={{ textAlign: 'center' }}>{ player.playerName }</p>
-                <p>Score : {player.score}</p>
+              <div className="player-spectre" key={index}>
+                <h3 style={{ textAlign: 'center' }}>{ player.playerName }</h3>
+                <h4>Score : {player.score}</h4>
                 <div key={index}>
                   {player.spectre.map((spectre, indexS) =>
                     <div className={'line'} key={indexS}>

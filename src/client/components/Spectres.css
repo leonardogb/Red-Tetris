@@ -1,8 +1,15 @@
-.player-spectre {
+.players-spectre {
   display: flex;
   flex-direction: column;
   overflow: auto;
 }
+
+.players-spectre h3, h4{
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
+
 
 .no-opponenets {
   display: flex;

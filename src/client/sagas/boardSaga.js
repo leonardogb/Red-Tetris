@@ -1,5 +1,6 @@
 import { select, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { UPDATE_BOARD } from '../actions/updateBoard';
+import * as types from '../actions/actionTypes';
 
 // worker Saga: will be fired on UPDATE_GRID actions
 function* updateBoard(action) {
@@ -36,6 +37,7 @@ function* updateBoard(action) {
                     return ack;
                 }, []);
                 if (malusArray.length > 0) {
+                    yield put({type: types.UPDATE_SCORE, payload: {score: 10 * malusArray.length}})
                     socket.emit('malus', {malus: malusArray});
                 }
             }

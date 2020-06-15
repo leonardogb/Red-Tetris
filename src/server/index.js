@@ -11,7 +11,7 @@ import { SET_DELAY } from "../client/actions/setDelay";
 import { SET_PLAYERS_GAMES } from "../client/actions/setPlayersGames";
 import { RELOAD_PLAYER } from '../client/actions/reloadPlayer';
 import { SET_SPECTRES } from '../client/actions/setSpectres';
-import * as actionTypes from '../client/actions/actionTypes';
+import * as types from '../client/actions/actionTypes';
 
 const logerror = debug('tetris:error'),
   logInfo = debug('tetris:info');
@@ -203,9 +203,7 @@ const initEngine = io => {
       games = games.map((game) => {
         game.players = game.players.map((playerIn) => {
           if (playerIn && player.id === playerIn.id) {
-            const tmpPoints = playerIn.score;
             playerIn = player;
-            playerIn.score = tmpPoints;
           }
           return (playerIn);
         })
@@ -291,10 +289,6 @@ const initEngine = io => {
         let curPlayer = curGame.players.find(elem => elem.name === socket.username);
         curPlayer.score = curPlayer.score + (10 * data.malus.length);
 
-        console.log(curGame);
-
-
-
         const malus = data.malus.map(row => {
            return row.reduce((acc, value) => {
              if (curGame.options.isIndestructible) {
@@ -305,7 +299,7 @@ const initEngine = io => {
              return acc;
           }, []);
         });
-        socket.to(socket.room).emit('serverAction', { action: { type: actionTypes.SET_MALUS, payload: { malus: malus } } });
+        socket.to(socket.room).emit('serverAction', { action: { type: types.SET_MALUS, payload: { malus: malus } } });
         io.in(socket.room).emit('serverAction', { action: { type: SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
       }
     });

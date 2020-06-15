@@ -191,6 +191,7 @@ const initEngine = io => {
       games = games.map((game) => {
         game.players = game.players.map((playerIn) => {
           if (playerIn && player.id === playerIn.id) {
+            player.spectre = playerIn.spectre;
             playerIn = player;
           }
           return (playerIn);

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { updateBoard } from '../actions/updateBoard';
 import { useDispatch, useSelector } from 'react-redux';
+import * as types from '../actions/actionTypes';
 
 export  const useBoard = () => {
 
@@ -9,13 +9,8 @@ export  const useBoard = () => {
   const socket = useSelector(state => state.socket);
 
   const updateStage = () => {
-    // dispatch(updateBoard());
-    dispatch({type: 'UPDATE_GRID'})
+    dispatch({type: types.UPDATE_GRID})
 
-    // socket.emit('updateGrid', { grid: player.grid });
-    // if (player.piece.collided) {
-    //   socket.emit('updateGrid', { grid: player.grid });
-    // }
     if (player.piece.new) {
       socket.emit('updateGrid', { grid: player.grid });
     }

@@ -9,21 +9,13 @@ import {storeStateMiddleWare} from './middleware/storeStateMiddleWare'
 import reducer from './reducers';
 import App from './containers/app';
 import './style.css';
-import {initialBoard} from './gameHelpers';
-import { updatePlayerPosition } from './actions/updatePlayerPosition';
-import { updateBoard } from './actions/updateBoard';
+
 import createSagaMiddleware from 'redux-saga';
-import watchUpdatePlayerPosition from './sagas/index';
-import countdown from './sagas/countdown';
 // import socketSaga from './sagas/socketSaga';
 import rootSaga from './sagas/rootSaga';
 
 import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
-
-socket.on('action', type => {
-  // console.log(type)
-});
 
 socket.emit('action', {type: 'server/ping'});
 
@@ -69,7 +61,7 @@ sagaMiddleware.run(rootSaga, socket, store.dispatch);
 // const keyDown = (keyCode) => {
 //
 //   store.dispatch(updatePlayerPosition(1));
-//   store.dispatch(updateBoard());
+//   store.dispatch(action.updateBoard());
 // };
 
 ReactDom.render((

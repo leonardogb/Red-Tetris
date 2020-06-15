@@ -1,6 +1,5 @@
 import { takeEvery, put, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import {setUsername} from "../actions/setUsername";
 
 function* updateBoard(action) {
   try {

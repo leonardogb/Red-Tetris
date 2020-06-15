@@ -1,15 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { updatePlayerPosition } from "../actions/updatePlayerPosition";
 import { checkCollision } from "../gameHelpers";
-import { setPiece } from "../actions/setPiece";
-import { setGameOver } from '../actions/setGameOver';
+import * as action from '../actions/actions';
 
 export  const usePlayer = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player);
 
   const updatePlayerPos = (y, x, collided ) => {
-    dispatch(updatePlayerPosition(y, x, collided));
+    dispatch(action.updatePlayerPosition(y, x, collided));
   };
 
   const drop = (bottom = false) => {
@@ -20,7 +18,7 @@ export  const usePlayer = () => {
       else {
         if (player.piece.pos.y < 1) {
           console.log('GAME OVER 1!!!');
-          dispatch(setGameOver());
+          dispatch(action.setGameOver());
 
           // setDropTime(null);
         }
@@ -68,7 +66,7 @@ export  const usePlayer = () => {
         return;
       }
     }
-    dispatch(setPiece(clonedPiece));
+    dispatch(action.setPiece(clonedPiece));
   };
 
   return [updatePlayerPos, pieceRotate, drop];

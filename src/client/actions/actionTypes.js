@@ -1,3 +1,24 @@
+export const ADD_ROOMS = 'ADD_ROOMS';
+export const DROP_PLAYER = 'DROP_PLAYER';
+export const PIECE_COLLIDED = 'PIECE_COLLIDED';
+export const RELOAD_PLAYER = 'RELOAD_PLAYER';
+export const SET_CUR_ROOM = 'SET_CUR_ROOM';
+export const SET_DELAY = 'SET_DELAY';
+export const SET_GAMES = 'SET_GAMES';
+export const SET_GAME_OVER = 'SET_GAME_OVER';
 export const SET_MALUS = 'SET_MALUS';
-
+export const SET_PIECE = 'SET_PIECE';
+export const SET_PIECES = 'SET_PIECES';
+export const SET_PLAYER = 'SET_PLAYER';
+export const SET_PLAYERS_GAMES = 'SET_PLAYERS_GAMES';
+export const SET_SPECTRES = 'SET_SPECTRES';
+export const SET_USERNAME = 'SET_USERNAME';
+export const SET_ROOM = 'SET_ROOM';
+export const START_GAME = 'START_GAME';
+export const SWAP_PIECES = 'SWAP_PIECES';
+export const UPDATE_BOARD = 'UPDATE_BOARD';
+export const UPDATE_GAME = 'UPDATE_GAME';
+export const UPDATE_GRID = 'UPDATE_GRID';
+export const UPDATE_PLAYER_POSITION = 'UPDATE_PLAYER_POSITION';
 export const UPDATE_SCORE = 'UPDATE_SCORE';
+export const UPDATE_TETROMINO = 'UPDATE_TETROMINO';

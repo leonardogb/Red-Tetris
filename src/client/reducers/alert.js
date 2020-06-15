@@ -1,33 +1,11 @@
-import { UPDATE_PLAYER_POSITION } from '../actions/updatePlayerPosition'
-import { UPDATE_BOARD } from '../actions/updateBoard';
-import { SET_USERNAME } from '../actions/setUsername';
-import { SET_GAMES } from '../actions/setGames';
-import { PIECE_COLLIDED } from '../actions/pieceCollided';
-import { SET_PIECES } from '../actions/setPieces';
-import { SET_GAME_OVER } from '../actions/setGameOver';
-import { UPDATE_GAME } from '../actions/updateGame';
-import { SET_ROOM } from '../actions/setRoom';
-import { SET_PLAYERS_GAMES } from '../actions/setPlayersGames';
-import { SET_PIECE } from '../actions/setPiece';
-import { UPDATE_TETROMINO } from '../actions/updateTetromino';
-import { SET_CUR_ROOM } from '../actions/setCurRoom';
-import { START_GAME } from '../actions/startGame';
 import { checkCollision } from '../gameHelpers';
-import { DROP_PLAYER } from '../actions/dropPlayer';
-import { SET_DELAY } from '../actions/setDelay';
-import { SET_PLAYER } from '../actions/setPlayer';
-import { ADD_ROOMS } from '../actions/addRooms';
-import { RELOAD_PLAYER } from '../actions/reloadPlayer';
-import { SWAP_PIECES } from '../actions/swapPieces';
-import { SET_SPECTRES } from '../actions/setSpectres';
-import { SET_MALUS } from '../actions/actionTypes';
-import * as Types from '../actions/actionTypes';
+import * as types from '../actions/actionTypes';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
   let piecesList = null;
   switch (action.type) {
-    case UPDATE_PLAYER_POSITION:
+    case types.UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;
       if (!checkCollision(state.player.piece, state.player.grid, {x: posX, y: posY})) {
@@ -50,7 +28,7 @@ const reducer = (state = {}, action) => {
         return state;
       }
 
-    case PIECE_COLLIDED:
+    case types.PIECE_COLLIDED:
       return {
         ...state,
         player: {
@@ -61,7 +39,7 @@ const reducer = (state = {}, action) => {
           }
         }
       };
-    case UPDATE_BOARD:
+    case types.UPDATE_BOARD:
       return {
         ...state,
         player: {
@@ -69,16 +47,16 @@ const reducer = (state = {}, action) => {
           grid: action.payload.newBoard
         }
       };
-    case SET_USERNAME:
+    case types.SET_USERNAME:
       return {...state, curUser: action.payload.username};
-    case SET_ROOM:
+    case types.SET_ROOM:
       return {
         ...state,
         player: action.payload.player,
         curRoom: action.payload.room,
         games: action.payload.games
       };
-    case SET_PIECE:
+    case types.SET_PIECE:
       return {
         ...state,
         player: {
@@ -86,11 +64,11 @@ const reducer = (state = {}, action) => {
           piece: action.payload.piece
         }
       };
-    case SET_PLAYERS_GAMES:
+    case types.SET_PLAYERS_GAMES:
       return {...state, playersGames: action.payload.games};
-    case SET_GAMES:
+    case types.SET_GAMES:
       return {...state, games: action.payload};
-    case UPDATE_GAME:
+    case types.UPDATE_GAME:
       return {
         ...state,
         games: {
@@ -98,7 +76,7 @@ const reducer = (state = {}, action) => {
           [action.payload.game.room]: action.payload.game
         }
       };
-    case SET_PIECES:
+    case types.SET_PIECES:
       piecesList = [...state.player.pieces].concat(action.payload.pieces);
       return {
         ...state,
@@ -107,7 +85,7 @@ const reducer = (state = {}, action) => {
           pieces: piecesList
         }
       };
-    case UPDATE_TETROMINO:
+    case types.UPDATE_TETROMINO:
       piecesList = [...state.player.pieces];
       curTetromino = piecesList.shift();
       return {
@@ -127,7 +105,7 @@ const reducer = (state = {}, action) => {
           }
         }
       };
-    case SET_GAME_OVER:
+    case types.SET_GAME_OVER:
       return {
         ...state,
         player: {
@@ -136,12 +114,12 @@ const reducer = (state = {}, action) => {
           delay: null
         }
       };
-    case SET_CUR_ROOM:
+    case types.SET_CUR_ROOM:
       return {
         ...state,
         curRoom: true
       };
-    case START_GAME:
+    case types.START_GAME:
       return {
         ...state,
         player: {
@@ -149,7 +127,7 @@ const reducer = (state = {}, action) => {
           status: 'PLAYING'
         }
       };
-    case DROP_PLAYER:
+    case types.DROP_PLAYER:
       if (!checkCollision(state.player.piece, state.player.grid, {x: 0, y: 1})) {
         return {
           ...state,
@@ -168,7 +146,7 @@ const reducer = (state = {}, action) => {
       } else {
         return state;
       }
-    case SET_DELAY:
+    case types.SET_DELAY:
       return {
         ...state,
         player: {
@@ -176,26 +154,26 @@ const reducer = (state = {}, action) => {
           delay: action.payload.delay
         }
       };
-    case SET_PLAYER:
+    case types.SET_PLAYER:
       return {
         ...state,
         player: action.payload.player,
         curRoom: action.payload.game.room,
         curUser: action.payload.player.name
       };
-      case ADD_ROOMS:
+      case types.ADD_ROOMS:
       return {
         ...state,
         rooms: action.payload.rooms
       };
-      case RELOAD_PLAYER:
+      case types.RELOAD_PLAYER:
         return {
           ...state,
           player: action.payload.player,
           curRoom: action.payload.room,
           curUser: action.payload.name
         };
-      case SWAP_PIECES:
+      case types.SWAP_PIECES:
         if (state.player.pieces.length > 1) {
           let pieces = [...state.player.pieces];
           const tmp = pieces[0];
@@ -211,7 +189,7 @@ const reducer = (state = {}, action) => {
         } else {
           return state;
         };
-      case SET_SPECTRES:
+      case types.SET_SPECTRES:
         let spectres = [];
         
         if (state.spectres) {
@@ -231,7 +209,7 @@ const reducer = (state = {}, action) => {
           ...state,
           spectres: [action.payload.spectre]
         };
-      case SET_MALUS:
+      case types.SET_MALUS:
         const grid = state.player.grid;
         const malusArray = action.payload.malus;
 
@@ -240,7 +218,6 @@ const reducer = (state = {}, action) => {
             if (malusArray.length > 0) {
               grid.splice(i, 1);
               const row = malusArray.shift();
-              console.log(row);
               grid.push(row);
             }
           }
@@ -252,7 +229,7 @@ const reducer = (state = {}, action) => {
             grid: grid
           }
         };
-      case Types.UPDATE_SCORE:
+      case types.UPDATE_SCORE:
         return {
           ...state,
           player: {

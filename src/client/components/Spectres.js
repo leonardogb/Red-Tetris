@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Ring } from 'react-awesome-spinners';
 
 const Spectres = () => {
   const spectres = useSelector(state => state.spectres);
@@ -42,7 +43,12 @@ const Spectres = () => {
       </div>
     );
   }
-  return null;
+  return (
+    <div className="no-opponenets">
+      <h4>Waiting for opponents</h4>
+      <Ring />
+      </div>
+  );
 };
 
 export default Spectres;

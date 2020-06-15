@@ -15,6 +15,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
+  const [buttonValue, setButtonValue] = useState(false);
 
   const setIsDestructible = () => {
     setSwitchValue(!switchValue);
@@ -79,7 +80,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             <div className="player">
               <h3>{curUser}</h3>
               <h4>Time</h4>
-              <h4>Score</h4>
+              <h4>Score : {player.score}</h4>
             </div>
             <div className="next-pieces">
               <h4>Next pieces</h4>
@@ -90,8 +91,14 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             <Board />
           </div>
           {/* <PlayersList curRoom={curRoom} /> */}
-          {
-            player.isMaster && !player.isPlaying &&
+          <div className="opponents">
+          <h3>Opponents</h3>
+          </div>
+          <Spectres />
+        </div>
+        {
+            player.isMaster &&
+            // !player.isPlaying &&
             <div>
               <ToggleSwitch
                 isOn={switchValue}
@@ -99,12 +106,9 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
                 handleToggle={() => setIsDestructible()}
                 id="react-switch-new"
               />
-              <button onClick={(e) => { start();
-                                         }} >Start</button>
+              <button disabled={player.isPlaying} onClick={(e) => { start(); setButtonValue(true) }} >Start</button>
             </div>
           }
-          <Spectres />
-        </div>
         </div>
       ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
       }

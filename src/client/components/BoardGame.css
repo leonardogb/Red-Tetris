@@ -18,17 +18,9 @@
   /* width: 60%; */
 }
 
-.next-pieces {
-  display: inline;
-  /* border: 5px solid #48CDAB; */
-  border-left: 5px solid #48CDAB;
-
-  /* border-radius: 0px 0px 0px 25px; */
-}
-
 .player {
   /* text-transform: uppercase; */
-  border-left: 5px solid #48CDAB;
+  /* border-left: 5px solid #48CDAB; */
   border-bottom: 5px solid #48CDAB;
   /* border-radius: 25px 0px 0px 0px; */
 }
@@ -46,6 +38,24 @@
   font-weight: 500;
 }
 
+.left-side {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+  border-left: 5px solid #48CDAB;
+  border-bottom: 5px solid #48CDAB;
+  border-bottom-left-radius: 25px;
+}
+
+.next-pieces {
+  display: inline;
+  /* border: 5px solid #48CDAB; */
+  /* border-left: 5px solid #48CDAB;
+  border-bottom: 5px solid #48CDAB; */
+
+  /* border-radius: 0px 0px 0px 25px; */
+}
+
 .next-pieces h4{
   color: white;
   text-transform: uppercase;
@@ -53,17 +63,11 @@
   text-align: center;
 }
 
-
-.left-side {
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-evenly; */
-}
-
 .board-game {
   /* display: inline; */
   border-left: 5px solid #48CDAB;
   border-right: 5px solid #48CDAB;
+  border-bottom: 5px solid #48CDAB;
   /* border-radius: 25px; */
 }
 
@@ -86,3 +90,13 @@
   font-weight: 500;
 }
 
+.opponents {
+  display: flex;
+  flex-direction: column;
+}
+
+.opponents h3{
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}

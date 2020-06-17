@@ -54,7 +54,7 @@ const Spectres = ({isPlaying}) => {
       </div>
   );
   }
-  else {
+  if (!spectres) {
     return (
       <div className="no-opponents">
         <h4>No opponenets in this game</h4>

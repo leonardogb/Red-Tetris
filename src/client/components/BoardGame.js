@@ -21,6 +21,14 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [secondsValue, setSecondsValue] = useState('00');
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
+  const [timeoutRefValue, setTimeoutRef] = useState(undefined);
+  // var setTimeoutRef = null;
+
+  const reInitTime = () => {
+    setSecondsValue('00');
+    setMinutesValue('00');
+    setHoursValue('00');
+  }
 
   const setIsDestructible = () => {
     setSwitchValue(!switchValue);
@@ -118,7 +126,13 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
               {
                 player.isMaster &&
                 <div className="start-button">
-                  <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button>
+                  <button disabled={player.isPlaying} onClick={(e) => { start();
+                    if (setTimeoutRef) {
+                      reInitTime();
+                      clearInterval(timeoutRefValue);
+                      totalSeconds = 0;
+                   }
+                    setTimeoutRef(setInterval(setTime, 1000)); }} >Start</button>
                 </div>
               }
             </div>

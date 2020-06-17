@@ -6,6 +6,12 @@
   justify-content: center;
 }
 
+.room:active, .room:focus {
+  outline: 0;
+  border: none;
+  -moz-outline-style: none;
+}
+
 .dash-board-master {
   display: flex;
   flex-direction: row;

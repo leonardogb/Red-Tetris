@@ -1,8 +1,15 @@
 .room {
+  margin-top: 20px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.room:active, .room:focus {
+  outline: 0;
+  border: none;
+  -moz-outline-style: none;
 }
 
 .dash-board-master {

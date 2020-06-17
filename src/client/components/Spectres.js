@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Ring } from 'react-awesome-spinners';
 import "../components/Spectres.css"
 
-const Spectres = () => {
+const Spectres = ({isPlaying}) => {
   const spectres = useSelector(state => state.spectres);
 
   const styleSquare = {
@@ -46,12 +46,21 @@ const Spectres = () => {
       // </div>
     );
   }
+  if (isPlaying == false) {
   return (
-    <div className="no-opponenets">
+    <div className="waiting-for-opponenets">
       <h4>Waiting for opponents</h4>
       <Ring />
       </div>
   );
+  }
+  else {
+    return (
+      <div className="no-opponents">
+        <h4>No opponenets in this game</h4>
+      </div>
+    );
+  }
 };
 
 export default Spectres;

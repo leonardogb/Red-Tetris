@@ -12,11 +12,11 @@
   -moz-outline-style: none;
 }
 
-.dash-board-master {
+/* .dash-board-master {
   display: flex;
   flex-direction: row;
   border-bottom: 5px solid #48CDAB;
-}
+} */
 
 .dash-board {
   display: flex;
@@ -95,7 +95,10 @@
 .room-name h1 {
   text-align: center;
   color: white;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
   font-weight: 500;
 }
 
@@ -123,4 +126,12 @@
   text-align: center;
   color: white;
   font-weight: 500;
+}
+
+.start-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 5px solid #48CDAB;
+  height: 100%;
 }

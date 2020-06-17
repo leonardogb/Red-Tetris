@@ -21,6 +21,14 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [secondsValue, setSecondsValue] = useState('00');
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
+  const [timeoutRefValue, setTimeoutRef] = useState(undefined);
+  // var setTimeoutRef = null;
+
+  const reInitTime = () => {
+    setSecondsValue('00');
+    setMinutesValue('00');
+    setHoursValue('00');
+  }
 
   const setIsDestructible = () => {
     setSwitchValue(!switchValue);
@@ -83,9 +91,9 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   const setTime = () => {
     ++totalSeconds;
-    let hour = pad(Math.floor(totalSeconds /3600));
-    let minute = pad(Math.floor((totalSeconds - hour*3600)/60));
-    let seconds = pad(totalSeconds - (hour*3600 + minute*60));
+    let hour = pad(Math.floor(totalSeconds / 3600));
+    let minute = pad(Math.floor((totalSeconds - hour * 3600) / 60));
+    let seconds = pad(totalSeconds - (hour * 3600 + minute * 60));
     setHoursValue(hour);
     setMinutesValue(minute);
     setSecondsValue(seconds);
@@ -99,22 +107,34 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
           <div className="room-name">
             <h1>{curRoom}</h1>
           </div>
-          <div className={player.isMaster ? "dash-board-master" : "dash-board"}>
+          <div className={"dash-board"}>
             {/* Player {curUser} in {curRoom} room. */}
             <div className="left-side">
               <div className="player">
                 <h3>{curUser}</h3>
                 <h4>Time: {hoursValue}
-                          {":"}
-                          {minutesValue}
-                          {":"}
-                          {secondsValue}</h4>
+                  {":"}
+                  {minutesValue}
+                  {":"}
+                  {secondsValue}</h4>
                 <h4>Score: {player.score}</h4>
               </div>
               <div className="next-pieces">
                 <h4>Next pieces</h4>
                 <NextPiece />
               </div>
+              {
+                player.isMaster &&
+                <div className="start-button">
+                  <button disabled={player.isPlaying} onClick={(e) => { start();
+                    if (setTimeoutRef) {
+                      reInitTime();
+                      clearInterval(timeoutRefValue);
+                      totalSeconds = 0;
+                   }
+                    setTimeoutRef(setInterval(setTime, 1000)); }} >Start</button>
+                </div>
+              }
             </div>
             <div className="board-game">
               <Board />
@@ -128,17 +148,17 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             </div>
           </div>
           {
-            player.isMaster &&
-            // !player.isPlaying &&
-            <div>
-              <ToggleSwitch
-                isOn={switchValue}
-                onColor="#41C83C"
-                handleToggle={() => setIsDestructible()}
-                id="react-switch-new"
-              />
-              <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button>
-            </div>
+            // player.isMaster &&
+            // // !player.isPlaying &&
+            // <div>
+            //   <ToggleSwitch
+            //     isOn={switchValue}
+            //     onColor="#41C83C"
+            //     handleToggle={() => setIsDestructible()}
+            //     id="react-switch-new"
+            //   />
+            //   {/* <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button> */}
+            // </div>
           }
         </div>
       ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)

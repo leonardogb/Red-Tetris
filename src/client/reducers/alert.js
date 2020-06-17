@@ -31,18 +31,6 @@ const reducer = (state = {}, action) => {
       } else {
         return state;
       }
-
-    case types.PIECE_COLLIDED:
-      return {
-        ...state,
-        player: {
-          ...state.player,
-          piece: {
-            ...state.player.piece,
-            collided: action.payload.collided
-          }
-        }
-      };
     case types.UPDATE_BOARD:
       return {
         ...state,
@@ -131,25 +119,6 @@ const reducer = (state = {}, action) => {
           status: 'PLAYING'
         }
       };
-    case types.DROP_PLAYER:
-      if (!checkCollision(state.player.piece, state.player.grid, {x: 0, y: 1})) {
-        return {
-          ...state,
-          player: {
-            ...state.player,
-            piece: {
-              ...state.player.piece,
-              pos: {
-                x: state.player.piece.pos.x,
-                y: state.player.piece.pos.y + 1
-              },
-              collided: false
-            }
-          }
-        };
-      } else {
-        return state;
-      }
     case types.SET_DELAY:
       return {
         ...state,

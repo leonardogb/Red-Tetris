@@ -37,7 +37,7 @@ const App = () => {
 
   useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
-      if (player.piece.pos.y < 1) {
+      if (player.piece.new && player.piece.pos.y < 1) {
         console.log('GAME OVER!!!');
         dispatch(action.setGameOver());
         // setDropTime(null);

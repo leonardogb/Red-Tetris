@@ -10,8 +10,8 @@ export  const usePlayer = () => {
     dispatch(action.updatePlayerPosition(y, x, collided));
   };
 
-  const drop = (bottom = false) => {
-    if (!bottom) {
+  const drop = (space = false) => {
+    if (!space) {
       if (checkCollision(player.piece, player.grid, { x: 0, y: 1 }) === false) {
         updatePlayerPos(1, null, false);
       }

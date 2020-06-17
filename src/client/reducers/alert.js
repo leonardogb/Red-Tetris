@@ -241,6 +241,16 @@ const reducer = (state = {}, action) => {
             score: state.player.score + action.payload.score
           }
         }
+      case types.SET_ERROR:
+        return {
+          ...state,
+          error: action.payload.error
+        }
+      case types.REMOVE_ERROR:
+        return {
+          ...state,
+          error: null
+        }
     default:
       return state
   }

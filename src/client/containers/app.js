@@ -6,6 +6,7 @@ import Login from "../components/Login";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import Footer from "../components/Footer";
 import BoardGame from "../components/BoardGame";
+import Error from '../components/Error';
 import "./app.css";
 
 const App = () => {
@@ -69,9 +70,17 @@ const App = () => {
     })
   });
 
+  const removeError = () => {
+    dispatch(action.removeError());
+  };
+
   return (
     <div className="page-container">
       <div className="content-wrap">
+        <div onClick={() => removeError()}>
+          <Error />
+        </div>
+        
         <HashRouter hashType="noslash">
           <Switch>
             <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>

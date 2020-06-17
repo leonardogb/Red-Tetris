@@ -46,3 +46,9 @@ export const swapPieces = () => {
       type: types.SWAP_PIECES
     }
   };
+
+export const removeError = () => {
+  return {
+    type: types.REMOVE_ERROR
+  }
+};

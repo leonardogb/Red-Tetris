@@ -159,6 +159,8 @@ const initEngine = io => {
           socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
           socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
           io.in(data.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+        } else {
+          socket.emit('serverAction', { action: {type: types.SET_ERROR, payload: {error: 'Le login n\'est pas disponible' } } });
         }
       }
     });

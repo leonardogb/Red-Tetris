@@ -11,14 +11,14 @@
 }
 
 
-.no-opponenets {
+.waiting-for-opponenets {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.no-opponenets h4{
+.waiting-for-opponenets h4{
   text-align: center;
   color: white;
   font-weight: 500;

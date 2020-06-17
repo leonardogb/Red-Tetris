@@ -17,6 +17,10 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
+  var totalSeconds = 0;
+  const [secondsValue, setSecondsValue] = useState('00');
+  const [minutesValue, setMinutesValue] = useState('00');
+  const [hoursValue, setHoursValue] = useState('00');
 
   const setIsDestructible = () => {
     setSwitchValue(!switchValue);
@@ -67,6 +71,26 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
       marginTop: '20px'
     }
   };
+
+  const pad = (val) => {
+    var valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } else {
+      return valString;
+    }
+  }
+
+  const setTime = () => {
+    ++totalSeconds;
+    let hour = pad(Math.floor(totalSeconds /3600));
+    let minute = pad(Math.floor((totalSeconds - hour*3600)/60));
+    let seconds = pad(totalSeconds - (hour*3600 + minute*60));
+    setHoursValue(hour);
+    setMinutesValue(minute);
+    setSecondsValue(seconds);
+  };
+
   return (
     <div className="room" tabIndex={0} onKeyDown={(event) => keyDown(event)}>
       {/* <div className="board1"> */}
@@ -80,8 +104,12 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             <div className="left-side">
               <div className="player">
                 <h3>{curUser}</h3>
-                <h4>Time</h4>
-                <h4>Score : {player.score}</h4>
+                <h4>Time: {hoursValue}
+                          {":"}
+                          {minutesValue}
+                          {":"}
+                          {secondsValue}</h4>
+                <h4>Score: {player.score}</h4>
               </div>
               <div className="next-pieces">
                 <h4>Next pieces</h4>
@@ -93,10 +121,10 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             </div>
             {/* <PlayersList curRoom={curRoom} /> */}
             <div className="opponents">
-            <h3>Opponents</h3>
-            <div className="opponents-content">
-              <Spectres />
-            </div>
+              <h3>Opponents</h3>
+              <div className="opponents-content">
+                <Spectres isPlaying={player.isPlaying} />
+              </div>
             </div>
           </div>
           {
@@ -109,7 +137,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
                 handleToggle={() => setIsDestructible()}
                 id="react-switch-new"
               />
-              <button disabled={player.isPlaying} onClick={(e) => { start(); }} >Start</button>
+              <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button>
             </div>
           }
         </div>

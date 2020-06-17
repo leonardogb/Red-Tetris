@@ -20,6 +20,7 @@ const  socket = openSocket('http://localhost:3004'); // prevent the initial http
 socket.emit('action', {type: 'server/ping'});
 
 const initialState = {
+  message: '',
   socket: socket,
   id: null,
   isMaster: null,

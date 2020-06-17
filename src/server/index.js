@@ -82,6 +82,12 @@ const initEngine = io => {
   io.on('connection', (socket) => {
     logInfo("Socket connected: " + socket.id);
 
+    socket.on('action', (action) => {
+      if(action.type === 'server/ping'){
+        socket.emit('action', {type: 'pong'})
+      }
+    });
+
     socket.on('getPiece', () => {
       const pieces = Piece.getTetrominos(5);
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_PIECES, payload: { pieces } } });

@@ -31,3 +31,5 @@ build/
 .DS_*
 **/*.backup.*
 **/*.back.*
+
+coverage

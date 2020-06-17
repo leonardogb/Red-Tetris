@@ -1,10 +1,14 @@
 import { checkCollision } from '../gameHelpers';
+import { ALERT_POP } from '../actions/alert';
 import * as types from '../actions/actionTypes';
 
 const reducer = (state = {}, action) => {
   let curTetromino = null;
   let piecesList = null;
   switch (action.type) {
+    case ALERT_POP:
+      return { message: action.message }
+
     case types.UPDATE_PLAYER_POSITION:
       let posX = action.payload.x ? action.payload.x : 0;
       let posY = action.payload.y ? action.payload.y : 0;

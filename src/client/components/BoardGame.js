@@ -9,11 +9,12 @@ import { useInterval } from "../Hooks/useInterval";
 import { usePlayer } from "../Hooks/usePlayer";
 import { checkCollision } from "../gameHelpers";
 import "./BoardGame.css";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as action from '../actions/actions';
 
-const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
+const BoardGame = ({ curRoom, curUser, delay, socket }) => {
 
+  const [player] = useSelector(store => [store.player]);
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
@@ -25,8 +26,9 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   useEffect(() => {
     if (player.gameOver) {
-      player.isPlaying = false;
-      clearInterval(timeoutRefValue);
+      // player.isPlaying = false;
+    dispatch(action.setIsPlaying(false));
+    clearInterval(timeoutRefValue);
     }
   }, [player.gameOver]);
 
@@ -46,8 +48,11 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   }, delay);
 
   const play = () => {
+    console.log("play");
     socket.emit('start');
-    player.isPlaying = true;
+    dispatch(action.setIsPlaying(true));
+    console.log("steisplaying: ", player.isPlaying);
+    // player.isPlaying = true;
   };
 
   const replay = () => {
@@ -138,6 +143,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
                 !player.gameOver && !player.isPlaying ?
                 // <div>
                 <div className="start-button">
+                  {console.log("Isplaying play button: ", player.isPlaying)}
                   <button onClick={(e) => { play();
                     if (setTimeoutRef) {
                       reInitTime();
@@ -148,7 +154,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
                 </div>
                 :
                 <div className="start-button">
-                  {console.log("Isplaying: ", player.isPlaying)}
+                  {console.log("Isplaying replay button: ", player.isPlaying)}
                   <button disabled={player.isPlaying} onClick={(e) => { replay();
                     if (setTimeoutRef) {
                       reInitTime();

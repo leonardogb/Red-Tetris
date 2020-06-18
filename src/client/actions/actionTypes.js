@@ -16,6 +16,7 @@ export const SET_PLAYERS_GAMES = 'SET_PLAYERS_GAMES';
 export const SET_SPECTRES = 'SET_SPECTRES';
 export const SET_USERNAME = 'SET_USERNAME';
 export const SET_ROOM = 'SET_ROOM';
+export const SET_IS_PLAYING = 'SET_IS_PLAYING';
 export const START_GAME = 'START_GAME';
 export const SWAP_PIECES = 'SWAP_PIECES';
 export const UPDATE_BOARD = 'UPDATE_BOARD';

@@ -52,3 +52,12 @@ export const removeError = () => {
     type: types.REMOVE_ERROR
   }
 };
+
+export const setIsPlaying = (value) => {
+  return {
+    type: types.SET_IS_PLAYING,
+    payload: {
+        value: value
+    }
+  }
+};

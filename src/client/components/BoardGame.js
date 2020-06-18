@@ -77,7 +77,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     dispatch(action.setIsPlaying(true));
   }
 
-  const keyDown = (event) => {
+  const keyUp = (event) => {
     // event.preventDefault()
     // event.stopPropagation()
     if (player && !player.gameOver) {
@@ -133,7 +133,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   };
 
   return (
-    <div className="room" tabIndex={0} onKeyDown={(event) => keyDown(event)}>
+    <div className="room" tabIndex={0} onKeyUp={(event) => keyUp(event)}>
       {curRoom ? (
         <div className="room-board">
           <div className="room-name">

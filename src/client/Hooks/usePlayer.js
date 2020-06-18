@@ -16,7 +16,7 @@ export  const usePlayer = () => {
         updatePlayerPos(1, null, false);
       }
       else {
-        if (player.piece.pos.y < 1) {
+        if (player.piece.new && player.piece.pos.y < 1) {
           console.log('GAME OVER 1!!!');
           dispatch(action.setGameOver());
 

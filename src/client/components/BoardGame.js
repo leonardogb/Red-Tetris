@@ -24,7 +24,10 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
 
   useEffect(() => {
-    clearInterval(timeoutRefValue);
+    if (player.gameOver) {
+      player.isPlaying = false;
+      clearInterval(timeoutRefValue);
+    }
   }, [player.gameOver]);
 
   const reInitTime = () => {
@@ -42,10 +45,15 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     drop();
   }, delay);
 
-  const start = () => {
+  const play = () => {
     socket.emit('start');
     player.isPlaying = true;
   };
+
+  const replay = () => {
+    socket.emit('replay');
+    player.isPlaying = true;
+  }
 
   const keyDown = (event) => {
     // event.preventDefault()
@@ -126,15 +134,32 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
               </div>
               {
                 player.isMaster &&
+                // {
+                !player.gameOver && !player.isPlaying ?
+                // <div>
                 <div className="start-button">
-                  <button disabled={player.isPlaying} onClick={(e) => { start();
+                  <button onClick={(e) => { play();
                     if (setTimeoutRef) {
                       reInitTime();
                       clearInterval(timeoutRefValue);
                       totalSeconds = 0;
                    }
-                    setTimeoutRef(setInterval(setTime, 1000)); }} >Start</button>
+                    setTimeoutRef(setInterval(setTime, 1000)); }} >Play</button>
                 </div>
+                :
+                <div className="start-button">
+                  {console.log("Isplaying: ", player.isPlaying)}
+                  <button disabled={player.isPlaying} onClick={(e) => { replay();
+                    if (setTimeoutRef) {
+                      reInitTime();
+                      clearInterval(timeoutRefValue);
+                      totalSeconds = 0;
+                   }
+                    setTimeoutRef(setInterval(setTime, 1000)); }} >Replay</button>
+                  </div>
+                  // }
+                // </div>
+                }
               }
             </div>
             <div className="board-game">

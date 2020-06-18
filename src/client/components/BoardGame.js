@@ -24,6 +24,10 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
   // var setTimeoutRef = null;
 
+  useEffect(() => {
+    clearInterval(timeoutRefValue);
+  }, [player.gameOver]);
+
   const reInitTime = () => {
     setSecondsValue('00');
     setMinutesValue('00');

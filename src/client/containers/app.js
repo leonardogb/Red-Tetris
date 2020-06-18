@@ -21,19 +21,21 @@ const App = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
+      console.log("reconnect");
       let id = localStorage.getItem('id');
+      console.log("id: ", id);
       if (id) {
         socket.emit('reloadPlayer', id);
       }
     });
   }, []);
 
-  useEffect(() => {
-    console.log("gameOver: ", player.gameOver);
-    if (player.gameOver === true) {
-      player.isPlaying = false;
-    }
-  }, [player.gameOver]);
+  // useEffect(() => {
+  //   console.log("gameOver: ", player.gameOver);
+  //   if (player.gameOver === true) {
+  //     player.isPlaying = false;
+  //   }
+  // }, [player.gameOver]);
 
   useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
@@ -62,6 +64,7 @@ const App = () => {
 
   socket.on('deleteId', () => {
     localStorage.removeItem('id');
+    console.log("remove idddddd !!!!!!!!!!!!!!!!!");
   });
 
   useEffect(() => {
@@ -87,7 +90,7 @@ const App = () => {
               <Login player={player} socket={socket} />
             </div>} />
             <Route exact path="/:room[:player]" render={() =>
-             <BoardGame curRoom={curRoom} curUser={curUser} delay={delay} socket={socket}/>
+             <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>
             } />
           </Switch>
         </HashRouter>

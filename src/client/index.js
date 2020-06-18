@@ -37,7 +37,9 @@ const initialState = {
       collided: false
     },
     gameOver: null,
+    roomOver: false,
     status: null,
+    isPlaying: false,
     delay: null,
     new: false,
     score: 0

@@ -61,3 +61,15 @@ export const setIsPlaying = (value) => {
     }
   }
 };
+
+export const setRoomOver = () => {
+  return {
+    type: types.SET_ROOM_OVER
+  }
+};
+
+export const restartGame = () => {
+  return {
+    type: types.RESTART_GAME
+  }
+};

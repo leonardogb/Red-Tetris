@@ -12,9 +12,9 @@ import "./BoardGame.css";
 import { useDispatch, useSelector } from 'react-redux';
 import * as action from '../actions/actions';
 
-const BoardGame = ({ curRoom, curUser, delay, socket }) => {
+const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
-  const [player] = useSelector(store => [store.player]);
+  // const [player] = useSelector(store => [store.player]);
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
@@ -24,10 +24,19 @@ const BoardGame = ({ curRoom, curUser, delay, socket }) => {
   const [hoursValue, setHoursValue] = useState('00');
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
 
+  socket.on('loser', () => {
+    console.log('gameOver !!!!!');
+  });
+
+  socket.on('winner', () => {
+    console.log('winner !!!!!');
+  });
+
   useEffect(() => {
     if (player.gameOver) {
       // player.isPlaying = false;
     dispatch(action.setIsPlaying(false));
+    socket.emit('gameOver', player);
     clearInterval(timeoutRefValue);
     }
   }, [player.gameOver]);
@@ -48,16 +57,13 @@ const BoardGame = ({ curRoom, curUser, delay, socket }) => {
   }, delay);
 
   const play = () => {
-    console.log("play");
-    socket.emit('start');
+    socket.emit('play');
     dispatch(action.setIsPlaying(true));
-    console.log("steisplaying: ", player.isPlaying);
-    // player.isPlaying = true;
   };
 
   const replay = () => {
     socket.emit('replay');
-    player.isPlaying = true;
+    dispatch(action.setIsPlaying(true));
   }
 
   const keyDown = (event) => {
@@ -139,32 +145,25 @@ const BoardGame = ({ curRoom, curUser, delay, socket }) => {
               </div>
               {
                 player.isMaster &&
-                // {
-                !player.gameOver && !player.isPlaying ?
-                // <div>
                 <div className="start-button">
+                  {console.log("ismaster: ", player.isMaster)}
                   {console.log("Isplaying play button: ", player.isPlaying)}
-                  <button onClick={(e) => { play();
+                  <button disabled={player.isPlaying} onClick={(e) => {
+                    console.log("player.gameOver", player.gameOver);
+                    console.log("player.isPlaying", player.isPlaying);
+                    if (!player.gameOver && !player.isPlaying) {
+                      play();
+                    }
+                    else {
+                      replay();
+                    }
                     if (setTimeoutRef) {
                       reInitTime();
                       clearInterval(timeoutRefValue);
                       totalSeconds = 0;
                    }
-                    setTimeoutRef(setInterval(setTime, 1000)); }} >Play</button>
+                    setTimeoutRef(setInterval(setTime, 1000)); }} >{!player.gameOver && !player.isPlaying ? "Play" : "Replay"}</button>
                 </div>
-                :
-                <div className="start-button">
-                  {console.log("Isplaying replay button: ", player.isPlaying)}
-                  <button disabled={player.isPlaying} onClick={(e) => { replay();
-                    if (setTimeoutRef) {
-                      reInitTime();
-                      clearInterval(timeoutRefValue);
-                      totalSeconds = 0;
-                   }
-                    setTimeoutRef(setInterval(setTime, 1000)); }} >Replay</button>
-                  </div>
-                  // }
-                // </div>
                 }
               }
             </div>

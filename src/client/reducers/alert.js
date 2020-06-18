@@ -164,7 +164,7 @@ const reducer = (state = {}, action) => {
         };
       case types.SET_SPECTRES:
         let spectres = [];
-        
+
         if (state.spectres) {
           spectres = JSON.parse(JSON.stringify(state.spectres));
           const indexSpectre = spectres.findIndex(element => element.playerName === action.payload.username);
@@ -220,6 +220,46 @@ const reducer = (state = {}, action) => {
           ...state,
           error: null
         }
+        case types.SET_IS_PLAYING:
+          return {
+            ...state,
+            player: {
+              ...state.player,
+              isPlaying: action.payload.value,
+            },
+          };
+          case types.SET_ROOM_OVER:
+            return {
+              ...state,
+              player: {
+                ...state.player,
+                roomOver: true,
+              },
+            };
+            case types.RESTART_GAME:
+              return {
+                ...state,
+                player: {
+                  ...state.player,
+                  grid: action.payload.grid,
+                  pieces: [],
+                  piece: {
+                    tetromino: [],
+                    pos: {
+                      x: 0,
+                      y: 0,
+                    },
+                    collided: false,
+                  },
+                  gameOver: false,
+                  roomOver: false,
+                  status: null,
+                  isPlaying: true,
+                  delay: null,
+                  new: false,
+                  score: 0
+                },
+              };
     default:
       return state
   }

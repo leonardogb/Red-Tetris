@@ -22,7 +22,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
-  // var setTimeoutRef = null;
 
   useEffect(() => {
     clearInterval(timeoutRefValue);
@@ -105,14 +104,12 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   return (
     <div className="room" tabIndex={0} onKeyDown={(event) => keyDown(event)}>
-      {/* <div className="board1"> */}
       {curRoom ? (
         <div className="room-board">
           <div className="room-name">
             <h1>{curRoom}</h1>
           </div>
           <div className={"dash-board"}>
-            {/* Player {curUser} in {curRoom} room. */}
             <div className="left-side">
               <div className="player">
                 <h3>{curUser}</h3>
@@ -165,9 +162,13 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             // </div>
           }
         </div>
-      ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
+      ) : (localStorage.getItem('id') ?
+      <div className="please-wait">
+        <h3>Please wait</h3>
+        <Ring />
+      </div>
+       : <Redirect to="/" />)
       }
-      {/* </div> */}
     </div>
   )
 }

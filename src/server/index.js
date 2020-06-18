@@ -110,7 +110,7 @@ const initEngine = io => {
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_PIECES, payload: { pieces: piecesStart } } });
       io.in(socket.room).emit('serverAction', { action: { type: types.UPDATE_TETROMINO } });
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_DELAY, payload: { delay: 1000 } } });
-      io.in(socket.room).emit('setIsPLaying');
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: true } } });
       games = games.map((game) => {
         if (game.room === socket.room) {
           game.playing = true;
@@ -128,7 +128,6 @@ const initEngine = io => {
     socket.on('replay', () => {
       io.in(socket.room).emit('serverAction', { action: { type: types.RESTART_GAME, payload: { grid: initialBoard() } } });
       play();
-      console.log('restart');
     });
 
     function create_UUID() {
@@ -246,14 +245,13 @@ const initEngine = io => {
       games = games.map((game) => {
         if (game.room === socket.room) {
           let player = game.players[game.players.findIndex(e => e.name === socket.username)];
-          // console.log('player', player);
           if (player) {
             player.timeToDelete = Date.now() + 60000;
             game.players.splice(game.players.findIndex(e => e.name === socket.username), 1);
             if (player.isMaster === true && game.players.length) {
               player.isMaster = false;
               game.players[0].isMaster = true;
-              io.to(game.players[0].socketId).emit('setMaster', true);
+              io.to(game.players[0].socketId).emit('setIsMaster', true);
             }
             game.players.push(player);
           }
@@ -335,11 +333,16 @@ const initEngine = io => {
         }
         return (game);
       });
-      if (stillPlaying === 1 && winner) {
+      if (!stillPlaying) {
+        socket.emit('serverAction', { action: { type: types.SET_ROOM_OVER } });
+      }
+      else if (stillPlaying === 1 && winner) {
         io.to(winner.socketId).emit('winner');
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
       }
-      socket.emit('loser');
+      else {
+        socket.emit('loser');
+      }
     });
 
   });

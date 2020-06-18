@@ -73,3 +73,12 @@ export const restartGame = () => {
     type: types.RESTART_GAME
   }
 };
+
+export const setIsMaster = (value) => {
+  return {
+    type: types.SET_IS_MASTER,
+    payload: {
+        value: value
+    }
+  }
+};

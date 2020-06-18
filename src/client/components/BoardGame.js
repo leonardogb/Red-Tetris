@@ -24,8 +24,12 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [hoursValue, setHoursValue] = useState('00');
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
 
+  // socket.on('game', () => {
+  //   console.log('loser !!!!!');
+  // });
+
   socket.on('loser', () => {
-    console.log('gameOver !!!!!');
+    console.log('loser !!!!!');
   });
 
   socket.on('winner', () => {
@@ -40,6 +44,13 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     clearInterval(timeoutRefValue);
     }
   }, [player.gameOver]);
+
+  useEffect(() => {
+    socket.on('setIsMaster', (value) => {
+      dispatch(action.setIsMaster(value));
+      // player.isMaster = value;
+    })
+  });
 
   const reInitTime = () => {
     setSecondsValue('00');
@@ -146,11 +157,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
               {
                 player.isMaster &&
                 <div className="start-button">
-                  {console.log("ismaster: ", player.isMaster)}
-                  {console.log("Isplaying play button: ", player.isPlaying)}
-                  <button disabled={player.isPlaying} onClick={(e) => {
-                    console.log("player.gameOver", player.gameOver);
-                    console.log("player.isPlaying", player.isPlaying);
+                  <button disabled={(player.isMaster && !player.isPlaying && !player.gameOver || player.isMaster && player.roomOver) ? false : true} onClick={(e) => {
                     if (!player.gameOver && !player.isPlaying) {
                       play();
                     }

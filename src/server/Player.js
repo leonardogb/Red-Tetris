@@ -21,6 +21,7 @@ class Player {
       collided: false
     };
     this.gameOver = false;
+    this.roomOver = false;
     this.delay = null;
     this.spectre = initialSpectre();
     this.score = 0;

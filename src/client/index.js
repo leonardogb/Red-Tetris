@@ -49,6 +49,7 @@ const initialState = {
   rooms: [],
   playersGames: {}
 };
+
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
 

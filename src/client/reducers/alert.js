@@ -228,6 +228,14 @@ const reducer = (state = {}, action) => {
               isPlaying: action.payload.value,
             },
           };
+          case types.SET_IS_MASTER:
+          return {
+            ...state,
+            player: {
+              ...state.player,
+              isMaster: action.payload.value,
+            },
+          };
           case types.SET_ROOM_OVER:
             return {
               ...state,

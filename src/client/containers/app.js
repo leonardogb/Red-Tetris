@@ -8,16 +8,39 @@ import Footer from "../components/Footer";
 import BoardGame from "../components/BoardGame";
 import Error from '../components/Error';
 import "./app.css";
+import * as types from '../actions/actionTypes';
 
 const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
-  const [updateStage] = useBoard();
+  // const [updateStage] = useBoard();
   // const [updatePlayerPos, pieceRotate, drop] = usePlayer();
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
-  }, [player, player.pieces, player.piece]);
+    dispatch({type: types.UPDATE_GRID})
+
+    if (player.piece.new) {
+      socket.emit('updateGrid', { grid: player.grid });
+    }
+  }, [player.piece.tetromino, player.piece.pos]);
+
+  useEffect(() => {
+    if (player.pieces.length > 0 && player.piece.collided === true) {
+      if (player.piece.new && player.piece.pos.y < 1) {
+        console.log('GAME OVER!!!');
+        dispatch(action.setGameOver());
+        // setDropTime(null);
+      } else {
+        dispatch(action.updateTetromino());
+        dispatch({type: types.UPDATE_GRID});
+      }
+      if (player.pieces.length < 4) {
+        socket.emit('getPiece');
+      }
+    }
+
+  }, [player.piece.collided]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -34,23 +57,6 @@ const App = () => {
       player.isPlaying = false;
     }
   }, [player.gameOver]);
-
-  useEffect(() => {
-    if (player.pieces.length > 0 && player.piece.collided === true) {
-      if (player.piece.new && player.piece.pos.y < 1) {
-        console.log('GAME OVER!!!');
-        dispatch(action.setGameOver());
-        // setDropTime(null);
-      } else {
-        // socket.emit('updateGrid', { grid: player.grid }); déjà fait dans useBoard if player.piece.new
-        dispatch(action.updateTetromino());
-      }
-      if (player.pieces.length < 3) {
-        socket.emit('getPiece');
-      }
-    }
-
-  }, [player.piece.collided]);
 
   socket.on('setId', (id) => {
     localStorage.setItem('id', id);

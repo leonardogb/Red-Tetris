@@ -9,11 +9,12 @@ import { useInterval } from "../Hooks/useInterval";
 import { usePlayer } from "../Hooks/usePlayer";
 import { checkCollision } from "../gameHelpers";
 import "./BoardGame.css";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as action from '../actions/actions';
 
 const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
+  // const [player] = useSelector(store => [store.player]);
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
@@ -22,11 +23,34 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
-  // var setTimeoutRef = null;
+
+  // socket.on('game', () => {
+  //   console.log('loser !!!!!');
+  // });
+
+  socket.on('loser', () => {
+    console.log('loser !!!!!');
+  });
+
+  socket.on('winner', () => {
+    console.log('winner !!!!!');
+  });
 
   useEffect(() => {
+    if (player.gameOver) {
+      // player.isPlaying = false;
+    dispatch(action.setIsPlaying(false));
+    socket.emit('gameOver', player);
     clearInterval(timeoutRefValue);
+    }
   }, [player.gameOver]);
+
+  useEffect(() => {
+    socket.on('setIsMaster', (value) => {
+      dispatch(action.setIsMaster(value));
+      // player.isMaster = value;
+    })
+  });
 
   const reInitTime = () => {
     setSecondsValue('00');
@@ -43,10 +67,15 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     drop();
   }, delay);
 
-  const start = () => {
-    socket.emit('start');
-    player.isPlaying = true;
+  const play = () => {
+    socket.emit('play');
+    dispatch(action.setIsPlaying(true));
   };
+
+  const replay = () => {
+    socket.emit('replay');
+    dispatch(action.setIsPlaying(true));
+  }
 
   const keyUp = (event) => {
     // event.preventDefault()
@@ -105,14 +134,12 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   return (
     <div className="room" tabIndex={0} onKeyUp={(event) => keyUp(event)}>
-      {/* <div className="board1"> */}
       {curRoom ? (
         <div className="room-board">
           <div className="room-name">
             <h1>{curRoom}</h1>
           </div>
           <div className={"dash-board"}>
-            {/* Player {curUser} in {curRoom} room. */}
             <div className="left-side">
               <div className="player">
                 <h3>{curUser}</h3>
@@ -130,14 +157,21 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
               {
                 player.isMaster &&
                 <div className="start-button">
-                  <button disabled={player.isPlaying} onClick={(e) => { start();
+                  <button disabled={(player.isMaster && !player.isPlaying && !player.gameOver || player.isMaster && player.roomOver) ? false : true} onClick={(e) => {
+                    if (!player.gameOver && !player.isPlaying) {
+                      play();
+                    }
+                    else {
+                      replay();
+                    }
                     if (setTimeoutRef) {
                       reInitTime();
                       clearInterval(timeoutRefValue);
                       totalSeconds = 0;
                    }
-                    setTimeoutRef(setInterval(setTime, 1000)); }} >Start</button>
+                    setTimeoutRef(setInterval(setTime, 1000)); }} >{!player.gameOver && !player.isPlaying ? "Play" : "Replay"}</button>
                 </div>
+                }
               }
             </div>
             <div className="board-game">
@@ -165,9 +199,13 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
             // </div>
           }
         </div>
-      ) : (localStorage.getItem('id') ? <Ring /> : <Redirect to="/" />)
+      ) : (localStorage.getItem('id') ?
+      <div className="please-wait">
+        <h3>Please wait</h3>
+        <Ring />
+      </div>
+       : <Redirect to="/" />)
       }
-      {/* </div> */}
     </div>
   )
 }

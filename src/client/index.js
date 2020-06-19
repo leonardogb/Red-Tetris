@@ -37,7 +37,9 @@ const initialState = {
       collided: false
     },
     gameOver: null,
+    roomOver: false,
     status: null,
+    isPlaying: false,
     delay: null,
     new: false,
     score: 0
@@ -47,6 +49,7 @@ const initialState = {
   rooms: [],
   playersGames: {}
 };
+
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
 

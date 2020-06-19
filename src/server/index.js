@@ -1,6 +1,6 @@
 import fs from 'fs';
 import debug from 'debug';
-import { isEmpty } from "../client/gameHelpers";
+import { initialBoard, isEmpty } from "../client/gameHelpers";
 import { Player } from "./Player";
 import { Game } from "./Game";
 import { Piece } from "./Piece";
@@ -83,8 +83,8 @@ const initEngine = io => {
     logInfo("Socket connected: " + socket.id);
 
     socket.on('action', (action) => {
-      if(action.type === 'server/ping'){
-        socket.emit('action', {type: 'pong'})
+      if (action.type === 'server/ping') {
+        socket.emit('action', { type: 'pong' })
       }
     });
 
@@ -105,12 +105,12 @@ const initEngine = io => {
       // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
     });
 
-    socket.on('start', () => {
+    const play = () => {
       const piecesStart = Piece.getTetrominos(5);
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_PIECES, payload: { pieces: piecesStart } } });
       io.in(socket.room).emit('serverAction', { action: { type: types.UPDATE_TETROMINO } });
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_DELAY, payload: { delay: 1000 } } });
-      io.in(socket.room).emit('setIsPLaying');
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: true } } });
       games = games.map((game) => {
         if (game.room === socket.room) {
           game.playing = true;
@@ -119,6 +119,15 @@ const initEngine = io => {
         io.in(socket.room).emit('setPlayersGames', playersGames(games));
         return (game);
       });
+    }
+
+    socket.on('play', () => {
+      play();
+    });
+
+    socket.on('replay', () => {
+      io.in(socket.room).emit('serverAction', { action: { type: types.RESTART_GAME, payload: { grid: initialBoard() } } });
+      play();
     });
 
     function create_UUID() {
@@ -160,7 +169,7 @@ const initEngine = io => {
           socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
           io.in(data.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
         } else {
-          socket.emit('serverAction', { action: {type: types.SET_ERROR, payload: {error: 'Le login n\'est pas disponible' } } });
+          socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
         }
       }
     });
@@ -236,14 +245,16 @@ const initEngine = io => {
       games = games.map((game) => {
         if (game.room === socket.room) {
           let player = game.players[game.players.findIndex(e => e.name === socket.username)];
-          player.timeToDelete = Date.now() + 60000;
-          game.players.splice(game.players.findIndex(e => e.name === socket.username), 1);
-          if (player.isMaster === true && game.players.length) {
-            player.isMaster = false;
-            game.players[0].isMaster = true;
-            io.to(game.players[0].socketId).emit('setMaster', true);
+          if (player) {
+            player.timeToDelete = Date.now() + 60000;
+            game.players.splice(game.players.findIndex(e => e.name === socket.username), 1);
+            if (player.isMaster === true && game.players.length) {
+              player.isMaster = false;
+              game.players[0].isMaster = true;
+              io.to(game.players[0].socketId).emit('setIsMaster', true);
+            }
+            game.players.push(player);
           }
-          game.players.push(player);
         }
         return (game);
       });
@@ -283,13 +294,13 @@ const initEngine = io => {
         curPlayer.score = curPlayer.score + (10 * data.malus.length);
 
         const malus = data.malus.map(row => {
-           return row.reduce((acc, value) => {
-             if (curGame.options.isIndestructible) {
-               acc.push([8, true]);
-             } else {
-                acc.push([value[1] ? value[0] : 0, value[1]]);
-             }
-             return acc;
+          return row.reduce((acc, value) => {
+            if (curGame.options.isIndestructible) {
+              acc.push([8, true]);
+            } else {
+              acc.push([value[1] ? value[0] : 0, value[1]]);
+            }
+            return acc;
           }, []);
         });
         socket.to(socket.room).emit('serverAction', { action: { type: types.SET_MALUS, payload: { malus: malus } } });
@@ -303,6 +314,37 @@ const initEngine = io => {
         game.options.isIndestructible = data;
       }
     });
+
+    socket.on('gameOver', (player) => {
+      let winner = null;
+      let stillPlaying = 0;
+      games = games.map((game) => {
+        if (game.room === socket.room) {
+          game.players = game.players.map((checkPlayer) => {
+            if (checkPlayer.name === socket.username) {
+              checkPlayer.gameOver = player.gameOver;
+            }
+            else if (checkPlayer.gameOver === false) {
+              winner = checkPlayer;
+              stillPlaying++;
+            }
+            return (checkPlayer);
+          });
+        }
+        return (game);
+      });
+      if (!stillPlaying) {
+        socket.emit('serverAction', { action: { type: types.SET_ROOM_OVER } });
+      }
+      else if (stillPlaying === 1 && winner) {
+        io.to(winner.socketId).emit('winner');
+        io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
+      }
+      else {
+        socket.emit('loser');
+      }
+    });
+
   });
 };
 

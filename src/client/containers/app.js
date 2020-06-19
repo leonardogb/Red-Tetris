@@ -28,7 +28,6 @@ const App = () => {
   useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
       if (player.piece.new && player.piece.pos.y < 1) {
-        console.log('GAME OVER!!!');
         dispatch(action.setGameOver());
         // setDropTime(null);
       } else {
@@ -62,18 +61,8 @@ const App = () => {
     localStorage.setItem('id', id);
   });
 
-  socket.on('setIsplaying', () => {
-    player.isPlaying = true;
-  });
-
   socket.on('deleteId', () => {
     localStorage.removeItem('id');
-  });
-
-  useEffect(() => {
-    socket.on('setMaster', (value) => {
-      player.isMaster = value;
-    })
   });
 
   const removeError = () => {
@@ -86,7 +75,7 @@ const App = () => {
         <div onClick={() => removeError()}>
           <Error />
         </div>
-        
+
         <HashRouter hashType="noslash">
           <Switch>
             <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>

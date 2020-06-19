@@ -52,3 +52,33 @@ export const removeError = () => {
     type: types.REMOVE_ERROR
   }
 };
+
+export const setIsPlaying = (value) => {
+  return {
+    type: types.SET_IS_PLAYING,
+    payload: {
+        value: value
+    }
+  }
+};
+
+export const setRoomOver = () => {
+  return {
+    type: types.SET_ROOM_OVER
+  }
+};
+
+export const restartGame = () => {
+  return {
+    type: types.RESTART_GAME
+  }
+};
+
+export const setIsMaster = (value) => {
+  return {
+    type: types.SET_IS_MASTER,
+    payload: {
+        value: value
+    }
+  }
+};

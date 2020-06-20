@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import * as action from '../actions/actions';
-import { useBoard } from '../Hooks/useBoard';
 import Login from "../components/Login";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import Footer from "../components/Footer";
@@ -9,12 +7,11 @@ import BoardGame from "../components/BoardGame";
 import Error from '../components/Error';
 import "./app.css";
 import * as types from '../actions/actionTypes';
+import * as action from '../actions/actions';
 
 const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
   const dispatch = useDispatch();
-  // const [updateStage] = useBoard();
-  // const [updatePlayerPos, pieceRotate, drop] = usePlayer();
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
@@ -27,12 +24,11 @@ const App = () => {
 
   useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
-      if (player.piece.new && player.piece.pos.y < 1) {
+      if (player.piece.pos.y < 1) {
+        console.log('GAME OVER !!!');
         dispatch(action.setGameOver());
-        // setDropTime(null);
       } else {
         dispatch(action.updateTetromino());
-        dispatch({type: types.UPDATE_GRID});
       }
       if (player.pieces.length < 4) {
         socket.emit('getPiece');

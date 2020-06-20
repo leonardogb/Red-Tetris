@@ -52,7 +52,7 @@ function* updateBoard(action) {
   Allows concurrent fetches of user.
 */
 function* mySaga() {
-  yield takeEvery(types.UPDATE_GRID, updateBoard);
+  yield takeLatest(types.UPDATE_GRID, updateBoard);
 }
 
 export default mySaga;

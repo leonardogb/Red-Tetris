@@ -11,17 +11,12 @@ export  const usePlayer = () => {
   };
 
   const drop = (space = false) => {
+    dispatch(action.setDelay(null));
     if (!space) {
       if (checkCollision(player.piece, player.grid, { x: 0, y: 1 }) === false) {
         updatePlayerPos(1, null, false);
       } else {
-        if (player.piece.new && player.piece.pos.y < 1) {
-          console.log('GAME OVER 1!!!');
-          dispatch(action.setGameOver());
-          // setDropTime(null);
-        } else {
-          updatePlayerPos(null, null, true);
-        }
+        updatePlayerPos(null, null, true);
         console.log('collided');
       }
     } else {

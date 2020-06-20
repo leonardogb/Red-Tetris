@@ -18,7 +18,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
-  var totalSeconds = 0;
+  let totalSeconds = 0;
   const [secondsValue, setSecondsValue] = useState('00');
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');

@@ -9,7 +9,7 @@
     "client-dev": "webpack-dev-server --colors --hot --inline --host 0.0.0.0 --port 7070",
     "srv-dev": "DEBUG=tetris:* babel-watch -w src src/server/main.js",
     "srv-dist": "DEBUG=tetris:* babel src --out-dir dist",
-    "test": "mocha --require @babel/register --reporter spec",
+    "test": "mocha --require @babel/register --reporter spec -w",
     "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha "
   },
   "dependencies": {

@@ -12,11 +12,6 @@ const Login = () => {
 
   if (player && player.delay != null) {
     dispatch(action.setDelay(null));
-    let id = localStorage.getItem('id');
-    if (id) {
-      socket.emit('removePlayer', id, player.room);
-      localStorage.removeItem('id');
-    }
   }
 
   const getGame = () => {

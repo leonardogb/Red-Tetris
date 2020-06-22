@@ -20,22 +20,6 @@ const App = () => {
   }, [player, player.pieces, player.piece]);
 
   useEffect(() => {
-    socket.on('connect', () => {
-      let id = localStorage.getItem('id');
-      if (id) {
-        socket.emit('reloadPlayer', id);
-      }
-    });
-  }, []);
-
-  // useEffect(() => {
-  //   console.log("gameOver: ", player.gameOver);
-  //   if (player.gameOver === true) {
-  //     player.isPlaying = false;
-  //   }
-  // }, [player.gameOver]);
-
-  useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
       if (player.piece.new && player.piece.pos.y < 1) {
         dispatch(action.setGameOver());
@@ -50,14 +34,6 @@ const App = () => {
     }
 
   }, [player.piece.collided]);
-
-  socket.on('setId', (id) => {
-    localStorage.setItem('id', id);
-  });
-
-  socket.on('deleteId', () => {
-    localStorage.removeItem('id');
-  });
 
   const removeError = () => {
     dispatch(action.removeError());

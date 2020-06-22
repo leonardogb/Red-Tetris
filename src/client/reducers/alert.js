@@ -32,11 +32,13 @@ const reducer = (state = {}, action) => {
         return state;
       }
     case types.UPDATE_BOARD:
+      const delay = state.player.isPlaying ? 1000 : null;
       return {
         ...state,
         player: {
           ...state.player,
-          grid: action.payload.newBoard
+          grid: action.payload.newBoard,
+          delay: delay
         }
       };
     case types.SET_USERNAME:

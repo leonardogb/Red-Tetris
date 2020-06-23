@@ -68,12 +68,6 @@ export const setRoomOver = () => {
   }
 };
 
-export const restartGame = () => {
-  return {
-    type: types.RESTART_GAME
-  }
-};
-
 export const setIsMaster = (value) => {
   return {
     type: types.SET_IS_MASTER,

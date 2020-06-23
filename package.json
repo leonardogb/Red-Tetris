@@ -9,8 +9,8 @@
     "client-dev": "webpack-dev-server --colors --hot --inline --host 0.0.0.0 --port 7070",
     "srv-dev": "DEBUG=tetris:* babel-watch -w src src/server/main.js",
     "srv-dist": "DEBUG=tetris:* babel src --out-dir dist",
-    "test": "mocha --require @babel/register --reporter spec -w",
-    "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha "
+    "test": "mocha --require @babel/register --reporter spec --recursive --exit",
+    "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha --recursive --exit"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.7.5",

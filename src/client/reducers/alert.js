@@ -108,11 +108,11 @@ const reducer = (state = {}, action) => {
           delay: null
         }
       };
-    case types.SET_CUR_ROOM:
-      return {
-        ...state,
-        curRoom: true
-      };
+    // case types.SET_CUR_ROOM:
+    //   return {
+    //     ...state,
+    //     curRoom: true
+    //   };
     case types.START_GAME:
       return {
         ...state,

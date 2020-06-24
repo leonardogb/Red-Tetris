@@ -20,7 +20,6 @@ const Spectres = ({isPlaying}) => {
   }
 
   if (spectres) {
-
     return (
       // <div>
         <div className="players-spectre" >

@@ -136,6 +136,18 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     setSecondsValue(seconds);
   };
 
+  useEffect(() => {
+    if (player.isPlaying) {
+      reInitTime();
+      setTimeoutRef(setInterval(setTime, 1000));
+      setDialogValue(undefined);
+    }
+    else if (timeoutRefValue) {
+      clearInterval(timeoutRefValue);
+      totalSeconds = 0;
+    }
+  }, [player.isPlaying]);
+
   return (
     <div className="room" tabIndex={0} onKeyUp={(event) => keyUp(event)}>
       {curRoom ? (
@@ -169,16 +181,15 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
                       else {
                         replay();
                       }
-                      if (setTimeoutRef) {
-                        reInitTime();
-                        clearInterval(timeoutRefValue);
-                        totalSeconds = 0;
-                      }
-                      setTimeoutRef(setInterval(setTime, 1000));
+                      // if (timeoutRefValue) {
+                      //   reInitTime();
+                      //   clearInterval(timeoutRefValue);
+                      //   totalSeconds = 0;
+                      // }
+                      // setTimeoutRef(setInterval(setTime, 1000));
                     }} >{!player.gameOver && !player.isPlaying ? "Play" : "Replay"}</button>
                   </div>
                 }
-              }
             </div>
               <div className="board-game">
                 <Board />

@@ -12,7 +12,8 @@ const GamesList = ({socket, playersGames}) => {
             <h1 key={index}>{game}</h1>
             <div>
               {playersGames[game].map((player, index) => {
-                return (<p key={index}>here{player}</p> );
+                console.log("player: ", player);
+                return (<p key={index}>{player[0]}</p>);
               })}
             </div>
           </div>

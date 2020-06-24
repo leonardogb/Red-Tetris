@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GamesList from "./GamesList";
 import { useSelector, useDispatch } from "react-redux";
 import * as action from '../actions/actions';
@@ -9,6 +9,12 @@ const Login = () => {
   const [inputUsername, setInputUsername] = useState('');
   const [inputRoom, setInputRoom] = useState('');
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (player && player.name) {
+      socket.emit('removePlayer');
+    }
+  }, []);
 
   if (player && player.delay != null) {
     dispatch(action.setDelay(null));

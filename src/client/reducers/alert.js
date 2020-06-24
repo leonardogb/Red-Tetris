@@ -184,6 +184,25 @@ const reducer = (state = {}, action) => {
           ...state,
           spectres: [action.payload.spectre]
         };
+      case types.REMOVE_SPECTRE:
+      if (state.spectres) {
+        spectres = JSON.parse(JSON.stringify(state.spectres));
+        const indexSpectre = spectres.findIndex(element => element.playerName == action.payload.username);
+        console.log(indexSpectre);
+        if (indexSpectre !== -1) {
+          spectres.splice(indexSpectre, 1);
+        }
+        if (!spectres.length) {
+          spectres = undefined;
+        }
+        return {
+          ...state,
+          spectres: spectres
+        };
+      }
+      return {
+        ...state
+      };
       case types.SET_MALUS:
         const grid = state.player.grid;
         const malusArray = action.payload.malus;

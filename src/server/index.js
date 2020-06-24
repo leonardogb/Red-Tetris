@@ -89,8 +89,8 @@ const initEngine = io => {
       const piecesStart = Piece.getTetrominos(5);
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_PIECES, payload: { pieces: piecesStart } } });
       io.in(socket.room).emit('serverAction', { action: { type: types.UPDATE_TETROMINO } });
-      io.in(socket.room).emit('serverAction', { action: { type: types.SET_DELAY, payload: { delay: 1000 } } });
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: true } } });
+      io.in(socket.room).emit('serverAction', { action: { type: types.SET_DELAY, payload: { delay: 1000 } } });
       games = games.map((game) => {
         if (game.room === socket.room) {
           game.playing = true;

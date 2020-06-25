@@ -9,8 +9,8 @@
     "client-dev": "webpack-dev-server --colors --hot --inline --host 0.0.0.0 --port 7070",
     "srv-dev": "DEBUG=tetris:* babel-watch -w src src/server/main.js",
     "srv-dist": "DEBUG=tetris:* babel src --out-dir dist",
-    "test": "mocha --require @babel/register --reporter spec --recursive --exit",
-    "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha --recursive --exit"
+    "test": "mocha --require @babel/register --require ignore-styles --reporter spec --recursive --exit",
+    "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha --require ignore-styles --recursive --exit"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.7.5",
@@ -53,6 +53,8 @@
     "eslint": "^6.7.2",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-react": "^7.18.3",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "^16.2.2",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
     "style-loader": "^1.2.1",

@@ -6,13 +6,13 @@ import { useHover } from '../Hooks/useHover';
 
 const Footer = () => {
   const [hoverRef, isHovered] = useHover();
-  const [state, setCount] = useState(false);
+  const [state, setstate] = useState(false);
 
   return (
 
     <div className="full-footer" >
 
-      <div className="sub-footer" onClick={() => setCount(!state)}>
+      <div className="sub-footer" onClick={() => setstate(!state)}>
         {!state ?
         <div className="arrow-up">
         </div>

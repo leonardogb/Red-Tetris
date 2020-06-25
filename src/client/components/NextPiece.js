@@ -22,7 +22,6 @@ const NextPiece = () => {
       }
       return piece;
     }
-    return null;
   };
 
   const firstPiece = pieces[0] ? resizePiece([...pieces[0]]) : null;

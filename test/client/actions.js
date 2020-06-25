@@ -9,36 +9,6 @@ chai.should()
 import openSocket from 'socket.io-client';
 import { initialBoard } from '../../src/client/gameHelpers';
 const  socket = openSocket('http://localhost:3004');
-const initialState = {
-  message: '',
-  socket: socket,
-  id: null,
-  isMaster: null,
-  player: {
-    // grid: initialBoard(),
-    grid: null,
-    pieces: [],
-    piece: {
-      tetromino: [],
-      pos: {
-        x: 0,
-        y: 0
-      },
-      collided: false
-    },
-    gameOver: null,
-    roomOver: false,
-    status: null,
-    isPlaying: false,
-    delay: null,
-    new: false,
-    score: 0
-  },
-  curUser: null,
-  curRoom: null,
-  rooms: [],
-  playersGames: {}
-};
 
 describe('Redux test', function(){
 

@@ -10,6 +10,10 @@ const Login = () => {
   const [inputRoom, setInputRoom] = useState('');
   const dispatch = useDispatch();
 
+  socket.on('redirect', (data) => {
+    location.hash = data.to;
+  });
+
   if (player && player.delay != null) {
     dispatch(action.setDelay(null));
     let id = localStorage.getItem('id');
@@ -22,9 +26,6 @@ const Login = () => {
   const getGame = () => {
     if (inputUsername.length > 0 && inputRoom.length > 0) {
       socket.emit('getGame', { username: inputUsername, room: inputRoom });
-      socket.on('redirect', (data) => {
-        location.hash = data.to;
-      });
     }
   };
 

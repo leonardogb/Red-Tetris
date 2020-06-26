@@ -75,7 +75,7 @@ const App = () => {
         <HashRouter hashType="noslash">
           <Switch>
             <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>
-              <Login player={player} socket={socket} />
+              <Login />
             </div>} />
             <Route exact path="/:room[:player]" render={() =>
              <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>

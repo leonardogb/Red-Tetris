@@ -12,7 +12,7 @@ import "./BoardGame.css";
 import { useDispatch, useSelector } from 'react-redux';
 import * as action from '../actions/actions';
 
-const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
+const BoardGame = () => {
 
   // const [player] = useSelector(store => [store.player]);
   const [switchValue, setSwitchValue] = useState(true);
@@ -23,6 +23,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
+  const [socket, curUser, curRoom, player, delay] = useSelector(store => [store.socket, store.curUser, store.curRoom, store.player, store.delay]);
 
   // socket.on('game', () => {
   //   console.log('loser !!!!!');

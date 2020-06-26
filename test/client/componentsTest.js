@@ -1,7 +1,7 @@
 import jsdom from 'jsdom';
 import chai from 'chai';
 import React from 'react';
-import {configureStore} from '../helpers/server';
+import { configureStore } from '../helpers/server';
 import rootReducer from '../../src/client/reducers';
 import { Provider } from 'react-redux';
 
@@ -17,6 +17,7 @@ import NextPiece from '../../src/client/components/NextPiece';
 import ToggleSwitch from '../../src/client/components/ToggleSwitch';
 import Spectres from '../../src/client/components/Spectres';
 import Login from '../../src/client/components/Login';
+import BoardGame from '../../src/client/components/BoardGame';
 const  socket = openSocket('http://localhost:3004');
 
 chai.should()
@@ -25,6 +26,30 @@ const { JSDOM } = jsdom;
 const dom = new JSDOM('<!doctype html><html><body></body></html>');
 global.window = dom.window;
 global.document = dom.window.document;
+const  LocalStorageMock = {
+
+  store: {
+    id: '1234'
+  },
+  
+  clear: function() {
+    this.store = {};
+  },
+
+  getItem: function(key) {
+    return this.store[key] || null;
+  },
+
+  setItem: function(key, value) {
+    this.store[key] = value.toString();
+  },
+
+  removeItem: function(key) {
+    delete this.store[key];
+  }
+};
+
+global.localStorage = LocalStorageMock;
 
 describe('Components renders', function(){
   it('Square component', () => {
@@ -222,6 +247,7 @@ describe('Components renders', function(){
   it('Login component', () => {
 
     const initialState = {
+      socket: socket,
       playersGames: {
         test2: [
           [
@@ -229,13 +255,75 @@ describe('Components renders', function(){
             50
           ]
         ]
+      },
+      player: {
+        delay: 1000
       }
     };
     const store =  configureStore(rootReducer, null, initialState);
     const state = store.getState();
     const wrapper =  mount(
     <Provider store={store}>
-      <Login player={'Test player'} socket={socket} />
+      <Login />
+    </Provider>
+    );
+    socket.emit('getGame', {username: 'test', room: 'test'});
+    wrapper.find('input[name="room"]').simulate('input', { target: { value: "Hola" }});
+    wrapper.find('input[name="username"]').simulate('input', { target: { value: "Hola" }});
+    wrapper.find('input[name="room"]').simulate('keypress', {key: 'a'});
+    wrapper.find('input[name="username"]').simulate('keypress', {key: 'a'});
+    wrapper.find('input[name="room"]').simulate('keypress', {key: 'Enter', charCode: 13});
+    wrapper.find('input[name="username"]').simulate('keypress', {key: 'Enter', charCode: 13});
+    wrapper.find('.buttonLogin').simulate('click');
+    // console.log(wrapper.find('input[name="username"]').props());
+  });
+
+  it('BoardGame component', () => {
+    const initialState = {
+      socket: socket,
+      curRoom: 'test',
+      curUser: 'test',
+      player: {
+        grid: initialBoard(),
+        pieces: [
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0]
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0]
+          ],
+          [
+            [4, 4],
+            [4, 4]
+          ]
+        ],
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 6
+          },
+          collided: false,
+          new: false
+        },
+        gameOver: null,
+        isPlaying: false,
+        isMaster: true
+      }
+    };
+    let store =  configureStore(rootReducer, null, initialState);
+    let state = store.getState();
+    let wrapper =  mount(
+    <Provider store={store}>
+      <BoardGame />
     </Provider>
     );
   });

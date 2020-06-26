@@ -50,9 +50,9 @@ const App = () => {
 
         <HashRouter hashType="noslash">
           <Switch>
-            <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>
+            <Route exact path="/" render={() =>
               <Login player={player} socket={socket} />
-            </div>} />
+            } />
             <Route exact path="/:room[:player]" render={() =>
              <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>
             } />

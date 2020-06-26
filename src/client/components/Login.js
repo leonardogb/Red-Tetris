@@ -30,7 +30,7 @@ const Login = () => {
   };
 
   return (
-      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="login-page">
         <GamesList playersGames={playersGames} socket={socket} />
         <div className="loginBox">
           <div>

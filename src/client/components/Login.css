@@ -1,3 +1,16 @@
+.login-page {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-page:active, .login-page:focus {
+  outline: 0;
+  border: none;
+  -moz-outline-style: none;
+}
+
 .loginBox {
   border-radius: 25px;
   height: 250px;

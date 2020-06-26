@@ -172,13 +172,20 @@ const initEngine = io => {
     });
 
     const removePlayer = () => {
-      console.log("removePlayer!!!!!!\n\n\n\n\n\n\n");
       games = games.filter((game) => {
         if (game.room === socket.room) {
           let player = game.players[game.players.findIndex(e => e.name === socket.username)];
           if (player) {
             io.in(socket.room).emit('serverAction', { action: { type: types.REMOVE_SPECTRE, payload: { username: socket.username } } });
             game.players.splice(game.players.findIndex(e => e.name === socket.username), 1);
+            // console.log("game.players: ", game.players);
+            // if (game.players.length == 1)
+            // {
+            //   io.to(game.players[0].socketId).emit('winner');
+            //   io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
+            //   io.to(game.players[0].socketId).emit('serverAction', { action: { type: types.SET_GAME_OVER } });
+            //   io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
+            // }
             if (player.isMaster === true && game.players.length) {
               player.isMaster = false;
               game.players[0].isMaster = true;

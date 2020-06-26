@@ -12,24 +12,13 @@
   -moz-outline-style: none;
 }
 
-/* .dash-board-master {
-  display: flex;
-  flex-direction: row;
-  border-bottom: 5px solid #48CDAB;
-} */
-
 .dash-board {
   display: flex;
   flex-direction: row;
-  /* border-bottom: 5px solid #48CDAB; */
-  /* border: 5px solid #48CDAB; */
 }
 
 .player {
-  /* text-transform: uppercase; */
-  /* border-left: 5px solid #48CDAB; */
   border-bottom: 5px solid #48CDAB;
-  /* border-radius: 25px 0px 0px 0px; */
 }
 
 .player h3 {
@@ -48,19 +37,10 @@
 .left-side {
   display: flex;
   flex-direction: column;
-  /* justify-content: space-evenly; */
-  /* border-left: 5px solid #48CDAB; */
-  /* border-bottom: 5px solid #48CDAB; */
-  /* border-bottom-left-radius: 25px; */
 }
 
 .next-pieces {
   display: inline;
-  /* border: 5px solid #48CDAB; */
-  /* border-left: 5px solid #48CDAB;
-  border-bottom: 5px solid #48CDAB; */
-
-  /* border-radius: 0px 0px 0px 25px; */
 }
 
 .next-pieces h4{
@@ -71,11 +51,8 @@
 }
 
 .board-game {
-  /* display: inline; */
   border-left: 5px solid #48CDAB;
   border-right: 5px solid #48CDAB;
-  /* border-bottom: 5px solid #48CDAB; */
-  /* border-radius: 25px; */
 }
 
 .room-board {
@@ -95,7 +72,6 @@
 .room-name h1 {
   text-align: center;
   color: white;
-  /* text-transform: uppercase; */
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
@@ -106,20 +82,16 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
-  /* border-right: 5px solid #48CDAB; */
-  /* border-bottom: 5px solid #48CDAB; */
 }
 
 .opponents-content {
   overflow: auto;
-  /* height: 100%; */
   height: 570px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* align-self: ; */
 }
 
 .opponents h3{
@@ -166,7 +138,6 @@
   z-index: 1;
   position: absolute;
   border-radius: 25px;
-  /* border-color: white; */
   border: 5px solid #48CDAB;
 }
 

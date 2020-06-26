@@ -30,8 +30,6 @@ const Login = () => {
   };
 
   return (
-    <div style={{ height: '100%' }}>
-      {/* <div className="Credentials"> */}
       <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <GamesList playersGames={playersGames} socket={socket} />
         <div className="loginBox">
@@ -71,7 +69,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

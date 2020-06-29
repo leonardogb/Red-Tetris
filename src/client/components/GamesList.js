@@ -7,15 +7,13 @@ const GamesList = ({socket, playersGames}) => {
   });
   return (
     <div className={'gameListContainer'}>
-      {Object.keys(playersGames).map((game, index) => {
-        console.log("game: ", game);
+      {playersGames.map((game, index) => {
         return (
           <div key={index} className={'game'} onClick={() => joinGame(game)}>
-            <h1 key={index}>{game}</h1>
+            <h1 key={index}>{game.room}</h1>
             <div>
-              {playersGames[game].map((player, index) => {
-                console.log("player: ", player);
-                return (<p key={index}>{player[0]}</p>);
+              {game.players.map((player, index) => {
+                return (<p key={index}>{player}</p>);
               })}
             </div>
           </div>

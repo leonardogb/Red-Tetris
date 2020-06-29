@@ -36,16 +36,17 @@ let games = [];
 
 const playersGames = (games) => {
   const playersGamesArray = games.reduce((gamesList, game) => {
-    gamesList.push({
-      [game.room]: game.players.reduce((playersList, player) => {
-        playersList.push([player.name, player.score]);
-        return playersList;
-      }, [])
-    });
+    gamesList.push(
+      {
+        room: game.room,
+        players: game.players.reduce((playersList, player) => {
+          playersList.push(player.name);
+          return playersList;
+        }, [])
+      });
     return gamesList;
   }, []);
-  console.log("playersGamesArray: ", playersGamesArray);
-  return {playersGamesArray};
+  return playersGamesArray;
 };
 
 const getSpectre = (curUser) => {
@@ -171,9 +172,7 @@ const initEngine = io => {
     });
 
     socket.on('setPlayerGames', (room) => {
-      // console.log("games before: ", games);
-      // console.log("playersGames: ", playersGames(games));
-      // console.log("games after", games);
+
       socket.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
 
@@ -204,7 +203,6 @@ const initEngine = io => {
         }
         return true;
       });
-      console.log("here removePLayer", playersGames(games));
       io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
       // io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     }

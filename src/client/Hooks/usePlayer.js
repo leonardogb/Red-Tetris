@@ -1,12 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
-import { checkCollision } from "../gameHelpers";
+import { useDispatch, useSelector } from 'react-redux';
+import { checkCollision } from '../gameHelpers';
 import * as action from '../actions/actions';
 
-export  const usePlayer = () => {
+export const usePlayer = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player);
 
-  const updatePlayerPos = (y, x, collided ) => {
+  const updatePlayerPos = (y, x, collided) => {
     dispatch(action.updatePlayerPosition(y, x, collided));
   };
 

@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Login from "../components/Login";
-import { HashRouter, Route, Switch } from "react-router-dom";
-import Footer from "../components/Footer";
-import BoardGame from "../components/BoardGame";
+import Login from '../components/Login';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import Footer from '../components/Footer';
+import BoardGame from '../components/BoardGame';
 import Error from '../components/Error';
-import "./app.css";
+import './app.css';
 import * as types from '../actions/actionTypes';
 import * as action from '../actions/actions';
 
@@ -15,7 +15,7 @@ const App = () => {
 
   useEffect(() => {
     socket.emit('updatePlayer', player);
-    dispatch({type: types.UPDATE_GRID})
+    dispatch({ type: types.UPDATE_GRID })
 
     if (player.piece.new) {
       socket.emit('updateGrid', { grid: player.grid });
@@ -27,7 +27,8 @@ const App = () => {
       if (player.piece.pos.y < 1) {
         console.log('GAME OVER !!!');
         dispatch(action.setGameOver());
-      } else {
+      }
+      else {
         dispatch(action.updateTetromino());
       }
       if (player.pieces.length < 4) {
@@ -37,24 +38,48 @@ const App = () => {
 
   }, [player.piece.collided]);
 
+  useEffect(() => {
+    socket.on('connect', () => {
+      const id = localStorage.getItem('id');
+      if (id) {
+        socket.emit('reloadPlayer', id);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log('gameOver: ', player.gameOver);
+    if (player.gameOver === true) {
+      player.isPlaying = false;
+    }
+  }, [player.gameOver]);
+
+  socket.on('setId', (id) => {
+    localStorage.setItem('id', id);
+  });
+
+  socket.on('deleteId', () => {
+    localStorage.removeItem('id');
+  });
+
   const removeError = () => {
     dispatch(action.removeError());
   };
 
   return (
-    <div className="page-container">
-      <div className="content-wrap">
+    <div className='page-container'>
+      <div className='content-wrap'>
         <div onClick={() => removeError()}>
           <Error />
         </div>
 
-        <HashRouter hashType="noslash">
+        <HashRouter hashType='noslash'>
           <Switch>
-            <Route exact path="/" render={() => <div style={{ height: '100%' }} tabIndex={0}>
+            <Route exact path='/' render={() => <div style={{ height: '100%' }} tabIndex={0}>
               <Login />
             </div>} />
-            <Route exact path="/:room[:player]" render={() =>
-             <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>
+            <Route exact path='/:room[:player]' render={() =>
+              <BoardGame curRoom={curRoom} curUser={curUser} delay={delay} player={player} socket={socket}/>
             } />
           </Switch>
         </HashRouter>

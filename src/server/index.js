@@ -277,17 +277,17 @@ const initEngine = io => {
       if (!stillPlaying) {
         socket.emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
-        socket.emit('game-over');
+        socket.emit('dialog', {type: 'game-over', message: 'Game over'});
       }
       else if (stillPlaying === 1 && winner) {
-        io.to(winner.socketId).emit('winner');
+        io.to(winner.socketId).emit('dialog', {type: 'winner', message: 'You win this game'});
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
         io.to(winner.socketId).emit('serverAction', { action: { type: types.SET_GAME_OVER } });
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
-        socket.emit('loser');
+        socket.emit('dialog', {type: 'loser', message: 'You lose this game'});
       }
       else {
-        socket.emit('loser');
+        socket.emit('dialog', {type: 'loser', message: 'You lose this game'});
       }
     });
 

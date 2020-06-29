@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GamesList from './GamesList';
 import { useSelector, useDispatch } from 'react-redux';
 import * as action from '../actions/actions';
+import { isEmpty } from "../gameHelpers";
 import './Login.css';
 
 const Login = () => {
@@ -14,6 +15,11 @@ const Login = () => {
     if (player && player.name) {
       socket.emit('removePlayer');
     }
+
+    socket.on('connect', () => {
+      socket.emit('setPlayerGames');
+    });
+
   }, []);
 
   if (player && player.delay != null) {
@@ -29,9 +35,14 @@ const Login = () => {
     }
   };
 
+  console.log("PlayersGames: ", playersGames);
+
   return (
       <div className="login-page">
-        <GamesList playersGames={playersGames} socket={socket} />
+        {
+          isEmpty(playersGames) === false &&
+          <GamesList playersGames={playersGames} socket={socket} />
+        }
         <div className="loginBox">
           <div>
             <h1>Login</h1>

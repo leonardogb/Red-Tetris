@@ -52,12 +52,6 @@ body {
   background-color: aliceblue;
 }
 
-.gameListContainer {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
 .game {
   padding: 0 10px;
   margin: 10px;

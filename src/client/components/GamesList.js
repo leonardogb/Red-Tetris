@@ -1,4 +1,5 @@
 import React from 'react';
+import './GamesList.css';
 
 const GamesList = ({socket, playersGames}) => {
   const joinGame = ((room) => {
@@ -7,6 +8,7 @@ const GamesList = ({socket, playersGames}) => {
   return (
     <div className={'gameListContainer'}>
       {Object.keys(playersGames).map((game, index) => {
+        console.log("game: ", game);
         return (
           <div key={index} className={'game'} onClick={() => joinGame(game)}>
             <h1 key={index}>{game}</h1>

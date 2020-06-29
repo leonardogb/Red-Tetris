@@ -35,14 +35,17 @@ const initApp = (app, params, cb) => {
 let games = [];
 
 const playersGames = (games) => {
-  return games.reduce((gamesList, game) => {
-    return {
+  const playersGamesArray = games.reduce((gamesList, game) => {
+    gamesList.push({
       [game.room]: game.players.reduce((playersList, player) => {
         playersList.push([player.name, player.score]);
         return playersList;
       }, [])
-    };
-  }, {});
+    });
+    return gamesList;
+  }, []);
+  console.log("playersGamesArray: ", playersGamesArray);
+  return {playersGamesArray};
 };
 
 const getSpectre = (curUser) => {
@@ -147,7 +150,7 @@ const initEngine = io => {
           socket.join(data.room);
           socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
           socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
-          io.in(data.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+          io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
         } else {
           socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
         }
@@ -168,7 +171,10 @@ const initEngine = io => {
     });
 
     socket.on('setPlayerGames', (room) => {
-      io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+      // console.log("games before: ", games);
+      // console.log("playersGames: ", playersGames(games));
+      // console.log("games after", games);
+      socket.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
 
     const removePlayer = () => {
@@ -198,7 +204,9 @@ const initEngine = io => {
         }
         return true;
       });
-      io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+      console.log("here removePLayer", playersGames(games));
+      io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+      // io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     }
 
     socket.on('removePlayer', () => {

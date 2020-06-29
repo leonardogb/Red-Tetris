@@ -34,26 +34,6 @@ const initApp = (app, params, cb) => {
 
 let games = [];
 
-function checkInactivePlayers() {
-  if (!isEmpty(games)) {
-    games = games.map((game) => {
-      let timeNow = Date.now();
-      for (var i = game.players.length - 1; i >= 0; i--) {
-        if (game.players[i].timeToDelete && game.players[i].timeToDelete <= timeNow)
-          game.players.splice(i, 1);
-      }
-      return (game);
-    })
-    for (var i = games.length - 1; i >= 0; i--) {
-      if (games[i].players == undefined || games[i].players.length == 0) {
-        games.splice(i, 1);
-      }
-    };
-  }
-}
-
-const id = setInterval(checkInactivePlayers, 60000);
-
 const playersGames = (games) => {
   return games.reduce((gamesList, game) => {
     return {
@@ -174,36 +154,6 @@ const initEngine = io => {
       }
     });
 
-    socket.on('reloadPlayer', (id) => {
-      let room = null;
-      let found = false;
-      if (!isEmpty(id)) {
-        games = games.map((game) => {
-          game.players = game.players.map((player) => {
-            if (player && player.id === id) {
-              player.timeToDelete = null;
-              socket.username = player.name;
-              socket.room = game.room;
-              player.socketId = socket.id;
-              room = game.room;
-              socket.join(game.room);
-              socket.emit('serverAction', { action: { type: types.RELOAD_PLAYER, payload: { player: player, room: game.room, name: player.name } } });
-              found = true;
-              // socket.emit('serverAction', {action: {type: SET_GAMES, payload: {player: player, room: game.room, name: player.name}}});
-            }
-            return (player);
-          })
-          return (game);
-        });
-        if (found === true) {
-          io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
-        }
-        else {
-          socket.emit('deleteId');
-        }
-      }
-    });
-
     socket.on('updatePlayer', (player) => {
       games = games.map((game) => {
         game.players = game.players.map((playerIn) => {
@@ -221,44 +171,35 @@ const initEngine = io => {
       io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
 
-    socket.on('removePlayer', (id) => {
-      let room = null;
-      games = games.map((game) => {
-        let index = game.players.findIndex(e => e.id === id);
-        if (index > -1) {
-          room = game.room;
-          game.players.splice(index, 1);
-        }
-        return (game);
-      });
-      for (var i = games.length - 1; i >= 0; i--) {
-        if (games[i].players == undefined || games[i].players.length == 0) {
-          games.splice(i, 1);
-        }
-      }
-      if (room != null) {
-        io.in(room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
-      }
-    });
-
-    socket.on('disconnect', (reason) => {
-      games = games.map((game) => {
+    const removePlayer = () => {
+      console.log("removePlayer!!!!!!\n\n\n\n\n\n\n");
+      games = games.filter((game) => {
         if (game.room === socket.room) {
           let player = game.players[game.players.findIndex(e => e.name === socket.username)];
           if (player) {
-            player.timeToDelete = Date.now() + 60000;
+            io.in(socket.room).emit('serverAction', { action: { type: types.REMOVE_SPECTRE, payload: { username: socket.username } } });
             game.players.splice(game.players.findIndex(e => e.name === socket.username), 1);
             if (player.isMaster === true && game.players.length) {
               player.isMaster = false;
               game.players[0].isMaster = true;
               io.to(game.players[0].socketId).emit('setIsMaster', true);
             }
-            game.players.push(player);
+            else if (!game.players.length) {
+              return false;
+            }
           }
         }
-        return (game);
+        return true;
       });
       io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+    }
+
+    socket.on('removePlayer', () => {
+      removePlayer();
+    });
+
+    socket.on('disconnect', (reason) => {
+      removePlayer();
     });
 
     socket.on('updateGrid', (data) => {
@@ -334,11 +275,16 @@ const initEngine = io => {
         return (game);
       });
       if (!stillPlaying) {
-        socket.emit('serverAction', { action: { type: types.SET_ROOM_OVER } });
+        socket.emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
+        io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
+        socket.emit('game-over');
       }
       else if (stillPlaying === 1 && winner) {
         io.to(winner.socketId).emit('winner');
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
+        io.to(winner.socketId).emit('serverAction', { action: { type: types.SET_GAME_OVER } });
+        io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
+        socket.emit('loser');
       }
       else {
         socket.emit('loser');

@@ -3,6 +3,7 @@ export const DROP_PLAYER = 'DROP_PLAYER';
 export const PIECE_COLLIDED = 'PIECE_COLLIDED';
 export const RELOAD_PLAYER = 'RELOAD_PLAYER';
 export const REMOVE_ERROR = 'REMOVE_ERROR';
+export const REMOVE_SPECTRE = 'REMOVE_SPECTRE';
 export const SET_CUR_ROOM = 'SET_CUR_ROOM';
 export const SET_DELAY = 'SET_DELAY';
 export const SET_ERROR = 'SET_ERROR';

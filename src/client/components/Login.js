@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GamesList from "./GamesList";
 import { useSelector, useDispatch } from "react-redux";
 import * as action from '../actions/actions';
@@ -13,14 +13,14 @@ const Login = () => {
   socket.on('redirect', (data) => {
     location.hash = data.to;
   });
+  useEffect(() => {
+    if (player && player.name) {
+      socket.emit('removePlayer');
+    }
+  }, []);
 
   if (player && player.delay != null) {
     dispatch(action.setDelay(null));
-    let id = localStorage.getItem('id');
-    if (id) {
-      socket.emit('removePlayer', id, player.room);
-      localStorage.removeItem('id');
-    }
   }
 
   const getGame = () => {

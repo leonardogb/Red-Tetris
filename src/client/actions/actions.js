@@ -62,6 +62,15 @@ export const setIsPlaying = (value) => {
   }
 };
 
+export const removeSpectre = (username) => {
+  return {
+    type: types.REMOVE_SPECTRE,
+    payload: {
+      username: username
+    }
+  }
+};
+
 export const setRoomOver = () => {
   return {
     type: types.SET_ROOM_OVER

@@ -25,14 +25,16 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [dialogValue, setDialogValue] = useState(undefined);
 
   useEffect(() => {
+    let mounted = true;
     socket.on('dialog', (data) => {
-      setDialogValue(data.message);
+      if (mounted) {
+        setDialogValue(data.message);
+      }
     });
     socket.on('setIsMaster', (value) => {
       dispatch(action.setIsMaster(value));
-
-      // player.isMaster = value;
     })
+    return () => mounted = false;
   }, []);
 
   useEffect(() => {
@@ -94,16 +96,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     }
   };
 
-  const style = {
-    gameContainer: {
-      display: 'flex',
-      justifyContent: 'space-around'
-    },
-    asideSection: {
-      marginTop: '20px'
-    }
-  };
-
   const pad = (val) => {
     var valString = val + "";
     if (valString.length < 2) {
@@ -113,26 +105,34 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     }
   }
 
-  const setTime = () => {
-    ++totalSeconds;
-    let hour = pad(Math.floor(totalSeconds / 3600));
-    let minute = pad(Math.floor((totalSeconds - hour * 3600) / 60));
-    let seconds = pad(totalSeconds - (hour * 3600 + minute * 60));
-    setHoursValue(hour);
-    setMinutesValue(minute);
-    setSecondsValue(seconds);
+  const setTime = (mounted) => {
+    if (mounted) {
+      ++totalSeconds;
+      let hour = pad(Math.floor(totalSeconds / 3600));
+      let minute = pad(Math.floor((totalSeconds - hour * 3600) / 60));
+      let seconds = pad(totalSeconds - (hour * 3600 + minute * 60));
+      setHoursValue(hour);
+      setMinutesValue(minute);
+      setSecondsValue(seconds);
+    }
+    
   };
 
   useEffect(() => {
-    if (player.isPlaying) {
-      reInitTime();
-      setTimeoutRef(setInterval(setTime, 1000));
-      setDialogValue(undefined);
+    let mounted = true;
+    if (mounted) {
+      if (player.isPlaying) {
+        reInitTime();
+        setTimeoutRef(setInterval(setTime(mounted), 1000));
+        setDialogValue(undefined);
+      }
+      else if (timeoutRefValue) {
+        clearInterval(timeoutRefValue);
+        totalSeconds = 0;
+      }
     }
-    else if (timeoutRefValue) {
-      clearInterval(timeoutRefValue);
-      totalSeconds = 0;
-    }
+
+    return () => mounted = false;
   }, [player.isPlaying]);
 
   return (
@@ -181,7 +181,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
               <div className="board-game">
                 <Board />
               </div>
-              {/* <PlayersList curRoom={curRoom} /> */}
               <div className="opponents">
                 <h3>Opponents</h3>
                 <div className="opponents-content">

@@ -188,7 +188,6 @@ const reducer = (state = {}, action) => {
       if (state.spectres) {
         spectres = JSON.parse(JSON.stringify(state.spectres));
         const indexSpectre = spectres.findIndex(element => element.playerName == action.payload.username);
-        console.log(indexSpectre);
         if (indexSpectre !== -1) {
           spectres.splice(indexSpectre, 1);
         }

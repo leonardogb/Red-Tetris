@@ -35,7 +35,6 @@ const Login = () => {
     }
   };
 
-  console.log("PlayersGames: ", playersGames);
 
   return (
       <div className="login-page">

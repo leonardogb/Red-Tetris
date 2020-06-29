@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GamesList from './GamesList';
 import { useSelector, useDispatch } from 'react-redux';
 import * as action from '../actions/actions';

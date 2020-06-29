@@ -335,7 +335,7 @@ describe('Components renders', () => {
     wrapper.find('.room').simulate('keyUp', { keyCode: 39 })
     wrapper.find('.room').simulate('keyUp', { keyCode: 40 })
     store.dispatch(action.setRoomOver());
-    console.log(store.getState())
+    // console.log(store.getState())
     wrapper.find('button').simulate('click');
   });
 

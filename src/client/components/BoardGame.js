@@ -22,23 +22,17 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
   const [timeoutRefValue, setTimeoutRef] = useState(undefined);
+  const [dialogValue, setDialogValue] = useState(undefined);
 
   useEffect(() => {
-    socket.on('loser', () => {
-      setDialogValue("You lose this game");
+    socket.on('dialog', (data) => {
+      setDialogValue(data.message);
     });
-  }, []);
+    socket.on('setIsMaster', (value) => {
+      dispatch(action.setIsMaster(value));
 
-  useEffect(() => {
-    socket.on('winner', () => {
-      setDialogValue("You win this game");
-    });
-  }, []);
-
-  useEffect(() => {
-    socket.on('game-over', () => {
-      setDialogValue("Game over");
-    });
+      // player.isMaster = value;
+    })
   }, []);
 
   useEffect(() => {
@@ -49,14 +43,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
       clearInterval(timeoutRefValue);
     }
   }, [player.gameOver]);
-
-  useEffect(() => {
-    socket.on('setIsMaster', (value) => {
-      dispatch(action.setIsMaster(value));
-
-      // player.isMaster = value;
-    })
-  });
 
   const reInitTime = () => {
     setSecondsValue('00');

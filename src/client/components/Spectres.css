@@ -11,8 +11,6 @@
   padding: 10px;
   border: 5px solid #48CDAB;
   border-radius: 25px;
-
-  /* width: 308px; */
 }
 
 .players-spectre h3, h4{
@@ -29,6 +27,19 @@
 }
 
 .waiting-for-opponenets h4{
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
+
+.playersList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.playersList p {
   text-align: center;
   color: white;
   font-weight: 500;

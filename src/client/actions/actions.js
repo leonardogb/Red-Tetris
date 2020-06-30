@@ -85,3 +85,12 @@ export const setIsMaster = (value) => {
     }
   }
 };
+
+export const setTimer = (timer) => {
+  return {
+    type: types.SET_TIMER,
+    payload: {
+        timer: timer
+    }
+  }
+};

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GamesList from './GamesList';
 import { useSelector, useDispatch } from 'react-redux';
 import * as action from '../actions/actions';
+import { isEmpty } from "../gameHelpers";
 import './Login.css';
 
 const Login = () => {
@@ -17,16 +18,18 @@ const Login = () => {
     if (player && player.name) {
       socket.emit('removePlayer');
     }
-  }, []);
 
-  if (player && player.delay !== null) {
-    dispatch(action.setDelay(null));
-    const id = localStorage.getItem('id');
-    if (id) {
-      socket.emit('removePlayer', id, player.room);
-      localStorage.removeItem('id');
+    socket.on('connect', () => {
+      socket.emit('setPlayerGames');
+    });
+    if (player && player.delay !== null) {
+      dispatch(action.setDelay(null));
     }
-  }
+    if (player && player.timer !== null) {
+      dispatch(action.setIsPlaying(false));
+      dispatch(action.setTimer(null));
+    }
+  }, []);
 
   const getGame = () => {
     if (inputUsername.length > 0 && inputRoom.length > 0) {
@@ -34,12 +37,14 @@ const Login = () => {
     }
   };
 
+
   return (
-    <div style={{ height: '100%' }}>
-      {/* <div className="Credentials"> */}
-      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <GamesList playersGames={playersGames} socket={socket} />
-        <div className='loginBox'>
+      <div className="login-page">
+        {
+          isEmpty(playersGames) === false &&
+          <GamesList playersGames={playersGames} socket={socket} />
+        }
+        <div className="loginBox">
           <div>
             <h1>Login</h1>
             <div>
@@ -76,7 +81,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

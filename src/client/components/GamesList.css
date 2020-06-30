@@ -1,0 +1,57 @@
+.gameListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #34393e;
+  box-shadow: 0px 0px 8px 5px rgba(0, 0, 0, .4);
+  border-radius: 25px;
+  overflow: auto;
+}
+
+.gameListContainer h1{
+  color: white;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-align: center;
+}
+
+.gamesContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.gamePlaying {
+  padding: 0 10px;
+  margin: 10px;
+  background-color: red;
+  /* overflow: hidden; */
+  border-radius: 25px;
+}
+
+.gameNotPlaying {
+  padding: 0 10px;
+  margin: 10px;
+  background-color: green;
+  /* overflow: hidden; */
+  border-radius: 25px;
+}
+
+/* .gameNotPlaying div {
+  max-height: 70px;
+}
+
+.gamePlaying div {
+  max-height: 70px;
+} */
+
+.gamePlaying p {
+  color: white;
+  text-align: center;
+}
+
+.gameNotPlaying p {
+  color: white;
+  text-align: center;
+}

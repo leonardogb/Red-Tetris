@@ -52,13 +52,7 @@ body {
   background-color: aliceblue;
 }
 
-.gameListContainer {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
-.game {
+/* .game {
   padding: 0 10px;
   margin: 10px;
   background-color: #ecf0f1;
@@ -71,7 +65,7 @@ body {
 
 .game p {
   text-align: center;
-}
+} */
 
 .inputLogin {
   border-radius: 3px;

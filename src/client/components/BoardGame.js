@@ -14,25 +14,26 @@ import * as action from '../actions/actions';
 
 const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
-  const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
   let totalSeconds = 0;
   const [secondsValue, setSecondsValue] = useState('00');
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
-  const [timeoutRefValue, setTimeoutRef] = useState(undefined);
+  const timer = useSelector(state => state.player.timer);
   const [dialogValue, setDialogValue] = useState(undefined);
 
   useEffect(() => {
+    let mounted = true;
     socket.on('dialog', (data) => {
-      setDialogValue(data.message);
+      if (mounted) {
+        setDialogValue(data.message);
+      }
     });
     socket.on('setIsMaster', (value) => {
       dispatch(action.setIsMaster(value));
-
-      // player.isMaster = value;
     })
+    return () => mounted = false;
   }, []);
 
   useEffect(() => {
@@ -40,7 +41,8 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
       // player.isPlaying = false;
       dispatch(action.setIsPlaying(false));
       socket.emit('gameOver', player);
-      clearInterval(timeoutRefValue);
+      clearInterval(timer);
+      dispatch(action.setTimer(null));
     }
   }, [player.gameOver]);
 
@@ -48,11 +50,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     setSecondsValue('00');
     setMinutesValue('00');
     setHoursValue('00');
-  }
-
-  const setIsDestructible = () => {
-    setSwitchValue(!switchValue);
-    socket.emit('setIsDestructible', !switchValue);
   }
 
   useInterval(() => {
@@ -100,16 +97,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     }
   };
 
-  const style = {
-    gameContainer: {
-      display: 'flex',
-      justifyContent: 'space-around',
-    },
-    asideSection: {
-      marginTop: '20px',
-    },
-  };
-
   const pad = (val) => {
     const valString = String(val);
     if (valString.length < 2) {
@@ -120,23 +107,23 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   }
 
   const setTime = () => {
-    ++totalSeconds;
-    const hour = pad(Math.floor(totalSeconds / 3600));
-    const minute = pad(Math.floor((totalSeconds - hour * 3600) / 60));
-    const seconds = pad(totalSeconds - (hour * 3600 + minute * 60));
-    setHoursValue(hour);
-    setMinutesValue(minute);
-    setSecondsValue(seconds);
+      ++totalSeconds;
+      let hour = pad(Math.floor(totalSeconds / 3600));
+      let minute = pad(Math.floor((totalSeconds - hour * 3600) / 60));
+      let seconds = pad(totalSeconds - (hour * 3600 + minute * 60));
+      setHoursValue(hour);
+      setMinutesValue(minute);
+      setSecondsValue(seconds);
   };
 
   useEffect(() => {
     if (player.isPlaying) {
       reInitTime();
-      setTimeoutRef(setInterval(setTime, 1000));
+      dispatch(action.setTimer(setInterval(setTime, 1000)));
       setDialogValue(undefined);
     }
-    else if (timeoutRefValue) {
-      clearInterval(timeoutRefValue);
+    else if (timer) {
+      clearInterval(timer);
       totalSeconds = 0;
     }
   }, [player.isPlaying]);
@@ -144,91 +131,60 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   return (
     <div className='room' onKeyUp={(event) => keyUp(event)} tabIndex={0}>
       {curRoom ? (
-        <div className='room-board'>
-          <div className='room-name'>
+        <div className="board-game1">
+        <div className="room-board">
+          <div className="room-name">
             <h1>{curRoom}</h1>
           </div>
-          <div className={'dash-board'}>
-            <div className='left-side'>
-              <div className='player'>
+          <div className={"dash-board"}>
+            <div className="left-side">
+              <div className="player">
                 <h3>{curUser}</h3>
                 <h4>Time: {hoursValue}
-                  {':'}
+                  {":"}
                   {minutesValue}
-                  {':'}
+                  {":"}
                   {secondsValue}</h4>
                 <h4>Score: {player.score}</h4>
               </div>
-              <div className='next-pieces'>
+              <div className="next-pieces">
                 <h4>Next pieces</h4>
                 <NextPiece />
               </div>
               {
                 player.isMaster &&
-                <div className='start-button'>
-                  <button disabled={!(player.isMaster && !player.isPlaying && !player.gameOver || player.isMaster && player.roomOver)} onClick={(e) => {
+                <div className="start-button">
+                  <button disabled={(player.isMaster && !player.isPlaying && !player.gameOver || player.isMaster && player.roomOver) ? false : true} onClick={(e) => {
                     if (!player.gameOver && !player.isPlaying) {
                       play();
                     }
                     else {
                       replay();
                     }
-                    if (setTimeoutRef) {
-                      reInitTime();
-                      clearInterval(timeoutRefValue);
-                      totalSeconds = 0;
-                    }
-                    setTimeoutRef(setInterval(setTime, 1000));
-                  }} >{!player.gameOver && !player.isPlaying ? 'Play' : 'Replay'}</button>
+                  }} >{!player.gameOver && !player.isPlaying ? "Play" : "Replay"}</button>
                 </div>
               }
-              }
-            </div>
-            <div className='board-game'>
+          </div>
+            <div className="board-game">
               <Board />
             </div>
-            {/* <PlayersList curRoom={curRoom} /> */}
-            <div className='opponents'>
+            <div className="opponents">
               <h3>Opponents</h3>
-              <div className='opponents-content'>
-                <Spectres isPlaying={player.isPlaying} />
+              <div className="opponents-content">
+                <Spectres socket={socket} isPlaying={player.isPlaying} isMaster={player.isMaster} />
               </div>
             </div>
-            {
-              // player.isMaster &&
-              // // !player.isPlaying &&
-              // <div>
-              //   <ToggleSwitch
-              //     isOn={switchValue}
-              //     onColor="#41C83C"
-              //     handleToggle={() => setIsDestructible()}
-              //     id="react-switch-new"
-              //   />
-              //   {/* <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button> */}
-              // </div>
-            }
           </div>
-          {
-
-            // player.isMaster &&
-            // // !player.isPlaying &&
-            // <div>
-            //   <ToggleSwitch
-            //     isOn={switchValue}
-            //     onColor="#41C83C"
-            //     handleToggle={() => setIsDestructible()}
-            //     id="react-switch-new"
-            //   />
-            //   {/* <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button> */}
-            // </div>
-          }
         </div>
-      ) : (localStorage.getItem('id') ?
-        <div className='please-wait'>
-          <h3>Please wait</h3>
-          <Ring />
-        </div> :
-        <Redirect to='/' />)
+        {
+          dialogValue &&
+          <div className="dialog">
+            <h4>{dialogValue}</h4>
+            <button onClick={(e) => { setDialogValue(undefined) }}>OK</button>
+          </div>
+        }
+      </div>
+      ) : <Redirect to='/' />
       }
     </div>
   )

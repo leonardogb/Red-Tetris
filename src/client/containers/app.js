@@ -25,7 +25,6 @@ const App = () => {
   useEffect(() => {
     if (player.pieces.length > 0 && player.piece.collided === true) {
       if (player.piece.pos.y < 1) {
-        console.log('GAME OVER !!!');
         dispatch(action.setGameOver());
       }
       else {
@@ -72,14 +71,13 @@ const App = () => {
         <div onClick={() => removeError()}>
           <Error />
         </div>
-
-        <HashRouter hashType='noslash'>
+        <HashRouter hashType="noslash">
           <Switch>
-            <Route exact path='/' render={() => <div style={{ height: '100%' }} tabIndex={0}>
-              <Login />
-            </div>} />
-            <Route exact path='/:room[:player]' render={() =>
-              <BoardGame curRoom={curRoom} curUser={curUser} delay={delay} player={player} socket={socket}/>
+            <Route exact path="/" render={() =>
+              <Login player={player} socket={socket} />
+            } />
+            <Route exact path="/:room[:player]" render={() =>
+             <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>
             } />
           </Switch>
         </HashRouter>

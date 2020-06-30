@@ -1,24 +1,28 @@
 import React from 'react';
+import './GamesList.css';
 
 const GamesList = ({socket, playersGames}) => {
   const joinGame = ((room) => {
     socket.emit('getRoom', {room: room});
   });
+
   return (
     <div className={'gameListContainer'}>
-      {Object.keys(playersGames).map((game, index) => {
+      <h1>ROOMS</h1>
+      <div className={'gamesContainer'}>
+      {playersGames.map((game, index) => {
         return (
-          <div key={index} className={'game'} onClick={() => joinGame(game)}>
-            <h1 key={index}>{game}</h1>
+          <div key={index} className={ game.playing ? 'gamePlaying' : 'gameNotPlaying' } onClick={() => joinGame(game)}>
+            <h1 key={index}>{game.room}</h1>
             <div>
-              {playersGames[game].map((player, index) => {
-                console.log("player: ", player);
-                return (<p key={index}>{player[0]}</p>);
+              {game.players.map((player, index) => {
+                return (<p key={index}>{player}</p>);
               })}
             </div>
           </div>
         )
       })}
+      </div>
     </div>
     );
 };

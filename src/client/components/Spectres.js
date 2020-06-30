@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Ring } from 'react-awesome-spinners';
+import ToggleSwitch from '../components/ToggleSwitch';
 import "../components/Spectres.css"
 
-const Spectres = ({isPlaying}) => {
-  const spectres = useSelector(state => state.spectres);
+const Spectres = ({ socket, isPlaying, isMaster }) => {
+
+  const [curRoom, curUser, spectres, playersGames] = useSelector(state => [state.curRoom, state.curUser, state.spectres, state.playersGames]);
+
+  const [switchValue, setSwitchValue] = useState(true);
 
   const styleSquare = {
     width: '15px',
@@ -19,7 +23,13 @@ const Spectres = ({isPlaying}) => {
     margin: 'auto'
   }
 
-  if (spectres) {
+
+  const setIsDestructible = () => {
+    setSwitchValue(!switchValue);
+    socket.emit('setIsDestructible', !switchValue);
+  }
+
+  if (isPlaying && spectres) {
     return (
       <div className="players-spectre" >
         {
@@ -32,7 +42,7 @@ const Spectres = ({isPlaying}) => {
                   <div className={'line'} key={indexS}>
                     {
                       spectre.map((square, indexSq) => (
-                        <div key={indexSq} style={{ ...styleSquare, backgroundColor: square === 0 ? '#29393D' : '#99ff66' }}/>
+                        <div key={indexSq} style={{ ...styleSquare, backgroundColor: square === 0 ? '#29393D' : '#99ff66' }} />
                       ))}
                   </div>
                 )}
@@ -44,13 +54,55 @@ const Spectres = ({isPlaying}) => {
     );
   }
   if (isPlaying == false) {
+
+    let playersArray = undefined;
+
+    if (playersGames) {
+      Object.keys(playersGames).map((room, index) => {
+        if (playersGames[room].room === curRoom && playersGames[room].players.length >= 2) {
+          playersArray = playersGames[room].players;
+        }
+      });
+    }
+    if (playersArray) {
+      return (
+        <div>
+          {
+            isMaster &&
+            <div>
+              <ToggleSwitch
+                isOn={switchValue}
+                onColor="#41C83C"
+                handleToggle={() => setIsDestructible()}
+                id="react-switch-new"
+              />
+            </div>
+          }
+          <div className="playersList">
+            {
+              playersArray.map((player, index) => {
+                if (player !== curUser) {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <p>{player}</p>
+                    </div>
+                  );
+                }
+              })
+            }
+          </div>
+        </div>
+
+      )
+    }
     return (
       <div className="waiting-for-opponenets">
         <h4>Waiting for opponents</h4>
         <Ring />
-        </div>
+      </div>
     );
-  } else {
+  }
+  if (!spectres) {
     return (
       <div className="no-opponents">
         <h4>No opponenets in this game</h4>

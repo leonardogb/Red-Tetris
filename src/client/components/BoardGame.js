@@ -21,7 +21,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   const [secondsValue, setSecondsValue] = useState('00');
   const [minutesValue, setMinutesValue] = useState('00');
   const [hoursValue, setHoursValue] = useState('00');
-  const [timeoutRefValue, setTimeoutRef] = useState(undefined);
+  const timer = useSelector(state => state.player.timer);
   const [dialogValue, setDialogValue] = useState(undefined);
 
   useEffect(() => {
@@ -41,7 +41,8 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     if (!player.roomOver && player.gameOver) {
       dispatch(action.setIsPlaying(false));
       socket.emit('gameOver', player);
-      clearInterval(timeoutRefValue);
+      clearInterval(timer);
+      dispatch(action.setTimer(null));
     }
   }, [player.gameOver]);
 
@@ -105,8 +106,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     }
   }
 
-  const setTime = (mounted) => {
-    if (mounted) {
+  const setTime = () => {
       ++totalSeconds;
       let hour = pad(Math.floor(totalSeconds / 3600));
       let minute = pad(Math.floor((totalSeconds - hour * 3600) / 60));
@@ -114,25 +114,19 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
       setHoursValue(hour);
       setMinutesValue(minute);
       setSecondsValue(seconds);
-    }
-    
   };
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      if (player.isPlaying) {
-        reInitTime();
-        setTimeoutRef(setInterval(setTime(mounted), 1000));
-        setDialogValue(undefined);
-      }
-      else if (timeoutRefValue) {
-        clearInterval(timeoutRefValue);
-        totalSeconds = 0;
-      }
+    if (player.isPlaying) {
+      reInitTime();
+      // setTimeoutRef(setInterval(setTime, 1000));
+      dispatch(action.setTimer(setInterval(setTime, 1000)));
+      setDialogValue(undefined);
     }
-
-    return () => mounted = false;
+    else if (timer) {
+      clearInterval(timer);
+      totalSeconds = 0;
+    }
   }, [player.isPlaying]);
 
   return (

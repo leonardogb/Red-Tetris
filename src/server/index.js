@@ -131,7 +131,7 @@ const initEngine = io => {
     socket.on('getGame', (data) => {
       if (!isEmpty(data.username) && !isEmpty(data.room)) {
         let input;
-        if (((input = 'name') && !data.username.match(/^[a-zA-Z0-9]*$/gm)) || ((input = 'room') && !data.room.match(/^[a-zA-Z0-9]*$/gm))) {
+        if (((input = 'name') && !data.username.match(/^([a-zA-Z0-9]{1,12})$/gm)) || ((input = 'room') && !data.room.match(/^([a-zA-Z0-9]{1,12})$/gm))) {
           if (input === 'name')
             socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le format du login est invalide' } } });
           else

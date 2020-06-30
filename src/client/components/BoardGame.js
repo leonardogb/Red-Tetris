@@ -14,7 +14,6 @@ import * as action from '../actions/actions';
 
 const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
-  const [switchValue, setSwitchValue] = useState(true);
   const [updatePlayerPos, pieceRotate, drop] = usePlayer();
   const dispatch = useDispatch();
   let totalSeconds = 0;
@@ -50,11 +49,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
     setSecondsValue('00');
     setMinutesValue('00');
     setHoursValue('00');
-  }
-
-  const setIsDestructible = () => {
-    setSwitchValue(!switchValue);
-    socket.emit('setIsDestructible', !switchValue);
   }
 
   useInterval(() => {
@@ -171,23 +165,10 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
               <div className="opponents">
                 <h3>Opponents</h3>
                 <div className="opponents-content">
-                  <Spectres isPlaying={player.isPlaying} />
+                  <Spectres socket={socket} isPlaying={player.isPlaying} isMaster={player.isMaster} />
                 </div>
               </div>
             </div>
-            {
-              // player.isMaster &&
-              // // !player.isPlaying &&
-              // <div>
-              //   <ToggleSwitch
-              //     isOn={switchValue}
-              //     onColor="#41C83C"
-              //     handleToggle={() => setIsDestructible()}
-              //     id="react-switch-new"
-              //   />
-              //   {/* <button disabled={player.isPlaying} onClick={(e) => { start(); setInterval(setTime, 1000); }} >Start</button> */}
-              // </div>
-            }
           </div>
           {
             dialogValue &&

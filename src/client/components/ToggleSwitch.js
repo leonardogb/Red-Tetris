@@ -4,13 +4,14 @@ import './toggleSwitch.css';
 const ToggleSwitch = ({ isOn, handleToggle, onColor, id }) => {
   return (
     <div style={{ display: 'flex'}}>
-      <label htmlFor={id} style={{lineHeight: 1.5, fontSize: '1.3rem'}}>Mode indestructible:</label>
+      <label htmlFor={id} style={{ color: 'white', lineHeight: 1.5, fontSize: '1rem'}}>Mode indestructible:</label>
       <input
         checked={isOn}
         onChange={handleToggle}
         className="react-switch-checkbox"
         id={id}
         type="checkbox"
+        style={{ height: '10px'}}
       />
       <label
         style={{ background: isOn && onColor }}

@@ -139,33 +139,37 @@ const initEngine = io => {
         }
         else {
           let game = games.find(elem => elem.room === data.room);
-          let player = null;
-          if (game && game.players) {
-            player = game.players.find(elem => elem.name === data.username);
-          }
-          if (!player) {
-            socket.username = data.username;
-            const newPlayer = new Player(data.username, create_UUID(), socket.id);
-            socket.emit('setId', newPlayer.id);
-            player = newPlayer;
-            socket.room = data.room;
-            if (!game) {
-              player.isMaster = true;
-              const newGame = new Game(data.room, player);
-              games.push(newGame);
-              game = newGame;
-            } else {
-              const playerExist = game.players.find(element => element.name === player.name);
-              if (!playerExist) {
-                game.players.push(player);
-              }
+          if (!game || game && !game.playing) {
+            let player = null;
+            if (game && game.players) {
+              player = game.players.find(elem => elem.name === data.username);
             }
-            socket.join(data.room);
-            socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
-            socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
-            io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+            if (!player) {
+              socket.username = data.username;
+              const newPlayer = new Player(data.username, create_UUID(), socket.id);
+              socket.emit('setId', newPlayer.id);
+              player = newPlayer;
+              socket.room = data.room;
+              if (!game) {
+                player.isMaster = true;
+                const newGame = new Game(data.room, player);
+                games.push(newGame);
+                game = newGame;
+              } else {
+                const playerExist = game.players.find(element => element.name === player.name);
+                if (!playerExist) {
+                  game.players.push(player);
+                }
+              }
+              socket.join(data.room);
+              socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
+              socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
+              io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+            } else {
+              socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
+            }
           } else {
-            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
+            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Room deja en cours de jouer' } } });
           }
         }
       }
@@ -317,7 +321,7 @@ const initEngine = io => {
       else {
         socket.emit('dialog', { type: 'loser', message: 'You lose this game' });
       }
-    io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+      io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
   });
 };

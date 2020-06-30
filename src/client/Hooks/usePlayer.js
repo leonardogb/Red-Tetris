@@ -17,7 +17,6 @@ export  const usePlayer = () => {
         updatePlayerPos(1, null, false);
       } else {
         updatePlayerPos(null, null, true);
-        console.log('collided');
       }
     } else {
       let tmpPiece = JSON.parse(JSON.stringify(player.piece));

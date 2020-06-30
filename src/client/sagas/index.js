@@ -3,7 +3,6 @@ import { eventChannel } from 'redux-saga';
 
 function* updateBoard(action) {
   try {
-    console.log('Saga');
     // const getPlayer = (state) => state.player;
     // const player = yield select(getPlayer);
     // if (player) {
@@ -26,7 +25,7 @@ function* watchUpdatePlayerPosition(socket, dispatch) {
 
   return eventChannel(emit => {
     socket.on('setUsername', () => { console.log('prueba')})
-    
+
     const unsubscribe = () => {
       socket.off('ping')
     }

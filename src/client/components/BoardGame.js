@@ -119,7 +119,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   useEffect(() => {
     if (player.isPlaying) {
       reInitTime();
-      // setTimeoutRef(setInterval(setTime, 1000));
       dispatch(action.setTimer(setInterval(setTime, 1000)));
       setDialogValue(undefined);
     }
@@ -162,12 +161,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
                       else {
                         replay();
                       }
-                      // if (timeoutRefValue) {
-                      //   reInitTime();
-                      //   clearInterval(timeoutRefValue);
-                      //   totalSeconds = 0;
-                      // }
-                      // setTimeoutRef(setInterval(setTime, 1000));
                     }} >{!player.gameOver && !player.isPlaying ? "Play" : "Replay"}</button>
                   </div>
                 }

@@ -21,7 +21,6 @@ const countdown = (player) => {
       }, 1000);
       // The subscriber must return an unsubscribe function
       return () => {
-        console.log('clear');
         clearInterval(iv)
       }
     }

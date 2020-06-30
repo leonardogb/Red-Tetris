@@ -37,7 +37,7 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   }, []);
 
   useEffect(() => {
-    if (player.gameOver) {
+    if (!player.roomOver && player.gameOver) {
       // player.isPlaying = false;
       dispatch(action.setIsPlaying(false));
       socket.emit('gameOver', player);

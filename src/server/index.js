@@ -317,7 +317,6 @@ const initEngine = io => {
       else {
         socket.emit('dialog', { type: 'loser', message: 'You lose this game' });
       }
-    console.log("games: ", games);
     io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
   });

@@ -10,7 +10,6 @@ const GamesList = ({socket, playersGames}) => {
     <div className={'gameListContainer'}>
       <h1>GAMES</h1>
       {playersGames.map((game, index) => {
-        console.log("game: ", game);
         return (
           <div key={index} className={ game.playing ? 'gamePlaying' : 'gameNotPlaying' } onClick={() => joinGame(game)}>
             <h1 key={index}>{game.room}</h1>

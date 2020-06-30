@@ -60,7 +60,9 @@ const getSpectre = (curUser) => {
       }
     });
   });
-  return spectre;
+  if (spectre) {
+    return spectre
+  };
 };
 
 const initEngine = io => {

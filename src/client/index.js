@@ -41,6 +41,7 @@ const initialState = {
     status: null,
     isPlaying: false,
     delay: null,
+    timer: null,
     new: false,
     score: 0
   },

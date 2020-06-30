@@ -21,7 +21,6 @@ const Spectres = ({isPlaying}) => {
 
   if (spectres) {
     return (
-      // <div>
         <div className="players-spectre" >
           {
             spectres.map((player, index) =>
@@ -42,7 +41,6 @@ const Spectres = ({isPlaying}) => {
             )
           }
         </div>
-      // </div>
     );
   }
   if (isPlaying == false) {

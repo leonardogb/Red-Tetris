@@ -19,12 +19,16 @@ const Login = () => {
     socket.on('connect', () => {
       socket.emit('setPlayerGames');
     });
-
+    if (player && player.delay !== null) {
+      dispatch(action.setDelay(null));
+    }
+    if (player && player.timer !== null) {
+      dispatch(action.setIsPlaying(false));
+      dispatch(action.setTimer(null));
+    }
   }, []);
 
-  if (player && player.delay != null) {
-    dispatch(action.setDelay(null));
-  }
+  
 
   const getGame = () => {
     if (inputUsername.length > 0 && inputRoom.length > 0) {
@@ -35,7 +39,6 @@ const Login = () => {
     }
   };
 
-  console.log("PlayersGames: ", playersGames);
 
   return (
       <div className="login-page">

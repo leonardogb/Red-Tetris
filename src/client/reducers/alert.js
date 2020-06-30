@@ -136,64 +136,44 @@ const reducer = (state = {}, action) => {
         curRoom: action.payload.game.room,
         curUser: action.payload.player.name
       };
-      case types.ADD_ROOMS:
+    case types.ADD_ROOMS:
       return {
         ...state,
         rooms: action.payload.rooms
       };
-      case types.RELOAD_PLAYER:
+    case types.RELOAD_PLAYER:
+      return {
+        ...state,
+        player: action.payload.player,
+        curRoom: action.payload.room,
+        curUser: action.payload.name
+      };
+    case types.SWAP_PIECES:
+      if (state.player.pieces.length > 1) {
+        let pieces = [...state.player.pieces];
+        const tmp = pieces[0];
+        pieces[0] = pieces[1];
+        pieces[1] = tmp;
         return {
           ...state,
-          player: action.payload.player,
-          curRoom: action.payload.room,
-          curUser: action.payload.name
-        };
-      case types.SWAP_PIECES:
-        if (state.player.pieces.length > 1) {
-          let pieces = [...state.player.pieces];
-          const tmp = pieces[0];
-          pieces[0] = pieces[1];
-          pieces[1] = tmp;
-          return {
-            ...state,
-            player: {
-              ...state.player,
-              pieces: pieces
-            }
+          player: {
+            ...state.player,
+            pieces: pieces
           }
-        } else {
-          return state;
-        };
-      case types.SET_SPECTRES:
-        let spectres = [];
-
-        if (state.spectres) {
-          spectres = JSON.parse(JSON.stringify(state.spectres));
-          const indexSpectre = spectres.findIndex(element => element.playerName === action.payload.username);
-          if (indexSpectre !== -1) {
-            spectres[indexSpectre] = action.payload.spectre
-          } else {
-            spectres.push(action.payload.spectre);
-          }
-          return {
-            ...state,
-            spectres: spectres
-          };
         }
-        return {
-          ...state,
-          spectres: [action.payload.spectre]
-        };
-      case types.REMOVE_SPECTRE:
+      } else {
+        return state;
+      };
+    case types.SET_SPECTRES:
+      let spectres = [];
+
       if (state.spectres) {
         spectres = JSON.parse(JSON.stringify(state.spectres));
-        const indexSpectre = spectres.findIndex(element => element.playerName == action.payload.username);
-        console.log(indexSpectre);
+        const indexSpectre = spectres.findIndex(element => element.playerName === action.payload.username);
         if (indexSpectre !== -1) {
-          spectres.splice(indexSpectre, 1);
-        }
-        if (!spectres.length) {
-          spectres = undefined;
+          spectres[indexSpectre] = action.payload.spectre
+        } else {
+          spectres.push(action.payload.spectre);
         }
         return {
           ...state,
@@ -201,94 +181,122 @@ const reducer = (state = {}, action) => {
         };
       }
       return {
-        ...state
+        ...state,
+        spectres: [action.payload.spectre]
       };
-      case types.SET_MALUS:
-        const grid = state.player.grid;
-        const malusArray = action.payload.malus;
+    case types.REMOVE_SPECTRE:
+    if (state.spectres) {
+      spectres = JSON.parse(JSON.stringify(state.spectres));
+      const indexSpectre = spectres.findIndex(element => element.playerName == action.payload.username);
+      if (indexSpectre !== -1) {
+        spectres.splice(indexSpectre, 1);
+      }
+      if (!spectres.length) {
+        spectres = undefined;
+      }
+      return {
+        ...state,
+        spectres: spectres
+      };
+    }
+    return {
+      ...state
+    };
+    case types.SET_MALUS:
+      const grid = state.player.grid;
+      const malusArray = action.payload.malus;
 
-        for(let i = 0; i < grid.length; i++) {
-          if (grid[i].findIndex(cell => cell[0] !== 0) === -1) {
-            if (malusArray.length > 0) {
-              grid.splice(i, 1);
-              const row = malusArray.shift();
-              grid.push(row);
-            }
+      for(let i = 0; i < grid.length; i++) {
+        if (grid[i].findIndex(cell => cell[0] !== 0) === -1) {
+          if (malusArray.length > 0) {
+            grid.splice(i, 1);
+            const row = malusArray.shift();
+            grid.push(row);
           }
         }
-        return {
-          ...state,
-          player: {
-            ...state.player,
-            grid: grid
-          }
-        };
-      case types.UPDATE_SCORE:
-        return {
-          ...state,
-          player: {
-            ...state.player,
-            score: state.player.score + action.payload.score
-          }
+      }
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          grid: grid
         }
-      case types.SET_ERROR:
-        return {
-          ...state,
-          error: action.payload.error
+      };
+    case types.UPDATE_SCORE:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          score: state.player.score + action.payload.score
         }
-      case types.REMOVE_ERROR:
-        return {
-          ...state,
-          error: null
-        }
-        case types.SET_IS_PLAYING:
-          return {
-            ...state,
-            player: {
-              ...state.player,
-              isPlaying: action.payload.value,
+      }
+    case types.SET_ERROR:
+      return {
+        ...state,
+        error: action.payload.error
+      }
+    case types.REMOVE_ERROR:
+      return {
+        ...state,
+        error: null
+      }
+    case types.SET_IS_PLAYING:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          isPlaying: action.payload.value,
+        },
+      };
+    case types.SET_IS_MASTER:
+    return {
+      ...state,
+      player: {
+        ...state.player,
+        isMaster: action.payload.value,
+      },
+    };
+    case types.SET_ROOM_OVER:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          roomOver: true,
+        },
+      };
+    case types.RESTART_GAME:
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          grid: action.payload.grid,
+          pieces: [],
+          piece: {
+            tetromino: [],
+            pos: {
+              x: 0,
+              y: 0,
             },
-          };
-          case types.SET_IS_MASTER:
-          return {
-            ...state,
-            player: {
-              ...state.player,
-              isMaster: action.payload.value,
-            },
-          };
-          case types.SET_ROOM_OVER:
-            return {
-              ...state,
-              player: {
-                ...state.player,
-                roomOver: true,
-              },
-            };
-            case types.RESTART_GAME:
-              return {
-                ...state,
-                player: {
-                  ...state.player,
-                  grid: action.payload.grid,
-                  pieces: [],
-                  piece: {
-                    tetromino: [],
-                    pos: {
-                      x: 0,
-                      y: 0,
-                    },
-                    collided: false,
-                  },
-                  gameOver: false,
-                  roomOver: false,
-                  status: null,
-                  isPlaying: true,
-                  delay: null,
-                  new: false,
-                  score: 0
-                },
-              };
+            collided: false,
+          },
+          gameOver: false,
+          roomOver: false,
+          status: null,
+          isPlaying: true,
+          delay: null,
+          new: false,
+          score: 0
+        },
+      };
+    case types.SET_TIMER:
+      clearInterval(state.player.timer);
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          timer: action.payload.timer
+        }
+      }
     default:
       return state
   }

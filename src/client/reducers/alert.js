@@ -179,11 +179,13 @@ const reducer = (state = {}, action) => {
           ...state,
           spectres: spectres
         };
+      } else if (action.payload.spectre) {
+        return {
+          ...state,
+          spectres: [action.payload.spectre]
+        };
       }
-      return {
-        ...state,
-        spectres: [action.payload.spectre]
-      };
+      return state;
     case types.REMOVE_SPECTRE:
     if (state.spectres) {
       spectres = JSON.parse(JSON.stringify(state.spectres));

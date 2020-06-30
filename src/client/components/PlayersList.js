@@ -16,7 +16,7 @@ return (
               <h1 key={index}>{room}</h1>
               <div style={{height: '215px', overflow: 'auto'}}>
                 {playersGames[room].map((player, index) => {
-                  
+
                   return (
                   <div key={index} style={{display: 'flex', justifyContent: 'space-between'}}>
                     <p>{player[0]}</p>

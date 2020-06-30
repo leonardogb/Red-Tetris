@@ -38,6 +38,7 @@ const playersGames = (games) => {
   const playersGamesArray = games.reduce((gamesList, game) => {
     gamesList.push(
       {
+        playing: game.playing,
         room: game.room,
         players: game.players.reduce((playersList, player) => {
           playersList.push(player.name);
@@ -100,9 +101,10 @@ const initEngine = io => {
           game.playing = true;
           // game.players.splice(game.players.findIndex(e => e.name === socket.username),1);
         }
-        io.in(socket.room).emit('setPlayersGames', playersGames(games));
+        // io.in(socket.room).emit('setPlayersGames', playersGames(games));
         return (game);
       });
+      io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     }
 
     socket.on('play', () => {
@@ -126,34 +128,43 @@ const initEngine = io => {
 
     socket.on('getGame', (data) => {
       if (!isEmpty(data.username) && !isEmpty(data.room)) {
-        let game = games.find(elem => elem.room === data.room);
-        let player = null;
-        if (game && game.players) {
-          player = game.players.find(elem => elem.name === data.username);
+        let input;
+        if (((input = 'name') && !data.username.match(/^[a-zA-Z0-9]*$/gm)) || ((input = 'room') && !data.room.match(/^[a-zA-Z0-9]*$/gm))) {
+          if (input === 'name')
+            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le format du login est invalide' } } });
+          else
+            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le format de la room est invalide' } } });
         }
-        if (!player) {
-          socket.username = data.username;
-          const newPlayer = new Player(data.username, create_UUID(), socket.id);
-          socket.emit('setId', newPlayer.id);
-          player = newPlayer;
-          socket.room = data.room;
-          if (!game) {
-            player.isMaster = true;
-            const newGame = new Game(data.room, player);
-            games.push(newGame);
-            game = newGame;
-          } else {
-            const playerExist = game.players.find(element => element.name === player.name);
-            if (!playerExist) {
-              game.players.push(player);
-            }
+        else {
+          let game = games.find(elem => elem.room === data.room);
+          let player = null;
+          if (game && game.players) {
+            player = game.players.find(elem => elem.name === data.username);
           }
-          socket.join(data.room);
-          socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
-          socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
-          io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
-        } else {
-          socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
+          if (!player) {
+            socket.username = data.username;
+            const newPlayer = new Player(data.username, create_UUID(), socket.id);
+            socket.emit('setId', newPlayer.id);
+            player = newPlayer;
+            socket.room = data.room;
+            if (!game) {
+              player.isMaster = true;
+              const newGame = new Game(data.room, player);
+              games.push(newGame);
+              game = newGame;
+            } else {
+              const playerExist = game.players.find(element => element.name === player.name);
+              if (!playerExist) {
+                game.players.push(player);
+              }
+            }
+            socket.join(data.room);
+            socket.emit('serverAction', { action: { type: types.SET_PLAYER, payload: { player: player, game: game } } });
+            socket.emit('redirect', { to: game.room + '[' + player.name + ']' });
+            io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
+          } else {
+            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
+          }
         }
       }
     });
@@ -172,7 +183,6 @@ const initEngine = io => {
     });
 
     socket.on('setPlayerGames', (room) => {
-
       socket.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
 
@@ -284,26 +294,30 @@ const initEngine = io => {
             }
             return (checkPlayer);
           });
+          if (!stillPlaying || (stillPlaying == 1 && winner)) {
+            game.playing = false;
+          }
         }
         return (game);
       });
       if (!stillPlaying) {
         socket.emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
-        socket.emit('dialog', {type: 'game-over', message: 'Game over'});
+        socket.emit('dialog', { type: 'game-over', message: 'Game over' });
       }
       else if (stillPlaying === 1 && winner) {
-        io.to(winner.socketId).emit('dialog', {type: 'winner', message: 'You win this game'});
+        io.to(winner.socketId).emit('dialog', { type: 'winner', message: 'You win this game' });
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
         io.to(winner.socketId).emit('serverAction', { action: { type: types.SET_GAME_OVER } });
         io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
-        socket.emit('dialog', {type: 'loser', message: 'You lose this game'});
+        socket.emit('dialog', { type: 'loser', message: 'You lose this game' });
       }
       else {
-        socket.emit('dialog', {type: 'loser', message: 'You lose this game'});
+        socket.emit('dialog', { type: 'loser', message: 'You lose this game' });
       }
+    console.log("games: ", games);
+    io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     });
-
   });
 };
 

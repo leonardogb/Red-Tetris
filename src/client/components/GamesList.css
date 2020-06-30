@@ -1,5 +1,29 @@
 .gameListContainer {
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
+  background-color: black;
   /* flex-wrap: wrap; */
+}
+
+.gamePlaying {
+  padding: 0 10px;
+  margin: 10px;
+  background-color: red;
+  overflow: hidden;
+}
+
+.gameNotPlaying {
+  padding: 0 10px;
+  margin: 10px;
+  background-color: green;
+  overflow: hidden;
+}
+
+.gamePlaying .gameNotPlaying div {
+  max-height: 70px;
+}
+
+.gamePlaying .gameNotPlaying p {
+  text-align: center;
 }

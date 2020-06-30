@@ -47,7 +47,6 @@ const App = () => {
         <div onClick={() => removeError()}>
           <Error />
         </div>
-
         <HashRouter hashType="noslash">
           <Switch>
             <Route exact path="/" render={() =>

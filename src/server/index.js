@@ -47,7 +47,6 @@ const playersGames = (games) => {
       });
     return gamesList;
   }, []);
-  console.log("playersGamesArray: ", playersGamesArray);
   return playersGamesArray;
 };
 

@@ -132,6 +132,7 @@ const reducer = (state = {}, action) => {
     case types.SET_PLAYER:
       return {
         ...state,
+        error: null,
         player: action.payload.player,
         curRoom: action.payload.game.room,
         curUser: action.payload.player.name

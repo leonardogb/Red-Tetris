@@ -38,28 +38,11 @@ const App = () => {
   }, [player.piece.collided]);
 
   useEffect(() => {
-    socket.on('connect', () => {
-      const id = localStorage.getItem('id');
-      if (id) {
-        socket.emit('reloadPlayer', id);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
     console.log('gameOver: ', player.gameOver);
     if (player.gameOver === true) {
       player.isPlaying = false;
     }
   }, [player.gameOver]);
-
-  socket.on('setId', (id) => {
-    localStorage.setItem('id', id);
-  });
-
-  socket.on('deleteId', () => {
-    localStorage.removeItem('id');
-  });
 
   const removeError = () => {
     dispatch(action.removeError());

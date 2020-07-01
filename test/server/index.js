@@ -18,7 +18,7 @@ import jsdom from 'mocha-jsdom';
 import { StaticRouter, MemoryRouter } from 'react-router-dom';
 import spies from 'chai-spies';
 import jest from 'jest'
-import { renderHook, act } from '@testing-library/react-hooks'
+// import { renderHook, act } from '@testing-library/react-hooks'
 // const history = createBrowserHistory(/* ... */);
 // const history = createMemoryHistory();
 // sinon.spy(history, "push");
@@ -201,6 +201,22 @@ describe('Check index server', () => {
       player: {
         delay: null,
         socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
         // socketId: socket.id,
         // grid: initialBoard(),
         // spectre: initialSpectre(),
@@ -222,21 +238,21 @@ describe('Check index server', () => {
     const store = configureStore(rootReducer, null, initialState);
     const context = {};
 
-    beforeEach(() => {
-      // useEffect = jest.spyOn(React, "useEffect").mockImplementation(f => f());
-
-
-    const error = render(
+    // beforeEach(() => {
+    // useEffect = jest.spyOn(React, "useEffect").mockImplementation(f => f());
+    const error = mount(
 
       <Provider store={store}>
-        <StaticRouter   context={context}>
-        {/* <MemoryRouter history={history}> */}
-        <App />
-        {/* </MemoryRouter> */}
+        <StaticRouter context={context}>
+          <App />
         </StaticRouter>
       </Provider>
     )
-  });
+
+
+    // });
+
+
     // const app = shallow(
     //   <Provider store={store}>
     //     <StaticRouter   context={context}>
@@ -250,6 +266,465 @@ describe('Check index server', () => {
 
     done();
     // const app = shallow(<App />);
+  });
+
+  it('renders the App piece new', (done) => {
+    // jsdom();
+
+    const initialState = {
+      socket: socket,
+      player: {
+        delay: null,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
+        // socketId: socket.id,
+        // grid: initialBoard(),
+        // spectre: initialSpectre(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 6
+          },
+          collided: false,
+          new: true
+        }
+      }
+    }
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    mount(
+      <Provider store={store}>
+        <StaticRouter context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+    done();
+  });
+
+  it('renders the App piece new and pos 0', (done) => {
+    // jsdom();
+
+    const initialState = {
+      socket: socket,
+      player: {
+        delay: null,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
+        // socketId: socket.id,
+        // grid: initialBoard(),
+        // spectre: initialSpectre(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 0
+          },
+          collided: true,
+          new: true
+        }
+      }
+    }
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    mount(
+      <Provider store={store}>
+        <StaticRouter context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+    done();
+  });
+
+  // it('renders the App piece new and pos superior than 1', (done) => {
+  //   // jsdom();
+
+  //   const initialState = {
+  //     socket: socket,
+  //     player: {
+  //       delay: null,
+  //       socketId: socket.id,
+  //       pieces: [
+  //         [
+  //           [4, 4],
+  //           [4, 4],
+  //         ],
+  //         [
+  //           [2, 0, 0],
+  //           [2, 2, 2],
+  //           [0, 0, 0],
+  //         ],
+  //         [
+  //           [0, 0, 3],
+  //           [3, 3, 3],
+  //           [0, 0, 0],
+  //         ],
+  //       ],
+  //       // socketId: socket.id,
+  //       // grid: initialBoard(),
+  //       // spectre: initialSpectre(),
+  //       piece: {
+  //         tetromino: [
+  //           [0, 6, 0],
+  //           [6, 6, 6],
+  //           [0, 0, 0]
+  //         ],
+  //         pos: {
+  //           x: 5,
+  //           y: 2
+  //         },
+  //         collided: true,
+  //         new: false
+  //       }
+  //     }
+  //   }
+  //   const store = configureStore(rootReducer, null, initialState);
+  //   const context = {};
+
+  //   mount(
+  //     <Provider store={store}>
+  //       <StaticRouter   context={context}>
+  //       <App />
+  //       </StaticRouter>
+  //     </Provider>
+  //   )
+  //   done();
+  // });
+
+  it('test initApp hash router', (done) => {
+
+    chai.request(params.server.url)
+      .get('/#erherherh[wegwegergergrg]')
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+      });
+    done();
+  });
+
+  it('renders the App hash router', (done) => {
+    // jsdom();
+
+    const initialState = {
+      socket: socket,
+      player: {
+        delay: 1000,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
+        // socketId: socket.id,
+        // grid: initialBoard(),
+        // spectre: initialSpectre(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 0
+          },
+          collided: true,
+          new: true
+        }
+      }
+    }
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    mount(
+      <Provider store={store}>
+        <StaticRouter location={'/testRoom[testPlayer]'} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+    done();
+  });
+
+  it('renders the App hash router', (done) => {
+    // jsdom();
+
+    const initialState = {
+      socket: socket,
+      player: {
+        delay: 1000,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
+        // socketId: socket.id,
+        // grid: initialBoard(),
+        // spectre: initialSpectre(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 0
+          },
+          collided: true,
+          new: true
+        }
+      }
+    }
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    mount(
+      <Provider store={store}>
+        <StaticRouter location={'/testRoom[testPlayer]'} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+    done();
+  });
+
+  it('renders the App click error', (done) => {
+    // jsdom();
+
+    const initialState = {
+      error: 'test error',
+      socket: socket,
+      player: {
+        delay: 1000,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
+        // socketId: socket.id,
+        // grid: initialBoard(),
+        // spectre: initialSpectre(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 0
+          },
+          collided: false,
+          new: true
+        }
+      }
+    }
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <StaticRouter location={'/testRoom[testPlayer]'} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+
+    wrapper.find('.error').simulate('click');
+    done();
+  });
+
+  it('renders the App updateTetronimo', (done) => {
+
+    const initialState = {
+      socket: socket,
+      player: {
+        delay: 1000,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+        ],
+        grid: initialBoard(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 2
+          },
+          collided: true,
+          new: false
+        }
+      }
+    }
+
+    console.log("intilstate pieces: ", initialState.player.pieces.length);
+    console.log("intilstate collided: ", initialState.player.piece.collided);
+    console.log("intilstate pos y: ", initialState.player.piece.pos.y);
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <StaticRouter context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+
+    done();
+  });
+
+  it('renders the App updateTetronimo', (done) => {
+
+    const initialState = {
+      socket: socket,
+      player: {
+        delay: 1000,
+        socketId: socket.id,
+        pieces: [
+          [
+            [4, 4],
+            [4, 4],
+          ],
+          [
+            [2, 0, 0],
+            [2, 2, 2],
+            [0, 0, 0],
+          ],
+          [
+            [0, 0, 3],
+            [3, 3, 3],
+            [0, 0, 0],
+          ],
+          [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0],
+          ],
+        ],
+        grid: initialBoard(),
+        piece: {
+          tetromino: [
+            [0, 6, 0],
+            [6, 6, 6],
+            [0, 0, 0]
+          ],
+          pos: {
+            x: 5,
+            y: 2
+          },
+          collided: true,
+          new: false
+        }
+      }
+    }
+    const store = configureStore(rootReducer, null, initialState);
+    const context = {};
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <StaticRouter context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    )
+
+    done();
   });
 
 });

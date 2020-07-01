@@ -4,9 +4,9 @@ import React from 'react';
 import { configureStore } from '../helpers/server';
 import rootReducer from '../../src/client/reducers';
 import { Provider } from 'react-redux';
-
 import { shallow, render, mount } from 'enzyme';
 import * as action from '../../src/client/actions/actions';
+
 import Square from '../../src/client/components/Square';
 import Board from '../../src/client/components/Board';
 import Error from '../../src/client/components/Error';
@@ -54,11 +54,12 @@ const LocalStorageMock = {
 global.localStorage = LocalStorageMock;
 
 describe('Components renders', () => {
-  it('Square component', () => {
+  it('Square component', (done) => {
     shallow(<Square />);
+    done();
   });
 
-  it('Error component', () => {
+  it('Error component', (done) => {
     const initialState = {};
     const store = configureStore(rootReducer, null, initialState);
     const error = render(
@@ -66,9 +67,10 @@ describe('Components renders', () => {
         <Error />
       </Provider>
     );
+    done();
   });
 
-  it('Footer component', () => {
+  it('Footer component', (done) => {
     const initialState = {};
     const store = configureStore(rootReducer, null, initialState);
     const footer = mount(
@@ -81,10 +83,11 @@ describe('Components renders', () => {
     footer.html().should.equal(expectedHtml);
     footer.findWhere(node => node.hasClass('sub-footer')).simulate('click');
     footer.html().should.equal(expectedClickHtml);
+    done();
   });
 
   describe('Board component', () => {
-    it('Board component with grid', () => {
+    it('Board component with grid', (done) => {
       const initialState = {
         player: {
           grid: initialBoard(),
@@ -96,8 +99,9 @@ describe('Components renders', () => {
           <Board />
         </Provider>
       );
+      done();
     });
-    it('Board component without grid', () => {
+    it('Board component without grid', (done) => {
       const initialState = {};
       const store = configureStore(rootReducer, null, initialState);
       const wrapper = mount(
@@ -105,30 +109,33 @@ describe('Components renders', () => {
           <Board />
         </Provider>
       );
+      done();
     });
   });
 
-  it('Games list', () => {
+  it('Games list', (done) => {
     const initialState = {};
-    const playersGames = {
-      test2: [
-        [
-          'test2',
-          50,
-        ],
-      ],
-    };
+    const playersGames = [
+      {
+        playing: false,
+        room: 'test',
+        players: [
+          'test'
+        ]
+      }
+    ];
+
     const store = configureStore(rootReducer, null, initialState);
     const wrapper = mount(
       <Provider store={store}>
         <GamesList playersGames={playersGames} socket={socket} />
       </Provider>
     );
-    wrapper.find('.game').simulate('click');
+    done();
   });
 
   describe('NextPiece component', () => {
-    it('NextPiece with pieces', () => {
+    it('NextPiece with pieces', (done) => {
       const initialState = {
         player: {
           pieces: [
@@ -155,8 +162,9 @@ describe('Components renders', () => {
           <NextPiece />
         </Provider>
       );
+      done();
     });
-    it('NextPiece without pieces', () => {
+    it('NextPiece without pieces', (done) => {
       const initialState = {
         player: {
           pieces: [],
@@ -168,10 +176,11 @@ describe('Components renders', () => {
           <NextPiece />
         </Provider>
       );
+      done();
     });
   });
 
-  it('ToggleSwitch component', () => {
+  it('ToggleSwitch component', (done) => {
     const initialState = {
       switchValue: true,
     };
@@ -183,10 +192,11 @@ describe('Components renders', () => {
       </Provider>
     );
     wrapper.find('input#react-switch-new').simulate('click');
+    done();
   });
 
   describe('Spectres component', () => {
-    it('Spectres if is playing', () => {
+    it('Spectres if is playing', (done) => {
       const spectre = initialSpectre();
       spectre.shift();
       spectre.push([1, 1, 1, 0, 0, 2, 2, 3, 3, 3]);
@@ -209,8 +219,9 @@ describe('Components renders', () => {
           <Spectres isPlaying={state.player.isPlaying} />
         </Provider>
       );
+      done();
     });
-    it('Without Spectres if is not playing', () => {
+    it('Without Spectres if is not playing', (done) => {
       const spectre = initialSpectre();
       spectre.shift();
       spectre.push([1, 1, 1, 0, 0, 2, 2, 3, 3, 3]);
@@ -226,8 +237,9 @@ describe('Components renders', () => {
           <Spectres isPlaying={state.player.isPlaying} />
         </Provider>
       );
+      done();
     });
-    it('With Spectres if is playing', () => {
+    it('With Spectres if is playing', (done) => {
       const spectre = initialSpectre();
       spectre.shift();
       spectre.push([1, 1, 1, 0, 0, 2, 2, 3, 3, 3]);
@@ -243,21 +255,23 @@ describe('Components renders', () => {
           <Spectres isPlaying={state.player.isPlaying} />
         </Provider>
       );
+      done();
     });
   });
 
-  it('Login component', () => {
+  it('Login component', (done) => {
 
     const initialState = {
       socket,
-      playersGames: {
-        test2: [
-          [
-            'test2',
-            50,
-          ],
-        ],
-      },
+      playersGames: [
+        {
+          playing: false,
+          room: 'test',
+          players: [
+            'test'
+          ]
+        }
+      ],
       player: {
         delay: 1000,
       },
@@ -279,9 +293,10 @@ describe('Components renders', () => {
     wrapper.find('.buttonLogin').simulate('click');
 
     // console.log(wrapper.find('input[name="username"]').props());
+    done();
   });
 
-  it('BoardGame component', () => {
+  it('BoardGame component', (done) => {
     const initialState = {
       socket,
       curRoom: 'test',
@@ -337,6 +352,7 @@ describe('Components renders', () => {
     store.dispatch(action.setRoomOver());
     // console.log(store.getState())
     wrapper.find('button').simulate('click');
+    done();
   });
 
 })

@@ -14,14 +14,14 @@ function createSocketChannel(socket) {
       emit(event.action);
     };
 
-    const errorHandler = (errorEvent) => {
-      // create an Error object and put it into the channel
-      emit(new Error(errorEvent.reason))
-    };
+    // const errorHandler = (errorEvent) => {
+    //   // create an Error object and put it into the channel
+    //   emit(new Error(errorEvent.reason))
+    // };
 
     // setup the subscription
     socket.on('serverAction', serverAction);
-    socket.on('error', errorHandler);
+    // socket.on('error', errorHandler);
 
     // the subscriber must return an unsubscribe function
     // this will be invoked when the saga calls `channel.close` method
@@ -38,16 +38,16 @@ function* watchSockets(socket) {
   const socketChannel = yield call(createSocketChannel, socket);
 
   while (true) {
-    try {
+    // try {
       const action = yield take(socketChannel);
 
       yield put(action);
-    } catch (err) {
-      console.error('socket error:', err);
-      // socketChannel is still open in catch block
-      // if we want end the socketChannel, we need close it explicitly
-      // socketChannel.close();
-    }
+    // } catch (err) {
+    //   console.error('socket error:', err);
+    //   // socketChannel is still open in catch block
+    //   // if we want end the socketChannel, we need close it explicitly
+    //   // socketChannel.close();
+    // }
   }
 }
 

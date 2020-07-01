@@ -169,7 +169,7 @@ const initEngine = io => {
               socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Le login n\'est pas disponible' } } });
             }
           } else {
-            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Room deja en cours de jouer' } } });
+            socket.emit('serverAction', { action: { type: types.SET_ERROR, payload: { error: 'Jeu en cours dans cette room' } } });
           }
         }
       }

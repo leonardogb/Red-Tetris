@@ -2,9 +2,6 @@ import React from 'react';
 import './GamesList.css';
 
 const GamesList = ({socket, playersGames}) => {
-  const joinGame = ((room) => {
-    socket.emit('getRoom', {room: room});
-  });
 
   return (
     <div className={'gameListContainer'}>
@@ -12,7 +9,7 @@ const GamesList = ({socket, playersGames}) => {
       <div className={'gamesContainer'}>
       {playersGames.map((game, index) => {
         return (
-          <div key={index} className={ game.playing ? 'gamePlaying' : 'gameNotPlaying' } onClick={() => joinGame(game)}>
+          <div key={index} className={ game.playing ? 'gamePlaying' : 'gameNotPlaying'} >
             <h1 key={index}>{game.room}</h1>
             <div>
               {game.players.map((player, index) => {

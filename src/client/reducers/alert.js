@@ -43,13 +43,6 @@ const reducer = (state = {}, action) => {
       };
     case types.SET_USERNAME:
       return {...state, curUser: action.payload.username};
-    case types.SET_ROOM:
-      return {
-        ...state,
-        player: action.payload.player,
-        curRoom: action.payload.room,
-        games: action.payload.games
-      };
     case types.SET_PIECE:
       return {
         ...state,
@@ -60,16 +53,6 @@ const reducer = (state = {}, action) => {
       };
     case types.SET_PLAYERS_GAMES:
       return {...state, playersGames: action.payload.games};
-    case types.SET_GAMES:
-      return {...state, games: action.payload};
-    case types.UPDATE_GAME:
-      return {
-        ...state,
-        games: {
-          ...state.games,
-          [action.payload.game.room]: action.payload.game
-        }
-      };
     case types.SET_PIECES:
       piecesList = [...state.player.pieces].concat(action.payload.pieces);
       return {
@@ -108,11 +91,6 @@ const reducer = (state = {}, action) => {
           delay: null
         }
       };
-    // case types.SET_CUR_ROOM:
-    //   return {
-    //     ...state,
-    //     curRoom: true
-    //   };
     case types.START_GAME:
       return {
         ...state,
@@ -136,18 +114,6 @@ const reducer = (state = {}, action) => {
         player: action.payload.player,
         curRoom: action.payload.game.room,
         curUser: action.payload.player.name
-      };
-    case types.ADD_ROOMS:
-      return {
-        ...state,
-        rooms: action.payload.rooms
-      };
-    case types.RELOAD_PLAYER:
-      return {
-        ...state,
-        player: action.payload.player,
-        curRoom: action.payload.room,
-        curUser: action.payload.name
       };
     case types.SWAP_PIECES:
       if (state.player.pieces.length > 1) {
@@ -188,23 +154,21 @@ const reducer = (state = {}, action) => {
       }
       return state;
     case types.REMOVE_SPECTRE:
-    if (state.spectres) {
-      spectres = JSON.parse(JSON.stringify(state.spectres));
-      const indexSpectre = spectres.findIndex(element => element.playerName == action.payload.username);
-      if (indexSpectre !== -1) {
-        spectres.splice(indexSpectre, 1);
+      if (state.spectres) {
+        spectres = JSON.parse(JSON.stringify(state.spectres));
+        const indexSpectre = spectres.findIndex(element => element.playerName == action.payload.username);
+        if (indexSpectre !== -1) {
+          spectres.splice(indexSpectre, 1);
+        }
+        if (!spectres.length) {
+          spectres = undefined;
+        }
+        return {
+          ...state,
+          spectres: spectres
+        };
       }
-      if (!spectres.length) {
-        spectres = undefined;
-      }
-      return {
-        ...state,
-        spectres: spectres
-      };
-    }
-    return {
-      ...state
-    };
+      return state;
     case types.SET_MALUS:
       const grid = state.player.grid;
       const malusArray = action.payload.malus;

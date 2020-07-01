@@ -8,6 +8,8 @@ import { Provider } from 'react-redux';
 import {storeStateMiddleWare} from './middleware/storeStateMiddleWare'
 import reducer from './reducers';
 import App from './containers/app';
+import { HashRouter } from 'react-router-dom';
+
 import './style.css';
 
 import createSagaMiddleware from 'redux-saga';
@@ -71,7 +73,9 @@ sagaMiddleware.run(rootSaga, socket, store.dispatch);
 
 ReactDom.render((
   <Provider store={store}>
+    <HashRouter hashType="noslash">
     <App />
+    </HashRouter>
   </Provider>
 ), document.getElementById('tetris'));
 

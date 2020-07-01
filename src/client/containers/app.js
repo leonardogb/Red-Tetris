@@ -71,7 +71,7 @@ const App = () => {
         <div onClick={() => removeError()}>
           <Error />
         </div>
-        <HashRouter hashType="noslash">
+        {/* <HashRouter hashType="noslash"> */}
           <Switch>
             <Route exact path="/" render={() =>
               <Login player={player} socket={socket} />
@@ -80,7 +80,7 @@ const App = () => {
              <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>
             } />
           </Switch>
-        </HashRouter>
+        {/* </HashRouter> */}
       </div>
       <Footer />
     </div>

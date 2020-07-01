@@ -178,7 +178,7 @@ const initEngine = io => {
     socket.on('updatePlayer', (player) => {
       games = games.map((game) => {
         game.players = game.players.map((playerIn) => {
-          if (playerIn && player.id === playerIn.id) {
+          if (playerIn && player.socketId === playerIn.socketId) {
             player.spectre = playerIn.spectre;
             playerIn = player;
           }

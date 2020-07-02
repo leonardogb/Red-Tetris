@@ -8,7 +8,6 @@ import Error from '../components/Error';
 import './app.css';
 import * as types from '../actions/actionTypes';
 import * as action from '../actions/actions';
-import image from '../../assets/325186_neon-city-wallpaper.jpg'
 
 const App = () => {
   const [socket, player, curUser, games, curRoom, delay] = useSelector(store => [store.socket, store.player, store.curUser, store.games, store.curRoom, store.player.delay]);
@@ -50,12 +49,11 @@ const App = () => {
   };
 
   return (
-    <div href={image} className='page-container'>
+    <div className='page-container'>
       <div className='content-wrap'>
         <div onClick={() => removeError()}>
           <Error />
         </div>
-        {/* <HashRouter hashType="noslash"> */}
           <Switch>
             <Route exact path="/" render={() =>
               <Login player={player} socket={socket} />
@@ -64,7 +62,6 @@ const App = () => {
              <BoardGame curRoom={curRoom} curUser={curUser} player={player} delay={delay} socket={socket}/>
             } />
           </Switch>
-        {/* </HashRouter> */}
       </div>
       <Footer />
     </div>

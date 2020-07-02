@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./Footer.css";
 import { Link, Router } from 'react-router-dom';
 import { useHover } from '../Hooks/useHover';
-// import "../../assets/"
+import PdfFile from '../../assets/red_tetris.fr.pdf'
 
 const Footer = () => {
   const [hoverRef, isHovered] = useHover();
@@ -25,7 +25,6 @@ const Footer = () => {
         <div className="main-footer">
           <div className="container">
             <div className="row">
-              {/* Column1 */}
               <div className="social">
                 <h4>LGARCIA-</h4>
                 <div className="row">
@@ -35,11 +34,6 @@ const Footer = () => {
               </div>
               <div className="social">
                 <h4>DEWALTER</h4>
-                {/* <ul className="list-unstyled">
-              <li>DANK MEMES</li>
-              <li>OTHER STUFF</li>
-              <li>GUD STUFF</li>
-            </ul> */}
                 <div className="row">
 
                   <div>
@@ -49,17 +43,11 @@ const Footer = () => {
                     <a href="https://www.linkedin.com/in/denis-walter/" target="_blank" className="fa fa-linkedin" title="Linkedin dewalter"></a>
                   </div>
                 </div>
-                {/* <ul className="list-unstyled">
-              <li>DANK MEMES</li>
-              <li>OTHER STUFF</li>
-              <li>GUD STUFF</li>
-            </ul> */}
               </div>
             </div>
             <div className="row">
               <p>
-                &copy;{new Date().getFullYear()} <a href="/src/assets/red_tetris.fr.pdf" className="subject" target="_blank" title="red tetris subject">Red Tetris</a>
-                {/* &copy;{new Date().getFullYear()} <a href="../assets/red_tetris.fr.pdf">Red Tetris</a> */}
+                &copy;{new Date().getFullYear()} <a href={PdfFile} className="subject" target="_blank" title="red tetris subject">Red Tetris</a>
               </p>
             </div>
           </div>

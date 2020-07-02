@@ -9,7 +9,6 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/'
   },
-
   module: {
     rules: [
       {
@@ -20,7 +19,20 @@ module.exports = {
       {
         test: /\.css$/i,
         loader: 'style-loader!css-loader',
+        // loaders: ["style-loader", "css-loader"]
       },
+      // {
+      //   test: /\.(png|jpe?g|gif|pdf)$/i,
+      //   use: [
+      //     {
+      //       loader: 'file-loader?name=/src/assets/[name].[ext]',
+      //     },
+      //   ],
+      // },
+      {
+        test: /\.(png|jpg|pdf)$/,
+        loader: 'url-loader'
+      }
     ],
   },
   devServer: {

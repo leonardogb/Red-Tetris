@@ -23,7 +23,7 @@ npm-debug.log*
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/
-
+dist/
 # Optional npm cache directory
 .npm
 

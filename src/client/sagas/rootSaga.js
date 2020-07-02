@@ -7,7 +7,6 @@ function* rootSaga(socket) {
       socketSaga(socket),
       boardSaga()
     ])
-    // code after all-effect
   }
 
   export default rootSaga;

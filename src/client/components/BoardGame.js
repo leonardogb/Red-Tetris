@@ -38,7 +38,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
 
   useEffect(() => {
     if (!player.roomOver && player.gameOver) {
-      // player.isPlaying = false;
       dispatch(action.setIsPlaying(false));
       socket.emit('gameOver', player);
       clearInterval(timer);
@@ -67,8 +66,6 @@ const BoardGame = ({ curRoom, curUser, player, delay, socket }) => {
   }
 
   const keyUp = (event) => {
-    // event.preventDefault()
-    // event.stopPropagation()
     if (player && !player.gameOver) {
       event.preventDefault()
       event.stopPropagation()

@@ -1,7 +1,5 @@
-
 import React from 'react';
 import ReactDom from 'react-dom';
-import {createLogger} from 'redux-logger';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import reducer from './reducers';
@@ -11,11 +9,10 @@ import { HashRouter } from 'react-router-dom';
 import './style.css';
 
 import createSagaMiddleware from 'redux-saga';
-// import socketSaga from './sagas/socketSaga';
 import rootSaga from './sagas/rootSaga';
 
 import openSocket from 'socket.io-client';
-const  socket = openSocket('http://localhost:3004'); // prevent the initial http polling , {transports: ['websocket'], upgrade: false}
+const  socket = openSocket('http://localhost:3004');
 
 socket.emit('action', {type: 'server/ping'});
 
@@ -25,7 +22,6 @@ const initialState = {
   id: null,
   isMaster: null,
   player: {
-    // grid: initialBoard(),
     grid: null,
     pieces: [],
     piece: {
@@ -57,17 +53,10 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   reducer,
   initialState,
-  // composeEnhancer(applyMiddleware(sagaMiddleware, createLogger())),
   composeEnhancer(applyMiddleware(sagaMiddleware)),
 );
-// sagaMiddleware.run(socketSaga, socket, store.dispatch);
 sagaMiddleware.run(rootSaga, socket, store.dispatch);
 
-// const keyDown = (keyCode) => {
-//
-//   store.dispatch(updatePlayerPosition(1));
-//   store.dispatch(action.updateBoard());
-// };
 
 ReactDom.render((
   <Provider store={store}>

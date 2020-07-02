@@ -56,7 +56,6 @@ const getSpectre = (curUser) => {
     game.players.map((player) => {
       if (player.name === curUser) {
         spectre = { playerName: player.name, spectre: player.spectre, score: player.score };
-        // spectresArray[player.name] = { playerName: player.name, spectre: player.spectre };
       }
     });
   });
@@ -89,7 +88,6 @@ const initEngine = io => {
         }
         return (game);
       })
-      // socket.to(socket.room).emit('setPieces', Piece.getTetrominos(5));
     });
 
     const play = () => {
@@ -101,9 +99,7 @@ const initEngine = io => {
       games = games.map((game) => {
         if (game.room === socket.room) {
           game.playing = true;
-          // game.players.splice(game.players.findIndex(e => e.name === socket.username),1);
         }
-        // io.in(socket.room).emit('setPlayersGames', playersGames(games));
         return (game);
       });
       io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
@@ -199,14 +195,6 @@ const initEngine = io => {
           if (player) {
             io.in(socket.room).emit('serverAction', { action: { type: types.REMOVE_SPECTRE, payload: { username: socket.username } } });
             game.players.splice(game.players.findIndex(e => e.name === socket.username), 1);
-            // console.log("game.players: ", game.players);
-            // if (game.players.length == 1)
-            // {
-            //   io.to(game.players[0].socketId).emit('winner');
-            //   io.in(socket.room).emit('serverAction', { action: { type: types.SET_ROOM_OVER, payload: { games: playersGames(games) } } });
-            //   io.to(game.players[0].socketId).emit('serverAction', { action: { type: types.SET_GAME_OVER } });
-            //   io.in(socket.room).emit('serverAction', { action: { type: types.SET_IS_PLAYING, payload: { value: false } } });
-            // }
             if (player.isMaster === true && game.players.length) {
               player.isMaster = false;
               game.players[0].isMaster = true;
@@ -220,7 +208,6 @@ const initEngine = io => {
         return true;
       });
       io.emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
-      // io.in(socket.room).emit('serverAction', { action: { type: types.SET_PLAYERS_GAMES, payload: { games: playersGames(games) } } });
     }
 
     socket.on('removePlayer', () => {

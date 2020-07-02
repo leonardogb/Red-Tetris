@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../src/server/main';
 import io from 'socket.io-client';
 import chai from 'chai';
@@ -7,10 +6,6 @@ import fs from 'fs';
 import { startServer } from '../helpers/server'
 import params from '../../params';
 import { initialBoard } from '../../src/client/gameHelpers';
-import { configureStore } from '../helpers/server'
-import rootReducer from '../../src/client/reducers'
-import { Provider } from 'react-redux';
-import App from '../../src/client/containers/app';
 
 chai.use(chaiHttp);
 var expect = chai.expect;

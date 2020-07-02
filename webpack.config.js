@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: './src/client/index.js',
-  mode: 'development',
+  mode: 'production',
 
   output: {
     path: path.join(__dirname, 'build'),
@@ -19,16 +19,7 @@ module.exports = {
       {
         test: /\.css$/i,
         loader: 'style-loader!css-loader',
-        // loaders: ["style-loader", "css-loader"]
       },
-      // {
-      //   test: /\.(png|jpe?g|gif|pdf)$/i,
-      //   use: [
-      //     {
-      //       loader: 'file-loader?name=/src/assets/[name].[ext]',
-      //     },
-      //   ],
-      // },
       {
         test: /\.(png|jpg|pdf)$/,
         loader: 'url-loader'
@@ -38,4 +29,5 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
   },
+  performance: { hints: false }
 };

@@ -38,7 +38,6 @@ const App = () => {
   }, [player.piece.collided]);
 
   useEffect(() => {
-    console.log('gameOver: ', player.gameOver);
     if (player.gameOver === true) {
       player.isPlaying = false;
     }

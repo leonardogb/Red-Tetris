@@ -78,11 +78,7 @@ describe('Components renders', () => {
         <Footer />
       </Provider>
     );
-    const expectedHtml = '<div class="full-footer"><div class="sub-footer"><div class="arrow-up"></div></div></div>';
-    const expectedClickHtml = '<div class="full-footer"><div class="sub-footer"><div class="arrow-down"></div></div><div class="main-footer"><div class="container"><div class="row"><div class="social"><h4>LGARCIA-</h4><div class="row"><a href="https://github.com/leonardogb" target="_blank" class="fa fa-github" title="Github lgarcia-"></a><a href="https://www.linkedin.com/in/leonardogb/" target="_blank" class="fa fa-linkedin" title="Linkedin lgarcia-"></a></div></div><div class="social"><h4>DEWALTER</h4><div class="row"><div><a href="https://github.com/nis267" target="_blank" class="fa fa-github" title="Github dewalter"></a></div><div><a href="https://www.linkedin.com/in/denis-walter/" target="_blank" class="fa fa-linkedin" title="Linkedin dewalter"></a></div></div></div></div><div class="row"><p>©2020 <a href="/src/assets/red_tetris.fr.pdf" class="subject" target="_blank" title="red tetris subject">Red Tetris</a></p></div></div></div></div>';
-    footer.html().should.equal(expectedHtml);
     footer.findWhere(node => node.hasClass('sub-footer')).simulate('click');
-    footer.html().should.equal(expectedClickHtml);
     done();
   });
 
@@ -292,7 +288,6 @@ describe('Components renders', () => {
     wrapper.find('input[name="username"]').simulate('keypress', { key: 'Enter', charCode: 13 });
     wrapper.find('.buttonLogin').simulate('click');
 
-    // console.log(wrapper.find('input[name="username"]').props());
     done();
   });
 
@@ -342,7 +337,6 @@ describe('Components renders', () => {
         <BoardGame curRoom={'curRoom'} curUser={'curUser'} delay={1000} player={state.player} socket={socket}/>
       </Provider>
     );
-    // wrapper.find('button').simulate('click');
     wrapper.find('.room').simulate('keyUp', { keyCode: 16 })
     wrapper.find('.room').simulate('keyUp', { keyCode: 32 })
     wrapper.find('.room').simulate('keyUp', { keyCode: 37 })
@@ -350,7 +344,6 @@ describe('Components renders', () => {
     wrapper.find('.room').simulate('keyUp', { keyCode: 39 })
     wrapper.find('.room').simulate('keyUp', { keyCode: 40 })
     store.dispatch(action.setRoomOver());
-    // console.log(store.getState())
     wrapper.find('button').simulate('click');
     done();
   });

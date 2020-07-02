@@ -55,10 +55,6 @@ describe('Sagas test', () => {
             }
         };
         return expectSaga(boardSaga)
-            // Assert that the `put` will eventually happen.
-            // .put({
-            //   type: 'UPDATE_GRID',
-            // })
 
             .withState(state)
         

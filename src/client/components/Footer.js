@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import "./Footer.css";
-import { Link, Router } from 'react-router-dom';
 import { useHover } from '../Hooks/useHover';
-import PdfFile from '../../assets/red_tetris.fr.pdf'
 
 const Footer = () => {
   const [hoverRef, isHovered] = useHover();
@@ -47,7 +45,7 @@ const Footer = () => {
             </div>
             <div className="row">
               <p>
-                &copy;{new Date().getFullYear()} <a href={PdfFile} className="subject" target="_blank" title="red tetris subject">Red Tetris</a>
+                &copy;{new Date().getFullYear()} <a href="../../src/assets/red_tetris.fr.pdf" className="subject" target="_blank" title="red tetris subject">Red Tetris</a>
               </p>
             </div>
           </div>

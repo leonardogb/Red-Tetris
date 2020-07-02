@@ -12,7 +12,7 @@ const logerror = debug('tetris:error'),
 const initApp = (app, params, cb) => {
   const { host, port } = params;
   const handler = (req, res) => {
-    const file = req.url === '/bundle.js' ? '/../../build/bundle.js' : '/../../index.html';
+    const file = req.url === '/bundle.js' ? '/../../build/bundle.js' : req.url === '/src/assets/red_tetris.fr.pdf' ? '/../../src/assets/red_tetris.fr.pdf' : '/../../index.html';
     fs.readFile(__dirname + file, (err, data) => {
       if (err) {
         logerror(err);

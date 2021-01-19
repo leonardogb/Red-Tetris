@@ -10,7 +10,8 @@
     "srv-dev": "DEBUG=tetris:* babel-watch -w src src/server/main.js",
     "srv-dist": "DEBUG=tetris:* babel src --out-dir dist",
     "test": "mocha --require @babel/register --require ignore-styles --reporter spec --recursive --exit",
-    "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha --require ignore-styles --recursive --exit"
+    "coverage": "NODE_ENV=test nyc --include src --all -r text -r lcov -r text --require @babel/register mocha --require ignore-styles --recursive --exit",
+    "start": "DEBUG=tetris:* node dist/server/main.js"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.7.5",
